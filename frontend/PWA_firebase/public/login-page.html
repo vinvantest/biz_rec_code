@@ -241,29 +241,33 @@
          return this.$.auth.signInWithPopup().then(function (result){
 
                document.getElementById('toast').show('You are signed in!');
+               /* not working - can't access this.storedUser or this.$.storedUser
                //console.log(JSON.stringify(result));
                // This gives you a Google Access Token
                var token = result.credential.accessToken;
                // The signed-in user info
-               var storedUser = result.user;
-               this.storedUser = {
-                       name: storedUser.displayName,
-                       photo_url: storedUser.photo_url,
-                       id_token: storedUser.id_token,
+               var storedUserX = result.user;
+               this.$.storedUser = {
+                       name: storedUserX.displayName,
+                       photo_url: storedUserX.photo_url,
+                       id_token: storedUserX.id_token,
                        access_token: token,
                        loggedin: true
                    };
+                   */
                }).catch(function(error) {
                    // Handle Errors here.
                    console.log(error);
+                   /*
                    var errorCode = error.code;
-                   this.errorlogin = error.code + ' :: '+ error.message;
+                   this.$.errorlogin = error.code + ' :: '+ error.message;
                    var errorMessage = error.message;
                    // The email of the user's account used.
                    var email = error.email;
                    // The firebase.auth.AuthCredential type that was used.
                    var credential = error.credential;
                    console.log('Error during the login -', email, ': ', errorCode, ' - ', errorMessage);
+                   */
                });
      }
 
