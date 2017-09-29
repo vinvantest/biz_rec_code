@@ -1,0 +1,139 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+
+!!d3-progress-meter!!
+
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2011-2015 Collaborne B.V. <http://github.com/Collaborne/>
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="dashboard-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      :host {
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+          margin: 0 auto;
+          text-align: center;
+          margin: 0 auto;
+      }
+
+      :host(.horizontal) {
+          @apply(--layout-horizontal);
+          @apply(--layout-wrap);
+          @apply(--layout-around-justified);
+          max-width: inherit;
+      }
+      paper-card.magenta {
+        --paper-card-background-color: #e02871;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+    </style>
+
+    <paper-card style="float:center; width: 60%" class="magenta">
+       <h4 style="color: white;">Dashboard</h4>
+    </paper-card>
+
+    <paper-card>
+
+      <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+
+      <div>
+      <d3-progress-meter
+          radius="50" percentage="0.1" current-text="70"
+          goal-text="Goal: 200" type-text="transactions">
+      </d3-progress-meter>
+      <d3-progress-meter
+          radius="50" percentage="0.65" current-text="6.5m"
+          goal-text="Goal: $10m" type-text="revenue">
+      </d3-progress-meter>
+      <d3-progress-meter
+        radius="50" percentage="0.9" current-text="225"
+        goal-text="Goal: 250" type-text="points">
+      </d3-progress-meter>
+      <style is="custom-style">
+          .custom {
+              --progress-meter-background-color: #00FFFF;
+              --progress-meter-color-low: #009999;
+              --progress-meter-color-medium: #009999;
+              --progress-meter-color-high: #009999;
+          }
+      </style>
+      <iron-icon></iron-icon>
+      <div>
+        <d3-progress-meter
+            class="custom" radius="50" percentage="0.5"
+            current-text="10" goal-text="Goal: 20"
+            type-text="Visits" caption="New visits per day">
+        </d3-progress-meter>
+    </div>
+    </div>
+    </paper-card>
+
+    <div class="card">
+      <div class="circle">2</div>
+      <h1>Dashboard Page</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate da mel ea.
+      paper-pulsating-progress : bower install --save Collaborne/paper-pulsating-progress
+      paper-stepper</p>
+      <p> User id: [[user.uid]]</p>
+      <p> User Name: [[user.displayName]]</p>
+      <p> Signed in: [[signedin]]</p>
+    </div>
+  </template>
+
+  <script>
+    class DashboardPage extends Polymer.Element {
+      static get is() { return 'dashboard-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          },
+          active: {
+            type: Boolean,
+            value: true,
+          }
+        };
+      }
+
+    }
+
+    window.customElements.define(DashboardPage.is, DashboardPage);
+  </script>
+</dom-module>

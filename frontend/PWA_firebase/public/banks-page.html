@@ -1,0 +1,69 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="banks-page">
+  <template>
+  <style include="shared-styles">
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+  </style>
+
+  <paper-card style="float:center; width: 60%" class="magenta">
+     <h4 style="color: white;">Banks</h4>
+  </paper-card>
+
+    <div class="card">
+      <div class="circle">1</div>
+      <h1>Banks Page</h1>
+      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis,
+        sit elit oportere ea.Lorem ipsum dolor sit amet, sit.</p>
+        <p> User id: [[user.uid]]</p>
+        <p> User Name: [[user.displayName]]</p>
+        <p> Signed in: [[signedin]]</p>
+    </div>
+  </template>
+
+  <script>
+    class BanksPage extends Polymer.Element {
+      static get is() { return 'banks-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          }
+        };
+      }
+
+    }
+
+    window.customElements.define(BanksPage.is, BanksPage);
+  </script>
+</dom-module>

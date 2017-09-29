@@ -1,0 +1,285 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="lazy-import.html">
+
+<!--
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-avatar/paper-avatar.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+-->
+
+<dom-module id="login-page">
+  <template>
+    <style include="shared-styles">
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+        }
+
+    firebase-auth{
+        display: none;
+        }
+
+    .signInButton img{
+        padding: 0 8px 0 2px;
+        max-height: 15px;
+        }
+
+    .signInButton{
+        width: 220px;
+        text-align: left;
+        margin-bottom: 15px;
+        text-transform: none;
+        min-height: 40px;
+        }
+
+    .signInButton.mini {
+        width: 150px;
+        }
+
+        #signindiv > paper-card.magenta {
+          --paper-card-background-color: #e02871;
+          box-sizing: border-box;
+          margin:  1px 1px 1px 1px;
+        }
+
+        #signindiv > paper-card.darkgrey {
+          --paper-card-background-color: #c3c4cc;
+          box-sizing: border-box;
+          margin:  1px 1px 1px 1px;
+        }
+
+        #signindiv > paper-card.lightgrey {
+          --paper-card-background-color: #ffffff;
+          box-sizing: border-box;
+          margin:  1px 1px 0px 1px;
+        }
+
+    #googSignIn{
+        background-color: white;
+        }
+
+    #fbSignIn{
+        background-color: #3B5999;
+        color: white;
+        }
+
+    #twtrSignIn{
+        background-color: #55ACEE;
+        color: white;
+        }
+
+    #ghSignIn{
+        background-color: #F5F5F5
+        }
+
+    #anonSignIn{
+        background-color: #303030;
+        color: white;
+        }
+
+    #fbSignIn:hover{
+        background-color: #4265b0;
+        }
+
+    #twtrSignIn:hover{
+        background-color: #5cb9ff;
+        }
+
+    #ghSignIn:hover{
+        background-color: white;
+        }
+
+    #anonSignIn:hover{
+        background-color: #414040;
+    }
+
+      a paper-button,
+      a:hover paper-button,
+      a:link paper-button,
+      a:active paper-button,
+      a:visited paper-button {
+        width: 100%;
+        color: #000;
+        text-transform: none;
+        text-decoration: none;
+      }
+
+      a:visited { text-decoration:none; }
+      a:active { text-decoration:none; }
+      a:link { text-decoration:none; }
+
+    </style>
+    <firebase-auth
+        id="auth"
+        user="{{user}}"
+        provider="google"
+        status-known="{{statusKnown}}"
+        signed-in="{{signedIn}}"
+        on-error="_handleError">
+    </firebase-auth>
+
+    <template is="dom-if" if="[[!user]]">
+      <div>
+        <paper-avatar mini on-tap="hire"></paper-avatar>
+
+      </div>
+      </template>
+      <template is="dom-if" if="[[user]]">
+            <div>
+            <paper-avatar mini on-tap="_logout"
+                    image-src="[[user.photoURL]]"
+                    image-sizing="cover" id="customAvatar" icon="social:person">
+            </paper-avatar>
+            </div>
+      </template>
+
+      <paper-dialog id="dialog" backdrop transition="core-transition-bottom" >
+        <div id="signindiv">
+
+            <H3>Sign in</H3>
+            <div style="float:left; width:100%" class"box">
+                <paper-button id="googSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="googleSignIn" data-auth="#google" raised>
+                          <div style="width:15px; height:15px; padding: 0 8px 0 2px;">
+                          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                              viewBox="0 0 123.3 126.2" style="enable-background:new 0 0 123.3 126.2;" xml:space="preserve">
+                          <style type="text/css">
+                              .st0{clip-path:url(#SVGID_2_);fill:#F9BC15;}
+                              .st1{clip-path:url(#SVGID_4_);fill:#EA4535;}
+                              .st2{clip-path:url(#SVGID_6_);fill:#36A852;}
+                              .st3{clip-path:url(#SVGID_8_);fill:#557EBF;}
+                          </style><g><g><defs>
+                              <path id="SVGID_1_" d="M121.9,51.6h-7.2H91.2H63.1V76H97c-3.2,15.5-16.4,24.4-33.8,24.4c-20.7,0-37.3-16.6-37.3-37.3
+                                  s16.6-37.3,37.3-37.3c8.9,0,16.9,3.2,23.2,8.3l18.4-18.4C93.5,6,79.2,0,63.1,0C28.1,0,0,28.1,0,63.1s28.1,63.1,63.1,63.1
+                                  c31.6,0,60.2-22.9,60.2-63.1C123.3,59.4,122.8,55.4,121.9,51.6z"/>
+                              </defs><clipPath id="SVGID_2_"><use xlink:href="#SVGID_1_" style="overflow:visible;"/></clipPath>
+                              <polygon class="st0" points="-5.7,100.4 -5.7,25.8 43,63.1 "/></g><g><defs>
+                              <path id="SVGID_3_" d="M121.9,51.6h-7.2H91.2H63.1V76H97c-3.2,15.5-16.4,24.4-33.8,24.4c-20.7,0-37.3-16.6-37.3-37.3
+                                  s16.6-37.3,37.3-37.3c8.9,0,16.9,3.2,23.2,8.3l18.4-18.4C93.5,6,79.2,0,63.1,0C28.1,0,0,28.1,0,63.1s28.1,63.1,63.1,63.1
+                                  c31.6,0,60.2-22.9,60.2-63.1C123.3,59.4,122.8,55.4,121.9,51.6z"/>
+                              </defs><clipPath id="SVGID_4_"><use xlink:href="#SVGID_3_" style="overflow:visible;"/></clipPath>
+                              <polygon class="st1" points="-5.7,25.8 43,63.1 63.1,45.6 132,34.4 132,-5.7 -5.7,-5.7"/></g><g><defs>
+                              <path id="SVGID_5_" d="M121.9,51.6h-7.2H91.2H63.1V76H97c-3.2,15.5-16.4,24.4-33.8,24.4c-20.7,0-37.3-16.6-37.3-37.3
+                                  s16.6-37.3,37.3-37.3c8.9,0,16.9,3.2,23.2,8.3l18.4-18.4C93.5,6,79.2,0,63.1,0C28.1,0,0,28.1,0,63.1s28.1,63.1,63.1,63.1
+                                  c31.6,0,60.2-22.9,60.2-63.1C123.3,59.4,122.8,55.4,121.9,51.6z"/>
+                              </defs><clipPath id="SVGID_6_"><use xlink:href="#SVGID_5_"  style="overflow:visible;"/></clipPath>
+                              <polygon class="st2" points="-5.7,100.4 80.3,34.4 103,37.3 132,-5.7 132,132 -5.7,132"/></g><g><defs>
+                                  <path id="SVGID_7_" d="M121.9,51.6h-7.2H91.2H63.1V76H97c-3.2,15.5-16.4,24.4-33.8,24.4c-20.7,0-37.3-16.6-37.3-37.3
+                                  s16.6-37.3,37.3-37.3c8.9,0,16.9,3.2,23.2,8.3l18.4-18.4C93.5,6,79.2,0,63.1,0C28.1,0,0,28.1,0,63.1s28.1,63.1,63.1,63.1
+                                  c31.6,0,60.2-22.9,60.2-63.1C123.3,59.4,122.8,55.4,121.9,51.6z"/>
+                              </defs><clipPath id="SVGID_8_"><use xlink:href="#SVGID_7_"  style="overflow:visible;"/></clipPath>
+                              <polygon class="st3" points="132,132 43,63.1 31.6,54.5 132,25.8"/></g></g>
+                          </svg>
+                      </div>
+                    Google
+                    </paper-button>
+                  <paper-button id="fbSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="facebookSignIn" data-auth="#facebook" raised>
+                    <div style="width:15px; height:15px">
+                        <svg viewBox="0 0 7.94 16.74" style="height:15px;fill:white;">
+                            <path d="M5.39,16.79H2.29V8.52H0.22V5.67H2.29V4c0-2.32.63-3.74,3.37-3.74H7.94V3.1H6.51c-1.07,0-1.12.4-1.12,1.14V5.67H8L7.65,8.52H5.39v8.27Z" transform="translate(-0.12 -0.15)" style="stroke:#000;stroke-miterlimit:10;stroke-width:0.20000000298023224px"/>
+                        </svg>
+                    </div>
+                    Facebook
+                  </paper-button>
+                  <paper-button id="twtrSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="twitterSignIn" data-auth="#twitter" raised>
+                    <div style="width:15px; height:15px; padding: 0 8px 0 2px;">
+                        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20.34 16.17">
+                        <path d="M6.85,16.34A11.39,11.39,0,0,0,18.32,4.87q0-.26,0-0.52a8.2,8.2,0,0,0,2-2.09A8,8,0,0,1,18,2.9,4,4,0,0,0,19.77.67a8.08,8.08,0,0,1-2.56,1,4,4,0,0,0-6.87,3.68A11.44,11.44,0,0,1,2,1.11,4,4,0,0,0,3.29,6.49,4,4,0,0,1,1.46,6s0,0,0,.05a4,4,0,0,0,3.23,4,4,4,0,0,1-1.82.07,4,4,0,0,0,3.77,2.8,8.09,8.09,0,0,1-5,1.73,8.19,8.19,0,0,1-1-.06,11.41,11.41,0,0,0,6.18,1.81" transform="translate(-0.25 -0.27)" style="fill:white"/></svg>
+                    </div>
+                    Twitter
+                 </paper-button>
+          </div>
+        </div>
+      </paper-dialog>
+
+  </template>
+
+  <script>
+    class LoginPage extends Polymer.Element {
+      static get is() { return 'login-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: Boolean,
+          storedUser: {
+            type: Object,
+            value: {
+              name: "",
+              photo_url: "",
+            }
+          },
+          errorlogin: {
+            type: String,
+          }
+        };
+      }
+
+    hire(e) {
+        this.$.dialog.toggle();
+     }
+
+     googleSignIn(){
+         this.$.dialog.toggle();
+         return this.$.auth.signInWithPopup().then(function (result){
+
+               document.getElementById('toast').show('You are signed in!');
+               //console.log(JSON.stringify(result));
+               // This gives you a Google Access Token
+               var token = result.credential.accessToken;
+               // The signed-in user info
+               var storedUser = result.user;
+               this.storedUser = {
+                       name: storedUser.displayName,
+                       photo_url: storedUser.photo_url,
+                       id_token: storedUser.id_token,
+                       access_token: token,
+                       loggedin: true
+                   };
+               }).catch(function(error) {
+                   // Handle Errors here.
+                   console.log(error);
+                   var errorCode = error.code;
+                   this.errorlogin = error.code + ' :: '+ error.message;
+                   var errorMessage = error.message;
+                   // The email of the user's account used.
+                   var email = error.email;
+                   // The firebase.auth.AuthCredential type that was used.
+                   var credential = error.credential;
+                   console.log('Error during the login -', email, ': ', errorCode, ' - ', errorMessage);
+               });
+     }
+
+     _logout(){
+         return this.$.auth.signOut().then(function (result){
+           //this.$.toastSignOut.open();
+           //Polymer.dom(this.$.toastSignOut).open();
+           //this.errorlogin = '';
+           //this.storedUser = null;
+           document.getElementById('toast').show('Signed Out!');
+         });
+     }
+
+
+  }
+
+    window.customElements.define(LoginPage.is, LoginPage);
+  </script>
+</dom-module>

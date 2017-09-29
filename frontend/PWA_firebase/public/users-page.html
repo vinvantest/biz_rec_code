@@ -1,0 +1,478 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="users-page">
+  <template is="dom-bind">
+  <style include="shared-styles">
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+
+    paper-card {
+      --paper-card-background-color: #ffffff;
+      box-sizing: border-box;
+      margin: 5px 5px 5px 5px;
+    }
+
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
+    paper-button.error { color: #ff6e40; }
+
+    paper-button.btn-error, paper-button[error] { color: #ff6e40; }
+
+    .alert-error {
+        background: #ffcdd2;
+        border: 1px solid #f44336;
+        border-radius: 3px;
+        color: #333;
+        font-size: 14px;
+        padding: 10px;
+    }
+    paper-spinner.multi {
+       --paper-spinner-layer-1-color: var(--paper-purple-500);
+       --paper-spinner-layer-2-color: var(--paper-cyan-500);
+       --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+       --paper-spinner-layer-4-color: var(--paper-amber-500);
+       --paper-spinner-stroke-width: 6px;
+     }
+
+     paper-button.pink {
+       color: var(--paper-pink-a200);
+       --paper-button-ink-color: var(--paper-pink-a200);
+     }
+     paper-button.indigo {
+       background-color: var(--paper-indigo-500);
+       color: white;
+       --paper-button-raised-keyboard-focus: {
+         background-color: var(--paper-pink-a200) !important;
+         color: white !important;
+       };
+     }
+     paper-button.indigo:hover {
+       background-color: var(--paper-indigo-400);
+     }
+     paper-button.green {
+       background-color: var(--paper-green-500);
+       color: white;
+     }
+     paper-button.green[active] {
+       background-color: var(--paper-red-500);
+     }
+     paper-button.disabled {
+       color: white;
+     }
+
+     paper-toggle-button.date-toggle {
+    padding-left: calc(33% + 1em);
+    }
+
+    /* position the left label outside the containing box */
+    span.toggle-left-label {
+        position: absolute;
+        right: 7em; /* Based on a relatively safe render width of the toggle button */
+        /*right: 200%;*/ /* Depending on your use case, you might find percentages friendlier than ems */
+    }
+
+    paper-checkbox {
+    font-family: 'Roboto', sans-serif;
+    margin: 24px;
+  }
+
+  paper-checkbox:first-child {
+    --primary-color: #ff5722;
+  }
+
+  paper-checkbox.styled {
+    align-self: center;
+    border: 0px solid var(--paper-grey-200);
+    padding: 8px 16px;
+    --paper-checkbox-checked-color: var(--paper-pink-500);
+    --paper-checkbox-checked-ink-color: var(--paper-black-500);
+    --paper-checkbox-unchecked-color: var(--paper-grey-500);
+    --paper-checkbox-unchecked-ink-color: var(--paper-grey-500);
+    --paper-checkbox-label-color: var(--paper-black-500);
+    --paper-checkbox-label-spacing: 0;
+    --paper-checkbox-margin: 8px 16px 8px 0;
+    --paper-checkbox-vertical-align: top;
+  }
+
+  paper-checkbox .subtitle {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 2px;
+    max-width: 150px;
+  }
+
+  </style>
+
+  <iron-ajax
+          id="postUserDataOnLogin"
+          method="POST"
+          url="{{url}}"
+          body="{{postBody}}"
+          handle-as="json"
+          content-type="application/json"
+          on-response="handleResponseAJAX"
+          on-error="handleErrorAJAX"
+          last-response="{{responseData}}"
+          last-error="{{lastError}}">
+  </iron-ajax>
+
+  <!-- http://localhost:8080/getUsers/global_alisas_for_search_users_index?usr_isBox=false&usr_isGoogle=true -->
+  <iron-ajax
+             auto
+             id="getUsersAJAX"
+             method="GET"
+             url="http://localhost:8080/getUsers/global_alisas_for_search_users_index"
+             params='{{_getUserParams()}}'
+             content-type="application/json"
+             handle-as="json"
+             last-response="{{userAjaxResponse}}"
+             >
+  </iron-ajax>
+
+  <paper-card style="float:center; width: 60%" class="magenta">
+     <h4 style="color: white;">Users</h4>
+  </paper-card>
+
+  <paper-card style="float: center; width: 80%">
+
+    <!-- user of paper toggle button
+        <paper-toggle-button class="date-toggle">
+            <span class="toggle-left-label toggle-label"><pre style="font-family: Roboto"><h5>New </h5></pre></span>
+            <span><h5>Reviewed</h5></span>
+        </paper-toggle-button>
+      -->
+      <div style="float:left; width:100%">
+        <div id="leftThing" style="float:left; width:50%;">
+        <paper-checkbox id="boxCheckBox" checked class="styled" on-change="toggleCheckBoxBox">
+          New
+          <span class="subtitle">
+            Users
+          </span>
+        </paper-checkbox>
+      </div>
+      <div id="leftThing" style="float:left; width:50%;">
+        <paper-checkbox id="googleCheckBox" class="styled" on-change="toggleCheckBoxGoogle">
+          Reviewed
+          <span class="subtitle">
+            Users
+          </span>
+        </paper-checkbox>
+      </div>
+    </div>
+  </paper-card>
+
+  <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+      <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
+      <div>
+        <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+        <paper-spinner active class="multi"></paper-spinner>
+        <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+        </div>
+  </paper-dialog>
+
+    <template is="dom-if" if="[[ajaxError]]">
+        <paper-card style="float:center; width: 90%">
+          <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong>
+          </div>
+          <div>
+            <p>AjaxError: [[ajaxErrorMsg]]</p>
+            <p>lastError.request: [[lastError.request]]</p>
+            <p>lastError.error: [[lastError.error]]</p>
+            <p>lastError.status: [[lastError.status]]</p>
+            <p>lastError.statusText: [[lastError.statusText]]</p>
+            <p>lastError.response: [[lastError.response]]</p>
+          </div>
+          <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+          <p>....</p>
+        </paper-card>
+    </template>
+
+    <template is="dom-repeat" items="[[userAjaxResponse]]" as="note">
+      <paper-card style="float:center; width: 90%">
+          <div>
+                <div style="float:center" flex>
+                      <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                      <u><b><h7>User:</h7></b></u> &nbsp; &nbsp; [[note._source.usr_displayName]] &nbsp; &nbsp; | &nbsp; &nbsp;[[note._source.usr_firstName]] &nbsp; [[note._source.usr_familyName]]
+                      <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
+                                              id$="bt_readmore" note="[[note]]"
+                                              on-tap="toggleX"></paper-icon-button>
+                </div>
+            </div>
+            <div style="float:left; width:100%">
+              <div id="leftThing" style="float:left; width:25%;">
+                    <paper-icon-button disabled slot="top" icon="av:fast-forward" style="color: black;"></paper-icon-button>
+                </div>
+                <div id="leftThing" style="float:left; width:25%;">
+                  <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                </div>
+              <div id="leftThing" style="float:left; width:25%;">
+                  <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+              </div>
+              <div id="leftThing" style="float:right; width:25%;">
+                    <paper-icon-button disabled slot="top" icon="av:fast-rewind" style="color: black;"></paper-icon-button>
+              </div>
+          </div>
+          <div>
+              <!-- any unique key of the data to be assigned to id of ircon collapse so that it can be toggled in javascript -->
+              <iron-collapse id$="collapse{{note._id}}">
+                    <div>
+                        <p>
+                          <div id="leftThing" slot="top" style="float: center;">
+                            <iron-autogrow-textarea
+                                    style="height: 100px; width: 80%"
+                                    value="{{note._source.usr_firstName}}"
+                                    id="a1"></iron-autogrow-textarea>
+                                    <div style="float: center; width: 80%">
+                                          <paper-checkbox disabled checked="{{note._source.usr_isBox}}">usr_isBox</paper-checkbox>
+                                          <paper-checkbox disabled checked="{{note._source.usr_isGoogle}}">usr_isGoogle</paper-checkbox>
+                                    </div>
+                          </div>
+                        </p>
+                      </div>
+                      <div>
+                          <div class="horizontal justified">
+                                <!-- <paper-icon-button icon="icons:event"></paper-icon-button>  -->
+                                <H7>Set Date:</h7>
+                                <vaadin-date-picker id="vaadinDate" value={{note.date}}></vaadin-date-picker>
+                                <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[note]]"
+                                                   on-tap="_updateDate" mini></paper-icon-button>
+                                <div style="text-align: right">
+                                    <h7 style="color: grey">Delete Note</h7>
+                                    <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[note]]"
+                                                       on-tap="_removeNote"></paper-icon-button>
+                                </div>
+                          </div>
+                     </div>
+                 </iron-collapse>
+              </div>
+        </paper-card>
+    </template>
+
+    <div class="card">
+      <div class="circle">3</div>
+      <h1>Users Page</h1>
+      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam.</p>
+      <p> User id: [[user.uid]]</p>
+      <p> User Name: [[user.displayName]]</p>
+      <p> Signed in: [[signedin]]</p>
+      <template is="dom-repeat" items="{{responseData}}" as="note">
+        <p> responseData.uid: [[note.data.displayName]]</p>
+        <p> responseData.displayName: [[note.data.displayName]]</p>
+      </template>
+
+      <template is="dom-if" if=[[isBox]]>
+        <p><strong> This is Box Transactions. Box flag: [[isBox]] </strong></p>
+      </template>
+
+      <template is="dom-if" if=[[isGoogle]]>
+        <p> This is Google Transactions. Google flag: [[isGoogle]]</p>
+      </template>
+
+      <paper-button on-tap="sendPost">Send</paper-button>
+    </div>
+
+  </template>
+
+  <script>
+    class UsersPage extends Polymer.Element {
+      static get is() { return 'users-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          },
+          active: {
+            type: Boolean,
+            value: false,
+          },
+          ajaxError: {
+            type: Boolean,
+            value: false,
+          },
+          ajaxErrorMsg: {
+            type: String,
+          },
+          lastError: {
+            type: Object,
+          },
+          responseData: {
+            type: Object,
+          },
+          isBox: {
+            type: Boolean,
+            value: true,
+          },
+          isGoogle: {
+            type: Boolean,
+            value: false,
+          }
+        };
+      }
+
+      sendPost(){
+        this.$.dialogBusy.toggle();
+        this.active = true;
+
+        var temp = this.$.postUserDataOnLogin;
+        //temp = this.$.postUserDataOnLogin;
+        console.log('temp is->'+temp);
+        temp.url = "//httpbin.org/post";
+        temp.body = this.user;
+        let request = temp.generateRequest();
+        request.completes.then( function(req) {
+            // succesful request, argument is iron-request element
+            console.log('iron request element is->'+req);
+            return;
+          }, function(rejected) {
+            // failed request, argument is an object
+            let req = rejected.request;
+            let error = rejected.error;
+            console.log('API Call - User Insertion - rejected');
+            console.log('req=', req, '    error=', error);
+            return;
+          });
+      }
+
+      handleResponseAJAX(data){
+        console.log('inside ***  handleResponseAJAX(data)');
+        this.active = false;
+        this.$.dialogBusy.toggle();
+        //var parsedResponse = JSON.stringify(data.detail.response);
+        //console.log('displayName: '+ parsedResponse);
+        const responseX = data.detail;
+        console.log('status', responseX.status, responseX.statusText);
+        var x = responseX.status;
+        switch(true){
+          case (x === 200):
+              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
+              console.log('last response _'+ this.responseData);
+              break;
+          case (x === 404):
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error: Record not found : ' + JSON.stringify(data.detail.response);
+              console.log('Error: Record not found : ' + JSON.stringify(data.detail.response));
+              break;
+          case (x >= 400 && x < 500):
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error (400): Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+              break;
+          case (x >= 500 && x < 600):
+                  this.ajaxError = true;
+                  this.ajaxErrorMsg = 'Error (500): Something went wrong: ';
+                  console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+                  break;
+          default:
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error: Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+        }
+
+      }
+
+      handleErrorAJAX(event){
+        console.log('inside ***  handleErrorAJAX(event)');
+        var error = event.detail.request.xhr.response;
+        console.log('error -->'+error);
+        // I think one of those two would be what you're looking for.
+        const req = event.detail.request;
+        console.log('event', event);
+        console.log('status code', req.status);
+        console.log('status text', req.statusText);
+        this.ajaxError = true;
+        this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
+      }
+
+      dissmisErrorDialog(){
+        this.ajaxError = false;
+      }
+
+      toggleCheckBoxBox(event, detail, sender){
+          this.isBox = !this.isBox;
+          this.isGoogle = !this.isGoogle;
+          //console.log('Box ['+this.isBox +'] Google ['+this.isGoogle+']');
+          this.$.googleCheckBox.checked = !this.$.googleCheckBox.checked;
+          var parameters = {
+             "usr_isBox": this.isBox,
+             "usr_isGoogle" : this.isGoogle
+           }
+          this.$.getUsersAJAX.auto = true;
+          this.$.getUsersAJAX.set( 'params', parameters);
+          this.$.getUsersAJAX.generateRequest();
+      }
+
+      toggleCheckBoxGoogle(event, detail, sender){
+          this.isBox = !this.isBox;
+          this.isGoogle = !this.isGoogle;
+          //console.log('Box ['+this.isBox +'] Google ['+this.isGoogle+']');
+          this.$.boxCheckBox.checked = !this.$.boxCheckBox.checked;
+          var parameters = {
+             "usr_isBox": this.isBox,
+             "usr_isGoogle" : this.isGoogle
+           }
+          this.$.getUsersAJAX.auto = true;
+          this.$.getUsersAJAX.set( 'params', parameters);
+          this.$.getUsersAJAX.generateRequest();
+      }
+
+      _getUserParams(){
+        //console.log('inside _getUserParams()');
+        var parameters = {
+           "usr_isBox": this.isBox,
+           "usr_isGoogle" : this.isGoogle
+         }
+        return parameters;
+      }
+
+      toggleX(event, detail, sender) {
+        var id = event.model.note._id;
+        var selector = '#collapse' + id;
+        //console.log('selector is ->'+selector);
+        //console.log(event.currentTarget.parentElement.parentElement);
+        event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+     }
+
+
+    }
+
+    window.customElements.define(UsersPage.is, UsersPage);
+  </script>
+</dom-module>

@@ -1,0 +1,112 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="settings-page">
+  <template>
+  <style include="shared-styles">
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+  </style>
+
+  <paper-card style="float:center; width: 60%" class="magenta">
+     <h4 style="color: white;">Settings</h4>
+  </paper-card>
+
+    <iron-ajax
+            id="postUserDataOnLogin"
+            method="POST"
+            url="{{url}}"
+            body="{{postBody}}"
+            handle-as="json"
+            content-type="application/json"
+            on-response="handleResponsePostSigninAJAX"
+            on-error="handleErrorPostSigninAJAX">
+    </iron-ajax>
+
+    <div class="card">
+      <div class="circle">3</div>
+      <h1>Settings Page</h1>
+      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam.</p>
+      <p> User id: [[user.uid]]</p>
+      <p> User Name: [[user.displayName]]</p>
+      <p> Signed in: [[signedin]]</p>
+      <paper-button on-tap="sendPost">Send</paper-button>
+    </div>
+  </template>
+
+  <script>
+    class SettingsPage extends Polymer.Element {
+      static get is() { return 'settings-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          }
+        };
+      }
+
+      sendPost(){
+        var temp = this.$.postUserDataOnLogin;
+        //temp = this.$.postUserDataOnLogin;
+        console.log('temp is->'+temp);
+        temp.url = "//httpbin.org/post";
+        temp.body = this.user;
+        let request = temp.generateRequest();
+        request.completes.then( function(req) {
+            // succesful request, argument is iron-request element
+            console.log('iron request element is->'+req);
+            return;
+          }, function(rejected) {
+            // failed request, argument is an object
+            let req = rejected.request;
+            let error = rejected.error;
+            console.log('API Call - User Insertion - rejected');
+            console.log(error);
+          });
+      }
+
+      handleResponsePostSigninAJAX(response){
+        const req = response.detail; // iron-request
+        console.log('status', req.status, req.statusText);
+        console.log('Data Returned by Ajax call-->' + JSON.stringify(response.detail.response));
+      }
+
+      handleErrorPostSigninAJAX(error){
+        // I think one of those two would be what you're looking for.
+        console.log(error.detail.response);
+        //console.log(e.detail.request.xhr.response);
+      }
+
+    }
+
+    window.customElements.define(SettingsPage.is, SettingsPage);
+  </script>
+</dom-module>

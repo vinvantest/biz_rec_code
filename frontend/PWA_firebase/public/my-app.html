@@ -1,0 +1,413 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<link rel="lazy-import" href="landing-page.html">
+<link rel="lazy-import" href="dashboard-page.html">
+<link rel="lazy-import" href="transactions-page.html">
+<link rel="lazy-import" href="chartofaccounts-page.html">
+<link rel="lazy-import" href="customers-page.html">
+<link rel="lazy-import" href="invoices-page.html">
+<link rel="lazy-import" href="payments-page.html">
+<link rel="lazy-import" href="reports-page.html">
+<link rel="lazy-import" href="rules-page.html">
+<link rel="lazy-import" href="settings-page.html">
+<link rel="lazy-import" href="banks-page.html">
+<link rel="lazy-import" href="login-page.html">
+<link rel="lazy-import" href="not-found-404.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .drawer-list {
+        margin: 0 5px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 5px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 2px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+
+      a paper-button,
+      a:hover paper-button,
+      a:link paper-button,
+      a:active paper-button,
+      a:visited paper-button {
+        width: 100%;
+        color: #000;
+        text-transform: none;
+        justify-content: var(--layout-start-justified);
+        text-decoration: none;
+      }
+
+      paper-button > iron-icon {
+        margin-right: 5px;
+      }
+
+      a h4 {
+       padding: 1px 1px 1px 1px;         /*text v slidery, opacity */
+       color:#fff;
+       text-decoration: none;
+     }
+
+      a:visited { text-decoration:none; }
+      a:active { text-decoration:none; }
+      a:link { text-decoration:none; }
+
+      #tab {
+        display:inline-block;
+        margin-left: 20px;
+      }
+
+      app-toolbar{
+        background-color: #ffffff;
+      }
+
+    </style>
+
+    <firebase-app
+        auth-domain="[[configFirebase.authDomain]]"
+        database-url="[[configFirebase.databaseURL]]"
+        api-key="[[configFirebase.apiKey]]"
+        storage-bucket="[[configFirebase.storageBucket]]"
+        messaging-sender-id="[[configFirebase.messagingSenderId]]">
+    </firebase-app>
+    <firebase-auth
+        id="auth"
+        user="{{user}}"
+        provider="google"
+        signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
+        on-error="_handleError">
+    </firebase-auth>
+
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="[[rootPath]]:page"
+        data="{{routeData}}"
+        tail="{{subroute}}">
+    </app-route>
+
+
+    <app-drawer-layout fullbleed narrow="{{narrow}}" has-scrolling-region>
+
+      <!-- Drawer content -->
+      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" has-scrolling-region>
+
+        <app-toolbar condenses>
+          <template is="dom-if" if="[[!user]]">
+                <div>
+                  <paper-avatar mini on-tap="_login"></paper-avatar> <!--
+                  <paper-toast id="toastSignIn" text="Hi, [[user.displayName]! You are logged in.]"></paper-toast> -->
+                </div>
+                <span id="tab"> <h6>Menu</h6></span>
+            </template>
+            <template is="dom-if" if="[[user]]">
+                  <div>
+                      <paper-avatar mini on-tap="_logout"
+                              image-src="[[user.photoURL]]"
+                              image-sizing="cover" id="customAvatar"
+                              icon="social:person">
+                      </paper-avatar>
+                  </div>
+                  <span id="tab"> <h6>Hi,&nbsp;[[user.displayName]]!</h6></span>
+            </template>
+        </app-toolbar>
+
+        <div style="height: 100%; overflow: auto;">
+            <a name="dashboard" href="[[rootPath]]dashboard-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Dashboard</h5></paper-button>
+            </a>
+            <a name="transactions" href="[[rootPath]]transactions-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Transasctions</h5></paper-button>
+            </a>
+            <a name="invoices" href="[[rootPath]]invoices-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Invoices</h5></paper-button>
+            </a>
+            <a name="payments" href="[[rootPath]]payments-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Payments</h5></paper-button>
+            </a>
+            <a name="reports" href="[[rootPath]]reports-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Reports</h5></paper-button>
+            </a>
+            <a name="reports" href="[[rootPath]]banks-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Banks</h5></paper-button>
+            </a>
+            <a name="chartofaccounts" href="[[rootPath]]chartofaccounts-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"chartofaccounts></iron-icon><h5>Chart of Accounts</h5></paper-button>
+            </a>
+            <a name="customers" href="[[rootPath]]customers-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Customers</h5></paper-button>
+            </a>
+            <a name="notes" href="[[rootPath]]notes-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Notes</h5></paper-button>
+            </a>
+            <a name="rules" href="[[rootPath]]rules-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Rules</h5></paper-button>
+            </a>
+            <a name="users" href="[[rootPath]]users-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Users</h5></paper-button>
+            </a>
+            <!-- Not sure why but last a tag required to be duplicate -->
+            <a name="settings" href="[[rootPath]]settings-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Settings</h5></paper-button>
+            </a>
+            <a name="settings" href="[[rootPath]]settings-page">
+              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Settings</h5></paper-button>
+            </a>
+        </div>
+
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <!-- HEADER TOOL BAR -->
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar>
+                <paper-icon-button icon="my-icons:menu" drawer-toggle halign="left"></paper-icon-button>
+              <div main-title></div>
+                <login-page user="{{user}}" signedin="{{signedIn}}"></login-page>
+                <dialog-html user="{{user}}" signedin="{{signedIn}}"></dialog-html>
+          </app-toolbar>
+        </app-header>
+
+        <div>
+        <!-- IRON PAGES MAIN CONTENT -->
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="not-found-404"
+            role="main">
+          <landing-page name="landing-page" user="{{user}}" signedin="{{signedIn}}"></landing-page>
+          <dashboard-page name="dashboard-page" user="{{user}}" signedin="{{signedIn}}"></dashboard-page>
+          <transactions-page name="transactions-page" user="{{user}}" signedin="{{signedIn}}"></transactions-page>
+          <payments-page name="payments-page" user="{{user}}" signedin="{{signedIn}}"></payments-page>
+          <invoices-page name="invoices-page" user="{{user}}" signedin="{{signedIn}}"></invoices-page>
+          <banks-page name="banks-page" user="{{user}}" signedin="{{signedIn}}"></banks-page>
+          <reports-page name="reports-page" user="{{user}}" signedin="{{signedIn}}"></reports-page>
+          <rules-page name="rules-page" user="{{user}}" signedin="{{signedIn}}"></rules-page>
+          <settings-page name="settings-page" user="{{user}}" signedin="{{signedIn}}"></settings-page>
+          <customers-page name="customers-page" user="{{user}}" signedin="{{signedIn}}"></customers-page>
+          <chartofaccounts-page name="chartofaccounts-page" user="{{user}}" signedin="{{signedIn}}"></chartofaccounts-page>
+          <notes-page name="notes-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></notes-page>
+          <users-page name="users-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></users-page>
+          <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath=[[routePath]]></not-found-404>
+        </iron-pages>
+      </div>
+
+      </app-header-layout>
+
+      <!-- BOTTOM TOOLBAR -->
+        <app-toolbar>
+          <!-- Floating Fab Icon  -->
+          <custom-style>
+            <style is="custom-style">
+              body {
+                min-height: 100px;
+              }
+            </style>
+            <custom-style>
+                <paper-fab-speed-dial mini>
+                  <a href="[[rootPath]]transactions-page">
+                    <paper-fab-speed-dial-action icon="my-icons:gavel">Transactons</paper-fab-speed-dial-action></a>
+                  <a href="[[rootPath]]payments-page">
+                    <paper-fab-speed-dial-action icon="my-icons:select-all">Payments</paper-fab-speed-dial-action></a>
+                  <a href="[[rootPath]]settings-page">
+                    <paper-fab-speed-dial-action icon="image:nature-people">Customers</paper-fab-speed-dial-action></a>
+                  <a href="[[rootPath]]notes-page">
+                    <paper-fab-speed-dial-action icon="my-icons:note-add">Notes</paper-fab-speed-dial-action></a>
+                </paper-fab-speed-dial>
+              </custom-style>
+          </custom-style>
+
+          <div style="float:left; width:100%">
+            <div id="leftThing" style="float:left; width:25%;">
+              <div>
+                <a href="[[rootPath]]dashboard-page">
+                  <paper-icon-button id="dashboard-icon-button" slot="top" icon="my-icons:dashboard"></paper-icon-button>
+                </a>
+              </div>
+            </div>
+            <div id="leftThing" style="float:left; width:25%;">
+              <a href="[[rootPath]]transactions-page">
+                <paper-icon-button id="transactions-icon-button" slot="top" icon="my-icons:gavel"></paper-icon-button>
+              </a>
+            </div>
+            <div id="leftThing" style="float:left; width:25%;">
+              <a href="[[rootPath]]payments-page">
+                <paper-icon-button id="payments-icon-button" slot="top" icon="my-icons:select-all"></paper-icon-button>
+              </a>
+            </div>
+            <div id="leftThing" style="float:right; width:25%;">
+              <a href="[[rootPath]]reports-page">
+                <paper-icon-button id="reports-icon-button" slot="top" icon="my-icons:line-style"></paper-icon-button>
+              </a>
+            </div>
+        </div>
+
+      </app-toolbar>
+
+    </app-drawer-layout>
+
+    <paper-tooltip for="dashboard-icon-button" position="top" offset="0">Dashboard</paper-tooltip>
+    <paper-tooltip for="transactions-icon-button" position="top" offset="0">Transactions</paper-tooltip>
+    <paper-tooltip for="payments-icon-button" position="top" offset="0">Payments</paper-tooltip>
+    <paper-tooltip for="reports-icon-button" position="top" offset="0">Reports</paper-tooltip>
+  </template>
+
+  <script>
+
+      var configFirebase = {
+      app_name: "bizrec-dev",
+      authDomain: "bizrec-dev.firebaseapp.com",
+      databaseURL: "https://bizrec-dev.firebaseio.com/",
+      apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
+      storageBucket: "bizrec-dev.appspot.com",
+      messagingSenderId: "531391633867",
+    };
+
+    class MyApp extends Polymer.Element {
+      static get is() { return 'my-app'; }
+
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          configFirebase: {
+            type: Object,
+            readOnly: true,
+            value: function(){
+              return configFirebase;
+            }
+          },
+          routeData: Object,
+          subroute: String,
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+          user: {
+            type: Object,
+          },
+          statusKnown: {
+            type: Object
+          },
+          signedIn:{
+            type: Boolean,
+            value: false,
+            //observer: "_signedInChanged"
+          },
+
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+        ];
+      }
+
+      _routePageChanged(page) {
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'view1' in that case.
+        this.page = page || 'landing-page';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      }
+
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl(page + '.html');
+        Polymer.importHref(
+            resolvedPageUrl,
+            null,
+            this._showPage404.bind(this),
+            true);
+      }
+
+      _showPage404() {
+        this.page = 'not-found-404';
+      }
+
+      _login() {
+          var provider = new firebase.auth.GoogleAuthProvider();
+          provider.addScope('https://www.googleapis.com/auth/plus.login');
+          return this.$.auth.signInWithPopup(provider).then(function (result){
+            document.getElementById('toast').show('You are signed in!');
+          });
+        }//end login
+
+      _logout(){
+          return this.$.auth.signOut().then(function (result){
+            document.getElementById('toast').show('Signed Out!');
+          });
+      }
+
+      _handleError(error){
+          console.log('Error login to Account: '+JSON.stringify(error));
+      }
+
+      handleResponsePostSigninAJAX(){
+        document.getElementById('toast').show('User data stored in backend');
+      }
+
+    }
+
+    window.customElements.define(MyApp.is, MyApp);
+
+/*
+    <iron-ajax
+        id="ajax"
+        url="https://www.googleapis.com/youtube/v3/search"
+        params='{"part":"snippet", "q":"polymer", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}'
+        handle-as="json"
+        last-response="{{ajaxResponse}}"
+        on-request="handleRequest"
+        on-response="handleResponse"
+        on-error="handleError">
+    </iron-ajax>
+    <iron-ajax
+        verbose
+        url="https://signasafeapi.azurewebsites.net/api/Companies/{{company.Id}}"
+        method='PUT'
+        body="{{company}}"
+        handle-as="json"
+        headers='{"Authorization": "Bearer {{sessionObject.access_token}}"}'
+        content-type="application/x-www-form-urlencoded"
+        on-response="handleSubmitCompany"
+        debounce-duration="300"
+        on-error = 'handleSubmitCompanyError'
+        id='daoSubmitCompany'>
+    </iron-ajax>
+*/
+
+  </script>
+</dom-module>

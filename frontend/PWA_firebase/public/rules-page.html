@@ -1,0 +1,174 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="rules-page">
+  <template>
+  <style include="shared-styles">
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+  </style>
+
+  <paper-card style="float:center; width: 60%" class="magenta">
+     <h4 style="color: white;">Rules</h4>
+  </paper-card>
+
+    <iron-ajax
+            id="postUserDataOnLogin"
+            method="POST"
+            url="{{url}}"
+            body="{{postBody}}"
+            handle-as="json"
+            content-type="application/json"
+            on-response="handleResponsePostSigninAJAX"
+            on-error="handleErrorPostSigninAJAX">
+    </iron-ajax>
+
+    <div class="card">
+      <div class="circle">3</div>
+      <h1>Rules Page</h1>
+      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam.</p>
+      <p> User id: [[user.uid]]</p>
+      <p> User Name: [[user.displayName]]</p>
+      <p> Signed in: [[signedin]]</p>
+      <paper-button on-tap="sendPost">Send</paper-button>
+
+
+    <template is="dom-repeat" items={{users}}>
+    	 <button class="heading" aria-expanded$="[[isExpanded(opened{{index}})]]" aria-controls="collapse{{index}}" onclick="toggle('#collapse{{index}}')" >
+    	 {{item.firstName}} {{item.lastName}}
+    	 <paper-toggle-button style="float: right;" checked$="{{item.isActive}}">Activo</paper-toggle-button>
+     </button>
+      <iron-collapse id="collapse{{index}}" tabindex="0" opened?="{{opened{{index}}}}">
+        <div class="content horizontal layout">
+            <div class="flex-1">
+              <paper-item>
+                <paper-item-body two-line>
+                  <div>Email</div>
+                  <div secondary>{{item.email}}</div>
+                </paper-item-body>
+              </paper-item>
+              <paper-item>
+                <paper-item-body two-line>
+                  <div>Teléfono</div>
+                  <div secondary>{{item.phone}}</div>
+                </paper-item-body>
+              </paper-item>
+              <paper-item>
+                <paper-item-body two-line>
+                  <div>Género</div>
+                  <div secondary>{{item.gender}}</div>
+                </paper-item-body>
+              </paper-item>
+            </div>
+          </div>
+        </div>
+      </iron-collapse>
+    </template>
+
+</div>
+  </template>
+
+  <script>
+    class RulesPage extends Polymer.Element {
+      static get is() { return 'rules-page'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          },
+          users: {
+            type: Array,
+            value: [
+              {firstName: 'Pedro', lastName: 'Vargas', email: 'pedro@mail.com', phone:'(222) 212 12 12', gender: 'Masculino', isActive:true},
+              {firstName: 'Andrea', lastName: 'Vargas', email: 'andrea@mail.com', phone:'(222) 212 12 13', gender: 'Femenino', isActive:false},
+              {firstName: 'Juan', lastName: 'Martínez', email: 'juan@mail.com', phone:'(222) 212 12 12', gender: 'Masculino', isActive:true},
+            ]
+          },
+
+        };
+      }
+
+      sendPost(){
+        var temp = this.$.postUserDataOnLogin;
+        //temp = this.$.postUserDataOnLogin;
+        console.log('temp is->'+temp);
+        temp.url = "//httpbin.org/post";
+        temp.body = this.user;
+        let request = temp.generateRequest();
+        request.completes.then( function(req) {
+            // succesful request, argument is iron-request element
+            console.log('iron request element is->'+req);
+            return;
+          }, function(rejected) {
+            // failed request, argument is an object
+            let req = rejected.request;
+            let error = rejected.error;
+            console.log('API Call - User Insertion - rejected');
+            console.log(error);
+          });
+      }
+
+      handleResponsePostSigninAJAX(response){
+        const req = response.detail; // iron-request
+        console.log('status', req.status, req.statusText);
+        console.log('Data Returned by Ajax call-->' + JSON.stringify(response.detail.response));
+      }
+
+      handleErrorPostSigninAJAX(error){
+        // I think one of those two would be what you're looking for.
+        console.log(error.detail.response);
+        //console.log(e.detail.request.xhr.response);
+      }
+
+      toggle(selector) {
+        document.querySelector(selector).toggle();
+      }
+
+      isExpanded(opened) {
+        return String(opened);
+      }
+
+
+    }
+
+    window.customElements.define(RulesPage.is, RulesPage);
+  </script>
+</dom-module>

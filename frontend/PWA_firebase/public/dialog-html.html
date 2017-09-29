@@ -1,0 +1,204 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="dialog-html">
+  <template>
+    <style include="shared-styles">
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+
+      a:visited { text-decoration:none; }
+      a:active { text-decoration:none; }
+      a:link { text-decoration:none; }
+
+      #notes {
+        @apply --layout-vertical;
+        @apply --layout-wrap;
+      }
+
+      #notes > paper-card {
+        --paper-card-background-color: #f3f3f3;
+        box-sizing: border-box;
+        margin: 1px 1px 1px 1px;
+      }
+
+      #notes > paper-card.magenta {
+        --paper-card-background-color: #e02871;
+        box-sizing: border-box;
+        margin:  1px 1px 1px 1px;
+      }
+
+      #notes > paper-card.darkgrey {
+        --paper-card-background-color: #c3c4cc;
+        box-sizing: border-box;
+        margin:  1px 1px 1px 1px;
+      }
+
+      #notes > paper-card.lightgrey {
+        --paper-card-background-color: #ffffff;
+        box-sizing: border-box;
+        margin:  1px 1px 0px 1px;
+      }
+
+      a paper-button,
+      a:hover paper-button,
+      a:link paper-button,
+      a:active paper-button,
+      a:visited paper-button {
+        color: #000;
+        text-transform: none;
+        text-decoration: none;
+      }
+
+      a:visited { text-decoration:none; }
+      a:active { text-decoration:none; }
+      a:link { text-decoration:none; }
+
+    </style>
+
+        <paper-icon-button icon="my-icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
+
+        <paper-dialog id="dialog" backdrop transition="core-transition-bottom">
+
+          <div id="notes">
+
+            <paper-card class="magenta">
+              <div style="float:left; width:100%" class"box">
+                <div id="leftThing" style="float:left; width:25%;">
+                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="my-icons:grain" style="color: white;"></paper-icon-button>
+                </div>
+                  <div id="leftThing" slot="top" style="float:left; width:50%;" style="text-align: center">
+                    <template is="dom-if" if="[[signedin]]">
+                            <h4 style='color: white;'>[[user.displayName]]</h4>
+                      </template>
+                    <template is="dom-if" if="[[!signedin]]">
+                          <h4 style='color: white;'>--&nbsp;&nbsp;&nbsp;&nbsp;Sign In&nbsp;&nbsp;&nbsp;&nbsp;--</h4>
+                    </template>
+                  </div>
+                <div id="rightThing" style="float:right; width:25%;">
+                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="my-icons:grain" style="color: white;"></paper-icon-button>
+              </div>
+            </div>
+            </paper-card>
+
+
+            <paper-card class="lightgrey">
+              <template is="dom-if" if="[[signedin]]">
+                    <div style="float:left; width:100%">
+                        <div><h4><u>Notifications:</u></h4></div>
+                        <div ><paper-checkbox>I want to receive notifications.</paper-checkbox></div>
+                        <iron-icon></iron-icon>
+                        <div>
+                              <div style="text-align: left">
+                                  If this option is deselected, I understand I won't be notified when:
+                                  <li>Changes occur in backend</li>
+                                  <li>Transactions added to dashboard</li>
+                              </div>
+                              <iron-icon></iron-icon>
+                              <div style="text-align: left">
+                                  <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
+                                  sign in on each device, enable notifications, and make sure you're online.
+                              </div>
+                              <div style="text-align: center">
+                                <a href="/settings-page">
+                                    <paper-button dialog-confirm autofocus >
+                                        <iron-icon icon="my-icons:blur-on"></iron-icon><h4>Settings</h4>
+                                    </paper-button>
+                                  </a>
+                                </div>
+                        </div>
+            </template>
+            <template is="dom-if" if="[[!signedin]]">
+                  <div style="float:left; width:100%">
+                      <div><h4><u>You are not Signed In:</u></h4></div>
+                        <div>
+                            <div style="text-align: left">
+                                In order to view your notes, sign in to the app using your credentials:
+                                  <li>Tap on top right icon to sign in</li>
+                                  <li>Go to settings page and sign in</li>
+                            </div>
+                            <iron-icon></iron-icon>
+                            <div style="text-align: left">
+                                <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
+                                sign in on each device, enable notifications, and make sure you're online.
+                            </div>
+                        <div>
+                      <div style="text-align: center">
+                        <a href="/settings-page">
+                            <paper-button dialog-confirm autofocus >
+                                <iron-icon icon="my-icons:blur-on"></iron-icon><h4>Settings</h4>
+                            </paper-button>
+                          </a>
+                        </div>
+                  </div>
+            </template>
+            </paper-card>
+
+            <paper-card class="magenta">
+              <div style="float:left; width:100%">
+                <div id="leftThing" style="float:left; width:25%;">
+                      <paper-icon-button id="dashboard-icon-button" dialog-dismiss slot="top" icon="my-icons:dashboard" style="color: white;"></paper-icon-button>
+                  </div>
+                  <div id="leftThing" style="float:left; width:25%;">
+                    <paper-icon-button id="transactions-icon-button" dialog-dismiss slot="top" icon="my-icons:gavel" style="color: white;"></paper-icon-button>
+                  </div>
+                <div id="leftThing" style="float:left; width:25%;">
+                    <paper-icon-button id="payments-icon-button" dialog-dismiss slot="top" icon="my-icons:select-all" style="color: white;"></paper-icon-button>
+                </div>
+                <div id="leftThing" style="float:right; width:25%;">
+                      <paper-icon-button id="reports-icon-button" on-tap="hire" slot="top" icon="my-icons:line-style" style="color: white;"></paper-icon-button>
+                </div>
+              </div>
+            </paper-card>
+
+          </div>
+
+        </paper-dialog>
+  </template>
+  <script>
+      class DailogHTML extends Polymer.Element {
+            static get is() { return 'dialog-html'; }
+
+            static get properties() {
+              return {
+                user: {
+                  type: Object,
+                },
+                signedin: {
+                  type: Boolean,
+                }
+              };
+            }
+
+            hire(e) {
+              if(this.signedin)
+                console.log('user ->'+this.user.displayName);
+              else
+                console.log('user is null or undefined->'+this.signedin);
+              this.$.dialog.toggle();
+            }
+
+            gosettings(e) {
+              //toggle off the dialog box
+              this.$.dialog.toggle();
+              //send the response to settings page
+
+            }
+
+          }
+      window.customElements.define(DailogHTML.is, DailogHTML);
+  </script>
+</dom-module>

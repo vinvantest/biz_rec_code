@@ -1,0 +1,92 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="not-found-404">
+  <template>
+  <style include="shared-styles">
+    :host {
+      display: block;
+      padding: 10px;
+    }
+
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+    a paper-button,
+    a:hover paper-button,
+    a:link paper-button,
+    a:active paper-button,
+    a:visited paper-button {
+      width: 100%;
+      color: #000;
+      text-transform: none;
+      text-decoration: none;
+    }
+
+    a:visited { text-decoration:none; }
+    a:active { text-decoration:none; }
+    a:link { text-decoration:none; }
+
+  </style>
+
+  <paper-card style="float:center; width: 60%" class="magenta">
+     <h4 style="color: white;">Page Not Found</h4>
+  </paper-card>
+
+    <div class="card">
+      <div class="circle">0</div>
+      <h1>Resource Not Found: &nbsp; 404</h1>
+      <p> User id: [[user.uid]]</p>
+      <p> User Name: [[user.displayName]]</p>
+      <p> Signed in: [[signedin]]</p>
+      <p> Head Home
+        <a href="[[routepath]]/dashboard-page">
+            <paper-icon-button icon="my-icons:home" style="color: #e02871;"></paper-icon-button>
+        </a>
+      </p>
+    </div>
+
+  </template>
+
+  <script>
+    class NotFound extends Polymer.Element {
+      static get is() { return 'not-found-404'; }
+      static get properties() {
+        return {
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          routepath: String,
+        };
+      }
+    }
+
+    window.customElements.define(NotFound.is, NotFound);
+  </script>
+</dom-module>

@@ -1,0 +1,368 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="notes-page">
+
+  <template>
+  <style include="shared-styles">
+    :host {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 0 auto;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    :host(.horizontal) {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        @apply(--layout-around-justified);
+        max-width: inherit;
+    }
+
+    paper-card {
+      --paper-card-background-color: #ffffff;
+      box-sizing: border-box;
+      margin: 5px 5px 5px 5px;
+    }
+
+    paper-card.magenta {
+      --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
+    paper-card.grey {
+      --paper-card-background-color: #d4d7db;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
+    paper-input {
+        --paper-input-container-color: black;
+        --paper-input-container-focus-color: black;
+        --paper-input-container-invalid-color: green;
+        --paper-input-container-input-color: black;
+        --paper-input-container-label: {
+                font-size: 14px;
+              };
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-size: 12px;
+    }
+
+    iron-autogrow-textarea {
+          width: 300px;
+          margin: 5px 5px 5px 5px;
+    }
+
+   paper-spinner, paper-spinner-lite {
+   margin: 8px 8px 8px 0;
+   }
+   paper-spinner-lite.orange {
+     --paper-spinner-color: var(--google-yellow-500);
+   }
+   paper-spinner-lite.green {
+     --paper-spinner-color: var(--google-green-500);
+   }
+   paper-spinner-lite.thin {
+     --paper-spinner-stroke-width: 1px;
+   }
+   paper-spinner-lite.thick {
+     --paper-spinner-stroke-width: 6px;
+   }
+
+   paper-spinner.multi {
+      --paper-spinner-layer-1-color: var(--paper-purple-500);
+      --paper-spinner-layer-2-color: var(--paper-cyan-500);
+      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+      --paper-spinner-layer-4-color: var(--paper-amber-500);
+      --paper-spinner-stroke-width: 6px;
+    }
+
+  </style>
+
+    <!-- <firebase-auth id="auth" user="{{user}}"> </firebase-auth> -->
+    <firebase-query
+      id="query"
+      path="/users/[[user.uid]]/notes"
+      data="{{notes}}">
+   </firebase-query>
+
+    <paper-card style="float:center; width: 60%" class="magenta">
+       <h4 style="color: white;">Notes</h4>
+    </paper-card>
+
+    <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+        <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
+        <div>
+          <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+          <paper-spinner active class="multi"></paper-spinner>
+          <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+          <!--
+          <paper-spinner-lite active class="green"></paper-spinner-lite>
+          <paper-spinner-lite active class="orange"></paper-spinner-lite>
+          <paper-spinner-lite active class="yellow"></paper-spinner-lite>
+          <paper-spinner-lite active class="blue"></paper-spinner-lite>
+        -->
+        </div>
+    </paper-dialog>
+
+     <template is="dom-if" if="[signedin]]">
+
+<!-- show cards that are expanded with no collapsable element: the code works! Do not Delete
+          <template is="dom-repeat" items="{{notes}}" as="note">
+            <paper-card style="float:center; width: 90%">
+                <div>
+                  <div style="text-align: left">
+                    <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                    <u><b><h7>Note:</h7></b></u> &nbsp; &nbsp; [[note.title]]
+                  </div>
+                    <p>
+                      <div id="leftThing" slot="top" style="float: center;">
+                        <iron-autogrow-textarea
+                                style="height: 100px;"
+                                value="{{note.content}}"
+                                id="a1"></iron-autogrow-textarea>
+                      </div>
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <div class="horizontal justified">
+                    <H7>Set Date:</h7>
+                    <vaadin-date-picker id="vaadinDate" value={{note.date}}></vaadin-date-picker>
+                    <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[note]]"
+                                       on-tap="_updateDate" mini></paper-icon-button>
+                    <div style="text-align: right">
+                        <h7 style="color: grey">Delete Note</h7>
+                        <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[note]]"
+                                           on-tap="_removeNote"></paper-icon-button>
+                    </div>
+                  </div>
+                </div>
+              </paper-card>
+        </template>
+-->
+        <template is="dom-repeat" items="{{notes}}" as="note">
+          <paper-card style="float:center; width: 90%">
+              <div>
+                    <div style="float:center" flex>
+                          <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                          <u><b><h7>Note:</h7></b></u> &nbsp; &nbsp; [[note.title]]
+                          <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
+                                                  id$="bt_readmore" note="[[note]]"
+                                                  on-tap="toggleX"></paper-icon-button>
+                    </div>
+                </div>
+                <div style="float:left; width:100%">
+                  <div id="leftThing" style="float:left; width:25%;">
+                        <paper-icon-button disabled slot="top" icon="av:fast-forward" style="color: black;"></paper-icon-button>
+                    </div>
+                    <div id="leftThing" style="float:left; width:25%;">
+                      <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                    </div>
+                  <div id="leftThing" style="float:left; width:25%;">
+                      <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                  </div>
+                  <div id="leftThing" style="float:right; width:25%;">
+                        <paper-icon-button disabled slot="top" icon="av:fast-rewind" style="color: black;"></paper-icon-button>
+                  </div>
+              </div>
+              <div>
+                  <!-- any unique key of the data to be assigned to id of ircon collapse so that it can be toggled in javascript -->
+                  <iron-collapse id$="collapse{{note.$key}}">
+                        <div>
+                            <p>
+                              <div id="leftThing" slot="top" style="float: center;">
+                                <iron-autogrow-textarea
+                                        style="height: 100px;"
+                                        value="{{note.content}}"
+                                        id="a1"></iron-autogrow-textarea>
+                              </div>
+                            </p>
+                          </div>
+                          <div>
+                              <div class="horizontal justified">
+                                    <!-- <paper-icon-button icon="icons:event"></paper-icon-button>  -->
+                                    <H7>Set Date:</h7>
+                                    <vaadin-date-picker id="vaadinDate" value={{note.date}}></vaadin-date-picker>
+                                    <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[note]]"
+                                                       on-tap="_updateDate" mini></paper-icon-button>
+                                    <div style="text-align: right">
+                                        <h7 style="color: grey">Delete Note</h7>
+                                        <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[note]]"
+                                                           on-tap="_removeNote"></paper-icon-button>
+                                    </div>
+                              </div>
+                         </div>
+                     </iron-collapse>
+                  </div>
+            </paper-card>
+            <!-- testing
+                                <paper-card style="float:center; width: 90%">
+                                    <div>
+                                        <span>{{note.title}}</span>
+                                    </div>
+                                    <div>
+                                        <iron-collapse id$="collapse{{note.$key}}">
+                                          <div>{{note.content}}</div>
+                                        </iron-collapse>
+                                        <div>
+                                            <paper-button id$="bt_readmore" on-tap="toggleX">More</paper-button>
+                                        </div>
+                                    </div>
+                                </paper-card>
+                    </template>
+            testing -->
+          </template>
+     </template>
+
+      <template is="dom-if" if="[[signedin]]">
+        <paper-card style="float:center; width: 90%" class="magenta" >
+          <h4 style="color: white;">Create a Note:</h4>
+        </paper-card>
+        <paper-card style="float:center; width: 90%" >
+            <div>
+                <paper-input  id="inputTitleTxt"
+                              value="{{inputTitleTxtValue}}"
+                              required auto-validate error-message="needs some text!"
+                              label="Note Title ..."
+                              on-changes="_handleTitleInputTxt"
+                              char-counter
+                              maxlength="25"></paper-input>
+            </div>
+            <div><iron-icon></iron-icon></div>
+            <div>
+                <iron-autogrow-textarea
+                        id="inputTxt"
+                        style="height: 100px;"
+                        value="{{inputTxtValue}}"
+                        placeholder="Take a note ..."
+                        maxlength="500"></iron-autogrow-textarea>
+            </div>
+            <div>
+                <vaadin-date-picker id="vaadinDateInput" placeholder="Pick a date" value={{myDate}}></vaadin-date-picker>
+            </div>
+            <div class="cafe-header">
+                 <h7>Add Note</h7>
+                 <paper-icon-button icon="icons:add-circle-outline" style="color: #e02871;" id="add" on-tap="_addNote"></paper-icon-button>
+             </div>
+        </paper-card>
+     </template>
+
+     <template is="dom-if" if="[[!signedin]]">
+       <paper-card style="float:center; width: 90%" >
+         <div>
+             <div><h4><u>You are not Signed In:</u></h4></div>
+             <p>
+                 In order to view your notes, sign in to the app using your credentials:
+                   <li>Tap on top right icon to sign in</li>
+                   <li>Go to settings page and sign in</li>
+                   <br>
+                 <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
+                 sign in on each device, enable notifications, and make sure you're online.
+             </p>
+             <div style="text-align: center">
+               <a href="/settings-page" style="text-decoration: black">
+                   <paper-button>
+                       <iron-icon icon="my-icons:blur-on"></iron-icon><h4 style="text-decoration: black">Settings</h4>
+                   </paper-button>
+                 </a>
+               </div>
+         </div>
+       </paper-card>
+     </template>
+
+  </template>
+
+  <script>
+
+  class MyNotes extends Polymer.Element {
+        static get is() { return 'notes-page'; }
+        static get properties() {
+              return {
+                notes: {
+                  type: Object,
+                  observer: 'dataChanged',
+                },
+                user: {
+                  type: Object,
+                },
+                signedin: {
+                  type: Boolean,
+                },
+                statusknown: {
+                  type: Boolean,
+                },
+                myDate: {
+                    type: String,
+                    value: '',
+                    observer: '_myDateChanged'
+                },
+                active: {
+                  type: Boolean,
+                  value: false,
+                },
+            };
+        }
+        _myDateChanged() {
+          // if date is changed
+
+        }
+
+        _addNote(){
+          if(this.inputTxtValue === null  || this.inputTxtValue === undefined ||
+             this.inputTitleTxtValue === null || this.inputTitleTxtValue ==='' ||
+             this.inputTitleTxtValue === undefined)
+             {
+               this.inputTxtValue = 'Enter valid Note Title and Description...!';
+             }
+             else
+             {
+              this.$.query.ref.push({
+                content: this.inputTxtValue,
+                title: this.inputTitleTxtValue,
+                date: this.myDate
+              });
+              this.inputTxtValue = null;
+              this.inputTitleTxtValue = null;
+            }
+
+        }
+
+      dataChanged(newData, oldData) {
+        this.active = true;
+        this.$.dialogBusy.toggle();
+        // do something when the query returns values
+        //console.log('new data: '+JSON.stringify(newData));
+        //console.log('old data: '+JSON.stringify(newData));
+
+      }
+
+      _removeNote(e){
+        var key = e.currentTarget.note.$key;
+        this.$.query.ref.child(key).remove();
+        document.getElementById('toast').show('Success: Note removed from server.');
+      }
+
+      _updateDate(e){
+        var key = e.currentTarget.note.$key;
+        this.$.query.ref.child(key).update({date: 'Date Removed!'});
+        document.getElementById('toast').show('Date removed from Note! Referesh to see changes...');
+      }
+
+      toggleX(event, detail, sender) {
+            var id = event.model.note.$key;
+            var selector = '#collapse' + id;
+            //console.log('selector is ->'+selector);
+            //console.log(event.currentTarget.parentElement.parentElement);
+            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+        }
+
+    } //end Polymer.Element
+
+    window.customElements.define(MyNotes.is, MyNotes);
+  </script>
+
+</dom-module>
