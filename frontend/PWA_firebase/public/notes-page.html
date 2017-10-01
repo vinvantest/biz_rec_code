@@ -144,7 +144,9 @@
               </paper-card>
         </template>
 -->
+
         <template is="dom-repeat" items="{{notes}}" as="note">
+          <span hidden$="[[computeSpanHidden]]"></span>
           <paper-card style="float:center; width: 90%">
               <div>
                     <div style="float:center" flex>
@@ -358,6 +360,22 @@
             //console.log('selector is ->'+selector);
             //console.log(event.currentTarget.parentElement.parentElement);
             event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+        }
+
+      computeSpanHidden(index){
+          console.log(index);
+          if(this.notes.length - 1 === index)
+            {
+              this.active = false;
+              this.$.dialogBusy.toggle();
+              return true;
+            }
+          else
+            {
+              //keep showing the spinner
+              this.active = true;
+              return false;
+            }
         }
 
     } //end Polymer.Element
