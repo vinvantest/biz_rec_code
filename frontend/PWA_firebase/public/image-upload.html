@@ -9,7 +9,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
+        flex-direction: horizontal;
         margin: 0;
         padding: 0;
         min-height: 100px;
@@ -21,58 +21,27 @@
         -webkit-appearance:none;
         appearance:none;
       }
+      .image-upload > input
+      {
+          display: none;
+      }
+
     </style>
 
-    <progress id="upProg" value="0" max="100">0%</progress>
-    <input id="fileButt" type="file" value="upload" accept="[[fileType]]" />
+    <div class="image-upload">
+          <label for="fileButt">
+                <paper-icon-button icon="image:photo-camera"  style="color: black;"></<paper-icon-button>
+          </label>
+          <input id="fileButt" type="file"/>
+    </div>
+    <d3-progress-meter
+            radius="40" percentage="[[progressPercentage]]" current-text="[[progressPercentage]]"
+            goal-text="Upload" id="d3Prog">
+    </d3-progress-meter>
+
   </template>
 
   <script>
-
-  /*
-  var configFirebase = {
-            //app_name: "bizrec-dev",
-            authDomain: "bizrec-dev.firebaseapp.com",
-            databaseURL: "https://bizrec-dev.firebaseio.com/",
-            apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
-            storageBucket: "bizrec-dev.appspot.com",
-            messagingSenderId: "531391633867",
-  };
-
-
-  //firebase.initializeApp(configFirebase);
-
-  var uploader = document.getElementById('upProg');
-  var fileButt = document.getElementById('fileButt');
-  console.log(fileButt);
-
-  fileButt.addEventListner('change',
-      function(e) {
-        //get file
-        var file = e.target.files(0);
-
-        //create storage
-        var storageRef = firebase.storage().ref(''+user.uid+'/'+'img'+'/'+file.name);
-
-        //upload file
-        var task = storageRef.put(file);
-
-        //update progressbar
-        task.on('state_changed',
-            function progress(snapshot){
-              uploader.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
-            },
-            function error(err){
-              console.log('Error: ' + err.code);
-            },
-            function complete(){
-              console.log('Complete: '+ dest);
-            }
-        );
-
-      }
-    );
-    */
 
     class ImageUpload extends Polymer.Element {
       static get is() { return 'image-upload'; }
@@ -109,14 +78,25 @@
           listeners:{
             'fileButt.change':'handleFile',
             'uploader':''
+          },
+          progressPercentage: {
+            type: Number,
+            value: 0
+          },
+          showProgressBar: {
+            type: Boolean,
+            value: false
           }
         };
       }
 
       handleFile(e) {
            console.info(e.target.id + ' was clicked.');
+           this.showProgressBar = true;
 
            var upProgVar = this.$.upProg;
+           var upD3Progress = this.$.d3Prog;
+           var usrName = this.user.displayName.replace(/[^a-zA-Z0-9_-]/g,'_').replace(/_{2,}/g,'_').toLowerCase();
            console.log('upProgVar ->' + upProgVar);
 
             //get file
@@ -124,7 +104,7 @@
             console.log('file ->' + file);
 
             //create storage
-            var storageRef = firebase.storage().ref('USR_'+this.user.uid+'/'+'img'+'/'+file.name);
+            var storageRef = firebase.storage().ref('USR_'+ usrName + '_' + this.user.uid+'/'+'img'+'/'+file.name);
 
             //upload file
             var task = storageRef.put(file);
@@ -132,13 +112,18 @@
             //update progressbar
             task.on('state_changed',
                 function progress(snapshot){
-                  upProgVar.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
+                  var num = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
+                  num = Math.round(num * 100) / 100;
+                  upD3Progress.percentage = num / 100;
+                  upD3Progress.currentText = num + '%';
+                  //console.log(upD3Progress.currentText);
+
                 },
                 function error(err){
                   console.log('Error: ' + err.code);
                 },
                 function complete(){
-                  console.log('Complete: uploading'+ upProgVar.value);
+                  console.log('Complete: upload ' + file.name);
                 }
             );
 
