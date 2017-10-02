@@ -91,17 +91,17 @@
       }
 
       handleFile(e) {
-           console.info(e.target.id + ' was clicked.');
+           //console.info(e.target.id + ' was clicked.');
            this.showProgressBar = true;
 
            var upProgVar = this.$.upProg;
            var upD3Progress = this.$.d3Prog;
            var usrName = this.user.displayName.replace(/[^a-zA-Z0-9_-]/g,'_').replace(/_{2,}/g,'_').toLowerCase();
-           console.log('upProgVar ->' + upProgVar);
+           //console.log('upProgVar ->' + upProgVar);
 
             //get file
             var file = e.target.files[0];
-            console.log('file ->' + file);
+            //console.log('file ->' + file);
 
             //create storage
             var storageRef = firebase.storage().ref('USR_'+ usrName + '_' + this.user.uid+'/'+'img'+'/'+file.name);
@@ -123,7 +123,7 @@
                   console.log('Error: ' + err.code);
                 },
                 function complete(){
-                  console.log('Complete: upload ' + file.name);
+                  //console.log('Complete: upload ' + file.name);
                 }
             );
 

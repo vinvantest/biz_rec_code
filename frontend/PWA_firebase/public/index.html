@@ -66,7 +66,7 @@
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js', {
+          navigator.serviceWorker.register('../service-worker.js', {
             scope: Polymer.rootPath,
           });
         });
@@ -95,8 +95,22 @@
     </style>
   </head>
   <body>
+
     <paper-toast id="toast" text="Hi, welcome to BuzRec!"></paper-toast>
+    <paper-toast id="caching-complete" duration="6000" text="Caching Complete! this app will work offline."></paper-toast>
+    <platinum-sw-register
+          auto-register
+          clients-claim
+          skip-waiting
+          on-service-worker-installed="displayInstalledToast" >
+              <platinum-sw-cache  default-cache-strategy="networkFirst"
+                                  precache='["images/favicon.ico"]'
+                                  precache-file="precache.json" >
+              </platinum-sw-cache>
+    </platinum-sw-register>
+
     <my-app></my-app>
+
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>

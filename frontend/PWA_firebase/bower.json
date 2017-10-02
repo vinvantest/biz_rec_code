@@ -51,6 +51,7 @@
     "paper-pulsating-progress": "Collaborne/paper-pulsating-progress#^2.0.2",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
-    "iron-collapse": "PolymerElements/iron-collapse#^2.0.0"
+    "iron-collapse": "PolymerElements/iron-collapse#^2.0.0",
+    "platinum-sw": "PolymerElements/platinum-sw#^2.0.0"
   }
 }
