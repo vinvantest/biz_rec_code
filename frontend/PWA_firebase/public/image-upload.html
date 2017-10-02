@@ -29,8 +29,9 @@
 
   <script>
 
+  /*
   var configFirebase = {
-            app_name: "bizrec-dev",
+            //app_name: "bizrec-dev",
             authDomain: "bizrec-dev.firebaseapp.com",
             databaseURL: "https://bizrec-dev.firebaseio.com/",
             apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
@@ -38,8 +39,48 @@
             messagingSenderId: "531391633867",
   };
 
+
+  //firebase.initializeApp(configFirebase);
+
+  var uploader = document.getElementById('upProg');
+  var fileButt = document.getElementById('fileButt');
+  console.log(fileButt);
+
+  fileButt.addEventListner('change',
+      function(e) {
+        //get file
+        var file = e.target.files(0);
+
+        //create storage
+        var storageRef = firebase.storage().ref(''+user.uid+'/'+'img'+'/'+file.name);
+
+        //upload file
+        var task = storageRef.put(file);
+
+        //update progressbar
+        task.on('state_changed',
+            function progress(snapshot){
+              uploader.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
+            },
+            function error(err){
+              console.log('Error: ' + err.code);
+            },
+            function complete(){
+              console.log('Complete: '+ dest);
+            }
+        );
+
+      }
+    );
+    */
+
     class ImageUpload extends Polymer.Element {
       static get is() { return 'image-upload'; }
+
+      ready() {
+        super.ready();
+        this.$.fileButt.addEventListener('change', e => {this.handleFile(e)});
+      }
 
       static get properties() {
         return {
@@ -72,31 +113,36 @@
         };
       }
 
-      handleFile(e){
-        //get file
-        var file = e.target.files[0];
-        var dest = '';
-        var prog = this.$.upProg;
-        dest = this.directory + ( this.storedName != '' ? this.storedName: file.name );
-        console.log('inside handleFile()' + dest + '   configFirebase.app_name = '+ configFirebase.app_name);
-        //TODO:some validate based on attributes (max size, etc.)
-        //fb storage ref
-        var fbsImageRef = firebase.app(configFirebase.app_name).storage().ref(dest);
-        //upload file
-        var monitor = fbsImageRef.put(file);
-        //update progress
-        monitor.on('state_changed',
-          function progress(snapshot){
-            prog.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
-          },
-          function error(err){
-            console.log('Error: ' + err.code);
-          },
-          function complete(){
-            console.log('Complete: '+ dest);
+      handleFile(e) {
+           console.info(e.target.id + ' was clicked.');
+
+           var upProgVar = this.$.upProg;
+           console.log('upProgVar ->' + upProgVar);
+
+            //get file
+            var file = e.target.files[0];
+            console.log('file ->' + file);
+
+            //create storage
+            var storageRef = firebase.storage().ref('USR_'+this.user.uid+'/'+'img'+'/'+file.name);
+
+            //upload file
+            var task = storageRef.put(file);
+
+            //update progressbar
+            task.on('state_changed',
+                function progress(snapshot){
+                  upProgVar.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
+                },
+                function error(err){
+                  console.log('Error: ' + err.code);
+                },
+                function complete(){
+                  console.log('Complete: uploading'+ upProgVar.value);
+                }
+            );
+
           }
-        );
-      }
 
     }//end polymer
 
