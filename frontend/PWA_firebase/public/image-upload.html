@@ -1,0 +1,105 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="lazy-import.html">
+
+<dom-module id="image-upload">
+  <template>
+    <style media="screen">
+      :host {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        min-height: 100px;
+        width: 100%;
+      }
+      progress{
+        width: 100%;
+        margin-bottom: 5px;
+        -webkit-appearance:none;
+        appearance:none;
+      }
+    </style>
+
+    <progress id="upProg" value="0" max="100">0%</progress>
+    <input id="fileButt" type="file" value="upload" accept="[[fileType]]" />
+  </template>
+
+  <script>
+
+  var configFirebase = {
+            app_name: "bizrec-dev",
+            authDomain: "bizrec-dev.firebaseapp.com",
+            databaseURL: "https://bizrec-dev.firebaseio.com/",
+            apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
+            storageBucket: "bizrec-dev.appspot.com",
+            messagingSenderId: "531391633867",
+  };
+
+    class ImageUpload extends Polymer.Element {
+      static get is() { return 'image-upload'; }
+
+      static get properties() {
+        return {
+          user: {
+            type: Object,
+          },
+          signedin: {
+            type: Boolean,
+          },
+          appName:{
+            type: String,
+            value:'app'
+          },
+          directory:{
+            type: String,
+            value:'img/'
+          },
+          storedName:{
+            type: String,
+            value:''
+          },
+          fileType:{
+            type: String,
+            value:'image/*'
+          },
+          listeners:{
+            'fileButt.change':'handleFile',
+            'uploader':''
+          }
+        };
+      }
+
+      handleFile(e){
+        //get file
+        var file = e.target.files[0];
+        var dest = '';
+        var prog = this.$.upProg;
+        dest = this.directory + ( this.storedName != '' ? this.storedName: file.name );
+        console.log('inside handleFile()' + dest + '   configFirebase.app_name = '+ configFirebase.app_name);
+        //TODO:some validate based on attributes (max size, etc.)
+        //fb storage ref
+        var fbsImageRef = firebase.app(configFirebase.app_name).storage().ref(dest);
+        //upload file
+        var monitor = fbsImageRef.put(file);
+        //update progress
+        monitor.on('state_changed',
+          function progress(snapshot){
+            prog.value = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
+          },
+          function error(err){
+            console.log('Error: ' + err.code);
+          },
+          function complete(){
+            console.log('Complete: '+ dest);
+          }
+        );
+      }
+
+    }//end polymer
+
+    window.customElements.define(ImageUpload.is, ImageUpload);
+  </script>
+</dom-module>

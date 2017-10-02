@@ -89,23 +89,35 @@
       data="{{notes}}">
    </firebase-query>
 
-    <paper-card style="float:center; width: 60%" class="magenta">
-       <h4 style="color: white;">Notes</h4>
-    </paper-card>
+    <template is="dom-if" if="[[signedin]]">
+      <div style="float:center; width: 60%">
+        <paper-card style="float:center; width: 60%" class="magenta">
+           <h4 style="color: white;">Notes</h4>
+        </paper-card>
+        <a href="/notes-page">
+        <paper-icon-button icon="icons:refresh" style="color: black;"></paper-icon-button></a>
+      </div>
+    </template>
+
+    <template is="dom-if" if="[[!signedin]]">
+      <paper-card style="float:center; width: 60%" class="magenta">
+           <h4 style="color: white;">Notes</h4>
+      </paper-card>
+    </template>
 
     <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
-        <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
-        <div>
-          <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-          <paper-spinner active class="multi"></paper-spinner>
-          <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-          <!--
-          <paper-spinner-lite active class="green"></paper-spinner-lite>
-          <paper-spinner-lite active class="orange"></paper-spinner-lite>
-          <paper-spinner-lite active class="yellow"></paper-spinner-lite>
-          <paper-spinner-lite active class="blue"></paper-spinner-lite>
-        -->
-        </div>
+          <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
+          <div>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            <paper-spinner active class="multi"></paper-spinner>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            <!--
+            <paper-spinner-lite active class="green"></paper-spinner-lite>
+            <paper-spinner-lite active class="orange"></paper-spinner-lite>
+            <paper-spinner-lite active class="yellow"></paper-spinner-lite>
+            <paper-spinner-lite active class="blue"></paper-spinner-lite>
+          -->
+          </div>
     </paper-dialog>
 
      <template is="dom-if" if="[signedin]]">
@@ -146,7 +158,11 @@
 -->
 
         <template is="dom-repeat" items="{{notes}}" as="note">
-          <span hidden$="[[computeSpanHidden]]"></span>
+
+          <!-- compute last item in dom repeat
+          <span hidden$="[[computeSpanHidden(index)]]"></span>
+          -->
+
           <paper-card style="float:center; width: 90%">
               <div>
                     <div style="float:center" flex>
@@ -201,6 +217,7 @@
                      </iron-collapse>
                   </div>
             </paper-card>
+
             <!-- testing
                                 <paper-card style="float:center; width: 90%">
                                     <div>
@@ -287,6 +304,7 @@
                 notes: {
                   type: Object,
                   observer: 'dataChanged',
+                  notify: true,
                 },
                 user: {
                   type: Object,
@@ -305,7 +323,7 @@
                 active: {
                   type: Boolean,
                   value: false,
-                },
+                }
             };
         }
         _myDateChanged() {
@@ -334,12 +352,21 @@
         }
 
       dataChanged(newData, oldData) {
-        this.active = true;
-        this.$.dialogBusy.toggle();
+        //commenting it as it is progress bar is being computed in computeSpanHidden()
+
+        if(this.signedin)
+        {
+          //console.log('inside dataChanged');
+          this.active = true;
+          this.$.dialogBusy.toggle();
+        }
+        else {
+          this.active = true;
+          this.$.dialogBusy.toggle();
+        }
         // do something when the query returns values
         //console.log('new data: '+JSON.stringify(newData));
         //console.log('old data: '+JSON.stringify(newData));
-
       }
 
       _removeNote(e){
@@ -363,6 +390,7 @@
         }
 
       computeSpanHidden(index){
+          //console.log('inside computeSpanHidden');
           console.log(index);
           if(this.notes.length - 1 === index)
             {
@@ -374,6 +402,7 @@
             {
               //keep showing the spinner
               this.active = true;
+              //this.$.dialogBusy.toggle();
               return false;
             }
         }

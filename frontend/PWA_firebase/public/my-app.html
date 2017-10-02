@@ -86,6 +86,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
+    <!-- firebase-app with app name breaks firebase auth. throws error at signInWithPopup()
+    <firebase-app
+        name="[[configFirebase.app_name]]"
+        auth-domain="[[configFirebase.authDomain]]"
+        database-url="[[configFirebase.databaseURL]]"
+        api-key="[[configFirebase.apiKey]]"
+        storage-bucket="[[configFirebase.storageBucket]]"
+        messaging-sender-id="[[configFirebase.messagingSenderId]]">
+    </firebase-app>
+    -->
     <firebase-app
         auth-domain="[[configFirebase.authDomain]]"
         database-url="[[configFirebase.databaseURL]]"

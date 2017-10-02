@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
+<link rel="import" href="image-upload.html">
 
 <dom-module id="invoices-page">
   <template>
@@ -53,6 +54,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p> User id: [[user.uid]]</p>
         <p> User Name: [[user.displayName]]</p>
         <p> Signed in: [[signedin]]</p>
+    </div>
+    <div>
+      <image-upload user={{user}} signedin={{signedin}}></image-upload>
     </div>
   </template>
 
