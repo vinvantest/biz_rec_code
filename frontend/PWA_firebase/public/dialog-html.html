@@ -231,6 +231,49 @@
               document.getElementById('toast').show('User notification turned on!');
             }
 
+            /******* HOW to call notifications from postman or API  ***************
+                Postman request to send notifications to users
+                POST https://fcm.googleapis.com/fcm/send
+
+                Content-Type: application/json
+                Authorization: key=AAAAe7lo2cs:APA91bF9HmWWZ0p96s4loxqJARfW_Em_kRCSYIgtrbLwmz787tQU9izCdkfaxSuXaO28uZ-Q56E7fJukbMampUr7GNcfS1ga9tY27pNlrySEFeFMxGU8Y3J0KtOtlEhMrAcX1pUDIeTA
+
+                <!-- note that key=app msg key in cloud services is necessary -->
+                Body: Option "Raw"
+
+                	{
+                	"registration_ids" : [
+                			"ffDZUQ2Gym4:APA91bEpSBToe7K8CtzoY3DKBQlz707NbHBu1LI0IXyyzeuOBEdtfg78XAai44FU3UXFhhZlWNtAq7dzxxIR0bdjoG0FQDl3pWRidoDFeosSI32_Kel7W5NT6MIUG7IVSn2uK-26N_Ux",
+                			"ckXsMGcYVW8:APA91bG0YURynUx5HLqHVxq_aFmvHryvlaNQc03T9WQf9vaPG-yWc_fUm0gypYNMW2GWXv8L6gg6qAmrZaLGi0KMeY3DUsW5zJsp3UEtr1WpbtlIwAAIC_onA4cFY8Sj66DXDLxz5Ko8",
+                			"ekkKE1j-uIc:APA91bFTrZNcKLreauaupqdkxCtr8LUt8lGakLUQzLxEt9tDHH2_4kklsO_PSEA4Oa9PBrSMUYXGUM4AN9QY092Wb3A7kdixVx67K9AkGbEGV3RQfj-qQGSX3fhlHn21znrzBP6Yj5F9"
+                			],
+                  	"notification" :
+                  	{
+                  		"title" : "Hello World",
+                  		"body"	: "this is notification!"
+                  	}
+                }
+
+                // the output of the POSTman request
+                {
+                    "multicast_id": 7721873443091050692,
+                    "success": 2,
+                    "failure": 1,
+                    "canonical_ids": 0,
+                    "results": [
+                        {
+                            "message_id": "0:1507007444546704%0f493ae6f9fd7ecd"
+                        },
+                        {
+                            "error": "NotRegistered"
+                        },
+                        {
+                            "message_id": "0:1507007444613363%e609af1cf9fd7ecd"
+                        }
+                    ]
+                }
+              
+            ****************/
           }
       window.customElements.define(DailogHTML.is, DailogHTML);
   </script>
