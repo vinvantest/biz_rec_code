@@ -1,23 +1,100 @@
 {
-  "name": "BizRec",
-  "short_name": "BizRec",
-  "description": "BizRec App - for business",
-  "start_url": "./?utm_source=web_app_manifest",
-  "scope": "./",
-  "display": "standalone",
-  "theme_color": "#3f51b5",
-  "background_color": "#3f51b5",
-  "gcm_sender_id" : "103953800507",
-  "icons": [
-    {
-      "src": "./images/manifest/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./images/manifest/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "BizRec",
+    "short_name": "BizRec",
+    "description": "BizRec App - for business",
+    "start_url": "https://bizrec-dev.firebaseapp.com/?utm_source=web_app_manifest",
+    "scope": "./",
+    "display": "standalone",
+    "theme_color": "#fff",
+    "background_color": "#fff",
+    "gcm_sender_id": "103953800507",
+    "icons": [
+        {
+            "src": "/images/c9d9ff33-7849-0621-0359-e5e70df7cbf8.webPlatform.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/ca6984f8-7340-74d3-574e-ae06220e08f0.webPlatform.png",
+            "sizes": "1240x600",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/3ac7c528-20ad-51e8-8d2f-98e73242b93d.webPlatform.png",
+            "sizes": "300x300",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/c6a09dcf-90a9-68e9-38c7-ab3778436f37.webPlatform.png",
+            "sizes": "88x88",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/6e156046-3456-614b-4981-e136dfbf7d18.webPlatform.png",
+            "sizes": "24x24",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/92c3ac3d-7817-677c-4120-2199d14de0a2.webPlatform.png",
+            "sizes": "50x50",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/308b2478-51aa-7ffe-49c1-360b48404d1b.webPlatform.png",
+            "sizes": "620x300",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/27ab6cb7-8da3-a597-b536-2edff24c3ac6.webPlatform.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/ece2893b-2863-9dfc-afe6-9c2a2961e540.webPlatform.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/32f6784e-c13e-81a0-1721-594d5908c4ed.webPlatform.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/31b30d4f-08f3-4faa-1fc2-15642e70b367.webPlatform.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/b5f664a9-8156-53f8-3087-4b635f8b910b.webPlatform.png",
+            "sizes": "36x36",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/cc4ba378-f6d3-0c88-50c6-6b98cbe1f281.webPlatform.png",
+            "sizes": "1024x1024",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/317db256-3418-c225-687b-703a00e9692c.webPlatform.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/7ec23c59-18dd-0218-3cad-09183db6b7a2.webPlatform.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/f459e8d2-6b6c-0872-38a2-6a9df1d5b02a.webPlatform.png",
+            "sizes": "120x120",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/5d445774-7a46-21a1-cddb-a07571b7eaf8.webPlatform.png",
+            "sizes": "76x76",
+            "type": "image/png"
+        }
+    ],
+    "orientation": "portrait",
+    "lang": ""
 }

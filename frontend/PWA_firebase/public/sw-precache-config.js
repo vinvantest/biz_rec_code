@@ -8,13 +8,12 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-/* eslint-env node */
-
 module.exports = {
   staticFileGlobs: [
-    'bower_components/webcomponentsjs/webcomponents-loader.js',
-    'images/*',
+    '/index.html',
     'manifest.json',
+    'bower_components/webcomponentsjs/webcomponents-loader.js',
+    'images/*'
   ],
   runtimeCaching: [
     {
@@ -22,31 +21,29 @@ module.exports = {
       handler: 'fastest',
       options: {
         cache: {
-          name: 'webcomponentsjs-polyfills-cache',
-        },
-      },
+          name: 'webcomponentsjs-polyfills-cache'
+        }
+      }
     },
-  ],
+    {
+      urlPattern: /\/data\/images\/.*/,
+      handler: 'cacheFirst',
+      options: {
+        cache: {
+          maxEntries: 200,
+          name: 'items-cache'
+        }
+      }
+    },
+    {
+      urlPattern: /\/data\/.*json/,
+      handler: 'fastest',
+      options: {
+        cache: {
+          maxEntries: 100,
+          name: 'data-cache'
+        }
+      }
+    }
+  ]
 };
-
-/* shop app
-module.exports = {
-      staticFileGlobs: [
-            '/index.html',
-            '/manifest.json',
-            '/robots.txt',
-            '/sitemap.xml',
-            '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
-            '/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js',
-            '/bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js',
-            'images/providers/facebook.svg',
-            'images/providers/google.svg',
-            'images/logo/logo_doubleline_204x130.png',
-            'images/logo/logo_line_456x91.png',
-            'images/logo/logo_s_180x86.png',
-            'images/logo/logo_tree_180x86.png'
-      ],
-      navigateFallback: '/index.html'
-};
-
-*/
