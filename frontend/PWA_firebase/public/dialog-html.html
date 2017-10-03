@@ -69,6 +69,15 @@
 
     </style>
 
+    <firebase-messaging
+            id="messaging"
+            token="{{token}}"
+            on-message="handleMessage">
+    </firebase-messaging>
+
+    <firebase-document path="/users/[[user.uid]]/token" data="[[token]]">
+    </firebase-document>
+
         <paper-icon-button icon="my-icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
 
         <paper-dialog id="dialog" backdrop transition="core-transition-bottom">
@@ -99,7 +108,11 @@
               <template is="dom-if" if="[[signedin]]">
                     <div style="float:left; width:100%">
                         <div><h4><u>Notifications:</u></h4></div>
-                        <div ><paper-checkbox>I want to receive notifications.</paper-checkbox></div>
+                        <div>
+                          <paper-toggle-button on-tap="toggleNotifications" checked=[[token]]>
+                          <!-- instead of token you can use a seperate value isSubscribed of model -->
+                            Receive Notifications</paper-toggle-button>
+                          </div>
                         <iron-icon></iron-icon>
                         <div>
                               <div style="text-align: left">
@@ -111,6 +124,7 @@
                               <div style="text-align: left">
                                   <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
                                   sign in on each device, enable notifications, and make sure you're online.
+                                  <p>Token is --> [[token]]</p>
                               </div>
                               <div style="text-align: center">
                                 <a href="/settings-page">
@@ -195,7 +209,26 @@
               //toggle off the dialog box
               this.$.dialog.toggle();
               //send the response to settings page
+            }
 
+            toggleNotifications(){
+              var userName = this.user.displayName;
+              var tokenVal = this.token;
+              console.log('inside toggleNotifications()');
+              this.$.messaging.requestPermission().then(function() {
+                  // permission was granted
+                  //you can now store the user if subscribed or not subscribed
+                  console.log('permission was granted!'+ userName);
+                  console.log('[[token]] ->' + tokenVal);
+                }, function(err) {
+                  // permission was denied
+                  console.log('Error ->'+ err);
+                });
+            }
+
+            handleMessage(){
+              console.log('message received '+ arguments);
+              document.getElementById('toast').show('User notification turned on!');
             }
 
           }
