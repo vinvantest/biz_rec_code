@@ -13,3 +13,19 @@ firebase.initializeApp({
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
 const messaging = firebase.messaging();
+
+
+//To set options, call setBackgroundMessageHandler in firebase-messaging-sw.js.
+//In this example, we set options for title, body, icon, and click action
+messaging.setBackgroundMessageHandler(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // Customize notification here
+  const notificationTitle = 'Background Message Title';
+  const notificationOptions = {
+    body: 'Background Message body.',
+    icon: '/firebase-logo.png'
+  };
+
+  return self.registration.showNotification(notificationTitle,
+      notificationOptions);
+});

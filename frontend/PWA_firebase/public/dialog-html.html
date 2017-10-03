@@ -227,8 +227,36 @@
             }
 
             handleMessage(){
-              console.log('message received '+ arguments);
+              console.log('message received '+ JSON.stringify(arguments));
               document.getElementById('toast').show('User notification turned on!');
+              /* arguments object in JSON.stringify
+              {
+              	"0": {
+              		"isTrusted": false,
+              		"detail": {
+              			"message": {
+              				"from": "531391633867",
+              				"collapse_key": "do_not_collapse",
+              				"notification": {
+              					"title": "Hello World",
+              					"body": "This is notification!"
+              				}
+              			}
+              		}
+              	},
+              	"1": {
+              		"message": {
+              			"from": "531391633867",
+              			"collapse_key": "do_not_collapse",
+              			"notification": {
+              				"title": "Hello World",
+              				"body": "This is notification!"
+              			}
+              		}
+              	}
+              }
+              */
+
             }
 
             /******* HOW to call notifications from postman or API  ***************
@@ -272,7 +300,23 @@
                         }
                     ]
                 }
-              
+
+                // if you want service worker to intercept then send msg using data : 
+                {
+                	"registration_ids" : [
+                			"ffDZUQ2Gym4:APA91bEpSBToe7K8CtzoY3DKBQlz707NbHBu1LI0IXyyzeuOBEdtfg78XAai44FU3UXFhhZlWNtAq7dzxxIR0bdjoG0FQDl3pWRidoDFeosSI32_Kel7W5NT6MIUG7IVSn2uK-26N_Ux",
+                			"ckXsMGcYVW8:APA91bG0YURynUx5HLqHVxq_aFmvHryvlaNQc03T9WQf9vaPG-yWc_fUm0gypYNMW2GWXv8L6gg6qAmrZaLGi0KMeY3DUsW5zJsp3UEtr1WpbtlIwAAIC_onA4cFY8Sj66DXDLxz5Ko8",
+                			"ekkKE1j-uIc:APA91bFTrZNcKLreauaupqdkxCtr8LUt8lGakLUQzLxEt9tDHH2_4kklsO_PSEA4Oa9PBrSMUYXGUM4AN9QY092Wb3A7kdixVx67K9AkGbEGV3RQfj-qQGSX3fhlHn21znrzBP6Yj5F9"
+                			],
+                	"data" : {
+                		"notification" :
+                				{
+                					"title" : "Hello World",
+                					"body"	: "This is notification!"
+                				}
+                		}
+
+                }
             ****************/
           }
       window.customElements.define(DailogHTML.is, DailogHTML);
