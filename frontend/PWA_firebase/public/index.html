@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta content-type="text/javascript" charset="utf-8">
-    <meta name="generator" content="Polymer Starter Kit">
+    <meta name="generator" content="BizRec Kit">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>BizRec</title>
@@ -28,16 +28,18 @@
     <meta name="apple-mobile-web-app-title" content="My App">
 
     <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/images/c9d9ff33-7849-0621-0359-e5e70df7cbf8.webPlatform.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/31b30d4f-08f3-4faa-1fc2-15642e70b367.webPlatform.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/32f6784e-c13e-81a0-1721-594d5908c4ed.webPlatform.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/ece2893b-2863-9dfc-afe6-9c2a2961e540.webPlatform.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/27ab6cb7-8da3-a597-b536-2edff24c3ac6.webPlatform.png">
 
     <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileImage" content="/images/ece2893b-2863-9dfc-afe6-9c2a2961e540.webPlatform.png">
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
+    <meta name="msapplication-square70x70logo" content="/images/31b30d4f-08f3-4faa-1fc2-15642e70b367.webPlatform.png">
+    <meta name="msapplication-square152x152logo" content="/images/7ec23c59-18dd-0218-3cad-09183db6b7a2.webPlatform.png">
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/4.4.0/firebase-app.js"></script>
@@ -64,6 +66,7 @@
       */
       window.Polymer = {rootPath: '/'};
 
+      /*
       // Load and register pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
@@ -76,6 +79,16 @@
           });
         });
       }
+      */
+      if('serviceWorker' in navigator) {
+       navigator.serviceWorker.register('/sw.js', { scope: '/' })
+         .then(function(registration) {
+               console.log('Service Worker Registered - ' + registration.scope);
+         });
+       navigator.serviceWorker.ready.then(function(registration) {
+          console.log('Service Worker Ready');
+       });
+     }
     </script>
 
     <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
@@ -102,7 +115,7 @@
       body {
         margin: 0;
         font-family: 'Roboto', 'Noto', sans-serif;
-        line-height: 1.5;
+        line-height: 1.0;
         min-height: 100vh;
         background-color: #eeeeee;
       }
@@ -110,7 +123,8 @@
   </head>
   <body>
 
-    <paper-toast id="toast" text="Hi, welcome to BuzRec!"></paper-toast>
+    <paper-toast id="toast" text="Hi, welcome to BizRec!"></paper-toast>
+    <!--
     <paper-toast id="caching-complete" duration="6000" text="Caching Complete! this app will work offline."></paper-toast>
     <platinum-sw-register
           auto-register
@@ -122,6 +136,7 @@
                                   precache-file="precache.json" >
               </platinum-sw-cache>
     </platinum-sw-register>
+  -->
 
     <my-app></my-app>
 
