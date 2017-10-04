@@ -36,7 +36,7 @@
     </div>
     <d3-progress-meter
             radius="40" percentage="[[progressPercentage]]" current-text="[[progressPercentage]]"
-            goal-text="Upload" id="d3Prog">
+            goal-text="Complete" id="d3Prog">
     </d3-progress-meter>
 
   </template>
@@ -114,8 +114,8 @@
                 function progress(snapshot){
                   var num = 100 * (snapshot.bytesTransferred / snapshot.totalBytes);
                   num = Math.round(num * 100) / 100;
-                  upD3Progress.percentage = num / 100;
-                  upD3Progress.currentText = num + '%';
+                  upD3Progress.percentage = num / 100 ;
+                  upD3Progress.currentText = Math.round(num) + '%';
                   //console.log(upD3Progress.currentText);
 
                 },
