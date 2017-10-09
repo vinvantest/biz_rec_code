@@ -231,7 +231,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header-layout>
 
       <!-- BOTTOM TOOLBAR -->
-        <app-toolbar>
+        <app-toolbar fixed>
           <!-- Floating Fab Icon  -->
           <custom-style>
             <style is="custom-style">
@@ -242,13 +242,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <custom-style>
                 <paper-fab-speed-dial mini>
                   <a href="[[rootPath]]transactions-page">
-                    <paper-fab-speed-dial-action icon="my-icons:gavel">Transactons</paper-fab-speed-dial-action></a>
+                    <paper-fab-speed-dial-action icon="my-icons:gavel"></paper-fab-speed-dial-action></a>
                   <a href="[[rootPath]]payments-page">
-                    <paper-fab-speed-dial-action icon="my-icons:select-all">Payments</paper-fab-speed-dial-action></a>
+                    <paper-fab-speed-dial-action icon="icons:payment"></paper-fab-speed-dial-action></a>
                   <a href="[[rootPath]]settings-page">
-                    <paper-fab-speed-dial-action icon="image:nature-people">Customers</paper-fab-speed-dial-action></a>
+                    <paper-fab-speed-dial-action icon="social:group-add"></paper-fab-speed-dial-action></a>
                   <a href="[[rootPath]]notes-page">
-                    <paper-fab-speed-dial-action icon="my-icons:note-add">Notes</paper-fab-speed-dial-action></a>
+                    <paper-fab-speed-dial-action icon="my-icons:note-add"></paper-fab-speed-dial-action></a>
                 </paper-fab-speed-dial>
               </custom-style>
           </custom-style>
@@ -256,24 +256,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div style="float:left; width:100%">
             <div id="leftThing" style="float:left; width:25%;">
               <div>
-                <a href="[[rootPath]]dashboard-page">
-                  <paper-icon-button id="dashboard-icon-button" slot="top" icon="my-icons:dashboard"></paper-icon-button>
+                <a href="[[rootPath]]dashboard-page" style="color: black;">
+                  <paper-icon-button id="dashboard-icon-button" slot="top" icon="my-icons:dashboard" style="color: black;"></paper-icon-button>
                 </a>
               </div>
             </div>
             <div id="leftThing" style="float:left; width:25%;">
-              <a href="[[rootPath]]transactions-page">
-                <paper-icon-button id="transactions-icon-button" slot="top" icon="my-icons:gavel"></paper-icon-button>
+              <a href="[[rootPath]]transactions-page" style="color: black;">
+                <paper-icon-button id="transactions-icon-button" slot="top" icon="my-icons:gavel" style="color: black;"></paper-icon-button>
               </a>
             </div>
             <div id="leftThing" style="float:left; width:25%;">
-              <a href="[[rootPath]]payments-page">
-                <paper-icon-button id="payments-icon-button" slot="top" icon="my-icons:select-all"></paper-icon-button>
+              <a href="[[rootPath]]payments-page" style="color: black;">
+                <paper-icon-button id="payments-icon-button" slot="top" icon="icons:payment" style="color: black;"></paper-icon-button>
               </a>
             </div>
             <div id="leftThing" style="float:right; width:25%;">
-              <a href="[[rootPath]]reports-page">
-                <paper-icon-button id="reports-icon-button" slot="top" icon="my-icons:line-style"></paper-icon-button>
+              <a href="[[rootPath]]reports-page" style="color: black;">
+                <paper-icon-button id="reports-icon-button" slot="top" icon="icons:assignment" style="color: black;"></paper-icon-button>
               </a>
             </div>
         </div>

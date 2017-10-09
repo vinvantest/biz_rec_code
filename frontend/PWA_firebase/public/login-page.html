@@ -238,9 +238,19 @@
 
      googleSignIn(){
          this.$.dialog.toggle();
-         return this.$.auth.signInWithPopup().then(function (result){
-
+         /* alternative code
+          return this.$.auth.signInWithPopup().then(function (result){
+            //do something on success
+          }).catch(function (error){
+            if( e.code == 'auth/popup-blocked'){
+             this.$.auth.signInWithRedirect();
+          }
+        });
+         */
+          //return this.$.auth.signInWithPopup().then(function (result){
+           return this.$.auth.signInWithRedirect().then(function (result){
                document.getElementById('toast').show('You are signed in!');
+
                /* not working - can't access this.storedUser or this.$.storedUser
                //console.log(JSON.stringify(result));
                // This gives you a Google Access Token
