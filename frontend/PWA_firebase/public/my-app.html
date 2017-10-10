@@ -49,6 +49,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: bold;
       }
 
+      #footer {
+      position: fixed;
+      background: #fff;
+      width: 100%;
+      padding: 15px;
+      bottom: 0;
+      left: 0;
+      }
+
       a paper-button,
       a:hover paper-button,
       a:link paper-button,
@@ -204,28 +213,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-toolbar>
         </app-header>
 
-        <div>
-        <!-- IRON PAGES MAIN CONTENT -->
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="not-found-404"
-            role="main">
-          <landing-page name="landing-page" user="{{user}}" signedin="{{signedIn}}"></landing-page>
-          <dashboard-page name="dashboard-page" user="{{user}}" signedin="{{signedIn}}"></dashboard-page>
-          <transactions-page name="transactions-page" user="{{user}}" signedin="{{signedIn}}"></transactions-page>
-          <payments-page name="payments-page" user="{{user}}" signedin="{{signedIn}}"></payments-page>
-          <invoices-page name="invoices-page" user="{{user}}" signedin="{{signedIn}}"></invoices-page>
-          <banks-page name="banks-page" user="{{user}}" signedin="{{signedIn}}"></banks-page>
-          <reports-page name="reports-page" user="{{user}}" signedin="{{signedIn}}"></reports-page>
-          <rules-page name="rules-page" user="{{user}}" signedin="{{signedIn}}"></rules-page>
-          <settings-page name="settings-page" user="{{user}}" signedin="{{signedIn}}"></settings-page>
-          <customers-page name="customers-page" user="{{user}}" signedin="{{signedIn}}"></customers-page>
-          <chartofaccounts-page name="chartofaccounts-page" user="{{user}}" signedin="{{signedIn}}"></chartofaccounts-page>
-          <notes-page name="notes-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></notes-page>
-          <users-page name="users-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></users-page>
-          <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath=[[routePath]]></not-found-404>
-        </iron-pages>
+        <div fit class="content">
+            <!-- IRON PAGES MAIN CONTENT -->
+            <iron-pages
+                selected="[[page]]"
+                attr-for-selected="name"
+                fallback-selection="not-found-404"
+                role="main">
+              <landing-page name="landing-page" user="{{user}}" signedin="{{signedIn}}"></landing-page>
+              <dashboard-page name="dashboard-page" user="{{user}}" signedin="{{signedIn}}"></dashboard-page>
+              <transactions-page name="transactions-page" user="{{user}}" signedin="{{signedIn}}"></transactions-page>
+              <payments-page name="payments-page" user="{{user}}" signedin="{{signedIn}}"></payments-page>
+              <invoices-page name="invoices-page" user="{{user}}" signedin="{{signedIn}}"></invoices-page>
+              <banks-page name="banks-page" user="{{user}}" signedin="{{signedIn}}"></banks-page>
+              <reports-page name="reports-page" user="{{user}}" signedin="{{signedIn}}"></reports-page>
+              <rules-page name="rules-page" user="{{user}}" signedin="{{signedIn}}"></rules-page>
+              <settings-page name="settings-page" user="{{user}}" signedin="{{signedIn}}"></settings-page>
+              <customers-page name="customers-page" user="{{user}}" signedin="{{signedIn}}"></customers-page>
+              <chartofaccounts-page name="chartofaccounts-page" user="{{user}}" signedin="{{signedIn}}"></chartofaccounts-page>
+              <notes-page name="notes-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></notes-page>
+              <users-page name="users-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></users-page>
+              <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath=[[routePath]]></not-found-404>
+            </iron-pages>
       </div>
 
       </app-header-layout>
