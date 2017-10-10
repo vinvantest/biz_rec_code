@@ -26,4 +26,4 @@ exports.handler = function(req, res, database) {
     res.status(500).send({ error: 'Something blew up!' });
     break;
   }
-}
+};

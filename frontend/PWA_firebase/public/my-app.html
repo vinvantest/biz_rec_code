@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -129,7 +130,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tail="{{subroute}}">
     </app-route>
 
-
     <app-drawer-layout fullbleed narrow="{{narrow}}" has-scrolling-region>
 
       <!-- Drawer content -->
@@ -141,7 +141,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-avatar mini on-tap="_login"></paper-avatar> <!--
                   <paper-toast id="toastSignIn" text="Hi, [[user.displayName]! You are logged in.]"></paper-toast> -->
                 </div>
-                <span id="tab"> <h6>Menu</h6></span>
+                <span id="tabMenu"> <h6>Menu</h6></span>
             </template>
             <template is="dom-if" if="[[user]]">
                   <div>
@@ -151,7 +151,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               icon="social:person">
                       </paper-avatar>
                   </div>
-                  <span id="tab"> <h6>Hi,&nbsp;[[user.displayName]]!</h6></span>
+                  <span id="tabUser"> <h6>Hi,&nbsp;[[user.displayName]]!</h6></span>
             </template>
         </app-toolbar>
 
@@ -175,7 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Banks</h5></paper-button>
             </a>
             <a name="chartofaccounts" href="[[rootPath]]chartofaccounts-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"chartofaccounts></iron-icon><h5>Chart of Accounts</h5></paper-button>
+              <paper-button> <iron-icon icon="my-icons:blur-on"></iron-icon><h5>Chart of Accounts</h5></paper-button>
             </a>
             <a name="customers" href="[[rootPath]]customers-page">
               <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Customers</h5></paper-button>
@@ -233,7 +233,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <chartofaccounts-page name="chartofaccounts-page" user="{{user}}" signedin="{{signedIn}}"></chartofaccounts-page>
               <notes-page name="notes-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></notes-page>
               <users-page name="users-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></users-page>
-              <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath=[[routePath]]></not-found-404>
+              <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath="[[routePath]]"></not-found-404>
             </iron-pages>
       </div>
 
@@ -263,24 +263,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </custom-style>
 
           <div style="float:left; width:100%">
-            <div id="leftThing" style="float:left; width:25%;">
+            <div id="leftThing1" style="float:left; width:25%;">
               <div>
                 <a href="[[rootPath]]dashboard-page" style="color: black;">
                   <paper-icon-button id="dashboard-icon-button" slot="top" icon="my-icons:dashboard" style="color: black;"></paper-icon-button>
                 </a>
               </div>
             </div>
-            <div id="leftThing" style="float:left; width:25%;">
+            <div id="leftThing2" style="float:left; width:25%;">
               <a href="[[rootPath]]transactions-page" style="color: black;">
                 <paper-icon-button id="transactions-icon-button" slot="top" icon="my-icons:gavel" style="color: black;"></paper-icon-button>
               </a>
             </div>
-            <div id="leftThing" style="float:left; width:25%;">
+            <div id="leftThing3" style="float:left; width:25%;">
               <a href="[[rootPath]]payments-page" style="color: black;">
                 <paper-icon-button id="payments-icon-button" slot="top" icon="icons:payment" style="color: black;"></paper-icon-button>
               </a>
             </div>
-            <div id="leftThing" style="float:right; width:25%;">
+            <div id="leftThing4" style="float:right; width:25%;">
               <a href="[[rootPath]]reports-page" style="color: black;">
                 <paper-icon-button id="reports-icon-button" slot="top" icon="icons:assignment" style="color: black;"></paper-icon-button>
               </a>

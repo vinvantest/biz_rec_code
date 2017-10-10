@@ -2,7 +2,7 @@
 
 var elasticsearch = require('elasticsearch');
 
-function _respond(res, status, data, http_code) {
+function _respond(res, status, data, httpCode) {
      var response = {
        'status': status,
        'data' : data
@@ -21,13 +21,13 @@ function _respond(res, status, data, http_code) {
      Access-Control-Allow-Methods,
      Access-Control-Allow-Headers
      */
-     res.status(http_code).send(response);
+     res.status(httpCode).send(response);
 }
 
-function _respondArray(res, status, data, http_code) {
+function _respondArray(res, status, data, httpCode) {
    var response = {
       'data' : [data]
-     }
+   };
      res.set('Content-type', 'application/json');
      res.set('Content-type', 'application/json');
      res.set('Access-Control-Allow-Origin', '*');
@@ -42,7 +42,7 @@ function _respondArray(res, status, data, http_code) {
     Access-Control-Allow-Methods,
     Access-Control-Allow-Headers
     */
-    res.status(http_code).send(response);
+    res.status(httpCode).send(response);
 }
 
 function success(res, data){
@@ -53,9 +53,9 @@ function successArray(res,data){
  _respondArray(res, 'success', data, 200);
 }
 
-function failure(res, data, http_code){
- console.log('Error: ' + http_code + ' ' + data);
- _respond(res, 'failure', data, http_code);
+function failure(res, data, httpCode){
+ console.log('Error: ' + httpCode + ' ' + data);
+ _respond(res, 'failure', data, httpCode);
 }
 
 function handlePOST (req, res) {
@@ -65,14 +65,14 @@ function handlePOST (req, res) {
 	 var indexName = req.query.indexName;
 	 if(indexName === null || indexName === undefined)
    {
-     let res_msg = "Error: req.params.indexName required to create Index in ES ->" + indexName;
-     failure(res,res_msg,500);
+     var resMsgErr = "Error: req.params.indexName required to create Index in ES ->" + indexName;
+     failure(res,resMsgErr,500);
    }
 	 var docType = req.body.docType;
 	 if(docType  === null || docType === undefined)
    {
-     let res_msg = "Error: req.query.docType required to create Index mappings in ES ->" + docType;
-     failure(res,res_msg,500);
+     var resMsgDct = "Error: req.query.docType required to create Index mappings in ES ->" + docType;
+     failure(res,resMsgDct,500);
    }
 
 
@@ -116,24 +116,24 @@ function handlePOST (req, res) {
 		  console.log("-- esClient Health --",resp);
 	});
 
-	 var res_msg = 'Index not created';
+	 var resMsg = 'Index not created';
 
 	 console.log('Checking if index Exists('+indexName+')');
 	 esClient.indices.exists(indexName)
 		 .then(function (response) {//index exists
 				console.log('Index ['+indexName+'] already exists in ElasticSearch');
-				res_msg = 'Index ['+indexName+'] already exists in ElasticSearch';
+				resMsg = 'Index ['+indexName+'] already exists in ElasticSearch';
 				//check if mapping exists
 				esClient.indices.getMapping({index: indexName})
 					.then(function (response){
-						res_msg = 'Mapping ['+indexName+'] already exists. Start calling Index.save()';
+						resMsg = 'Mapping ['+indexName+'] already exists. Start calling Index.save()';
             esClient.close();
-            success(res,res_msg);
+            success(res,resMsg);
 					},
 					function (error) {
 						//mapping doesn't exists
 						console.log('Mapping ['+indexName+'] Not created. Creating Now! -> ' + JSON.stringify(error));
-						res_msg = 'Mapping ['+indexName+'] Not created. Creating Now!';// + JSON.stringify(error);
+						resMsg = 'Mapping ['+indexName+'] Not created. Creating Now!';// + JSON.stringify(error);
 						esClient.indices.putMapping({
 									index: indexName,
 									type: docType, //"test_type_table1"
@@ -145,18 +145,18 @@ function handlePOST (req, res) {
 											}
 										}
 									});
-						res_msg = 'Index ['+indexName+'] existed but mapping now inserted';
+						resMsg = 'Index ['+indexName+'] existed but mapping now inserted';
             esClient.close();
-            success(res,res_msg);
+            success(res,resMsg);
 					});//end indices.getMapping()
 	     }, function (err){ //index dosen't exist. Create one.
 			 console.log('Index ['+indexName+'] does not exists!');
 			console.log('Creating ['+indexName+'] now! Error value is ->'+JSON.stringify(err));
-			res_msg = 'Creating ['+indexName+'] now!'; //+JSON.stringify(err);
+			resMsg = 'Creating ['+indexName+'] now!'; //+JSON.stringify(err);
 			esClient.indices.create({index: indexName})
 				.then(function (response) {
 					console.log('Index ['+indexName+'] Created! Now putting mapping -> '+ JSON.stringify(response));
-						res_msg = 'Index ['+indexName+'] Created! Now putting mapping'; //+JSON.stringify(response);
+						resMsg = 'Index ['+indexName+'] Created! Now putting mapping'; //+JSON.stringify(response);
 						//now create mapping
 						esClient.indices.putMapping({
 									index: indexName,
@@ -170,14 +170,14 @@ function handlePOST (req, res) {
 										}
 								});
 						console.log('Index ['+indexName+'] Created with mapping for Type ['+docType+']');
-						res_msg = 'Index ['+indexName+'] Created with mapping';
+						resMsg = 'Index ['+indexName+'] Created with mapping';
             esClient.close();
-            success(res,res_msg);
+            success(res,resMsg);
 					}, function (error) {
 						console.log('Error: creating index ['+indexName+'] -> ' +JSON.stringify(error));
-						res_msg = 'Error: creating index ['+indexName+']'; // + JSON.stringify(error);
+						resMsg = 'Error: creating index ['+indexName+']'; // + JSON.stringify(error);
             esClient.close();
-            failure(res,res_msg,500);
+            failure(res,resMsg,500);
 					});
 	    });//end then - indices.exists()
 }
@@ -206,7 +206,7 @@ exports.handler = function(req, res, database) {
   console.log('Path Prams:', req.path);
   console.log('Query:', req.query);
 
-  let usersRef = database.ref('users');
+  var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
     handleGET(req, res);
@@ -224,4 +224,4 @@ exports.handler = function(req, res, database) {
     res.status(500).send({ error: 'Something blew up!' });
     break;
   }
-}
+};

@@ -2,7 +2,7 @@
 
 var elasticsearch = require('elasticsearch');
 
-function _respond(res, status, data, http_code) {
+function _respond(res, status, data, httpCode) {
      var response = {
        'status': status,
        'data' : data
@@ -21,13 +21,15 @@ function _respond(res, status, data, http_code) {
      Access-Control-Allow-Methods,
      Access-Control-Allow-Headers
      */
-     res.status(http_code).send(response);
+     res.status(httpCode).send(response);
 }
 
-function _respondArray(res, status, data, http_code) {
-   var response = {
+function _respondArray(res, status, data, httpCode) {
+
+     var response = {
       'data' : [data]
-     }
+     };
+
      res.set('Content-type', 'application/json');
      res.set('Content-type', 'application/json');
      res.set('Access-Control-Allow-Origin', '*');
@@ -42,7 +44,7 @@ function _respondArray(res, status, data, http_code) {
     Access-Control-Allow-Methods,
     Access-Control-Allow-Headers
     */
-    res.status(http_code).send(response);
+    res.status(httpCode).send(response);
 }
 
 function success (res, data) {
@@ -53,39 +55,39 @@ function successArray (res,data) {
  _respondArray(res, 'success', data, 200);
 }
 
-function failure (res, data, http_code) {
- console.log('Error: ' + http_code + ' ' + data);
- _respond(res, 'failure', data, http_code);
+function failure (res, data, httpCode) {
+ console.log('Error: ' + httpCode + ' ' + data);
+ _respond(res, 'failure', data, httpCode);
 }
 
 function handleGET (req, res) {
   // Do something with the GET request
-
+  var resMsg = '';
   console.log('Inside serer.get(getUsers)');
 
   var indexAliasName = req.query.indexAliasName;
   if(indexAliasName === null || indexAliasName === undefined) {
-    let res_msg = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
-    failure(res,res_msg,500);
+    resMsg = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
+    failure(res,resMsg,500);
   }
   console.log('req.params.indexAliasName = ' + JSON.stringify(req.query.indexAliasName));
 
   //get Query params
   console.log('queryParams passed is ->'
-        + 'where first param usr_isBox is: ' + JSON.stringify(req.body.usr_isBox)
-        + 'second param is usr_isGoogle is: ' + JSON.stringify(req.body.usr_isGoogle)
+        + 'where first param usrIsBox is: ' + JSON.stringify(req.body.usrIsBox)
+        + 'second param is usrIsGoogle is: ' + JSON.stringify(req.body.usrIsGoogle)
         + 'third param is: ' + JSON.stringify(req.query.third)
       );
   //you can loop in the query object
-  for(const field in req.body){
+  for(var field in req.body){
   console.log('Field['+field+'] = '+req.body[field]);
   }//for loop end
 
-  var res_msg = 'Error - Document Not Indexed in ['+indexAliasName+']';
+  resMsg = 'Error - Document Not Indexed in ['+indexAliasName+']';
   console.log('Checking if ['+indexAliasName+'] Exists');
 
-  var isBox = req.body.usr_isBox;
-  var isGoogle = req.body.usr_isGoogle;
+  var isBox = req.body.usrIsBox;
+  var isGoogle = req.body.usrIsGoogle;
   console.log('docmentId to be found in index isBox ['+isBox+'] - and isGoogle ['+isGoogle+']');
 
   var auth = 'vintest:test1234';
@@ -134,7 +136,7 @@ function handleGET (req, res) {
              if(exists)
              { //index exists
                console.log('Index ['+indexAliasName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists));
-               res_msg = 'Index ['+indexAliasName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists);
+               resMsg = 'Index ['+indexAliasName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists);
                 //if you want to search ... but best use get() for quicker results
                 var queryBody;
 
@@ -144,7 +146,7 @@ function handleGET (req, res) {
                   queryBody = {
                         query : {
                           match : {
-                               usr_isBox : true,
+                               usrIsBox : true,
                           }
                         }
                   };
@@ -155,7 +157,7 @@ function handleGET (req, res) {
                  queryBody = {
                        query : {
                          match : {
-                              usr_isGoogle : true,
+                              usrIsGoogle : true,
                          }
                        }
                  };
@@ -167,22 +169,22 @@ function handleGET (req, res) {
                esClient.search({index: indexAliasName, type: 'type_name', body: queryBody})
                  .then(function (resp){
                    console.log('Index ['+indexAliasName+'] exists in ElasticSearch AND response is = '+JSON.stringify(resp));
-                   //res_msg = 'Index ['+indexAliasName+'] exists in ElasticSearch AND count = '+resp.count;
+                   //resMsg = 'Index ['+indexAliasName+'] exists in ElasticSearch AND count = '+resp.count;
                    esClient.close();
                    successArray(res,resp.hits.hits);
                  },function (error) {
                    console.log('Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error));
-                   res_msg = 'Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error);
+                   resMsg = 'Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error);
                    esClient.close();
-                   failure(res,res_msg,500);
+                   failure(res,resMsg,500);
                  }); //end search()
              }//end if index Exists
              else {
                //index dosen't exist
                console.log('Index ['+indexAliasName+'] does not exist! Error value is ->'+exists);
-               res_msg = 'Index ['+indexAliasName+'] does not exists!'+exists;
+               resMsg = 'Index ['+indexAliasName+'] does not exists!'+exists;
                 esClient.close();
-                failure(res,res_msg,404);
+                failure(res,resMsg,404);
              }//end else index exists
            }); //end then - indices.exists()
 
@@ -199,29 +201,29 @@ function handlePOST (req, res) {
 
   var indexAliasName = req.query.indexAliasName;
   if(indexAliasName === null || indexAliasName === undefined) {
-    let res_msg = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
-    failure(res,res_msg,500);
+    var resMsgErr = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
+    failure(res,resMsgErr,500);
   }
   console.log('req.params.indexAliasName = ' + JSON.stringify(req.query.indexAliasName));
 
   //get Query params
   console.log('queryParams passed is ->'
-        + 'where first param usr_isBox is: ' + JSON.stringify(req.body.usr_isBox)
-        + 'second param is usr_isGoogle is: ' + JSON.stringify(req.body.usr_isGoogle)
+        + 'where first param usrIsBox is: ' + JSON.stringify(req.body.usrIsBox)
+        + 'second param is usrIsGoogle is: ' + JSON.stringify(req.body.usrIsGoogle)
         + 'third param is: ' + JSON.stringify(req.query.third)
       );
   //you can loop in the query object
-  for(const field in req.body){
+  for(var field in req.body){
   console.log('Field['+field+'] = '+req.body[field]);
   }//for loop end
-  
+
   res.status(403).send('Forbidden!');
 }
 
 exports.handler = function(req, res, database) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
-  let usersRef = database.ref('users');
+  var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
     handleGET(req, res);
@@ -236,4 +238,4 @@ exports.handler = function(req, res, database) {
     res.status(500).send({ error: 'Something blew up!' });
     break;
   }
-}
+};
