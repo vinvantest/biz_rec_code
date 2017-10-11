@@ -1,6 +1,7 @@
 'use strict';
 
 var elasticsearch = require('elasticsearch');
+var config  = require('./config.js');
 
 function _respond(res, status, data, httpCode) {
      var response = {
@@ -220,7 +221,7 @@ function handlePOST (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, config) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
   var usersRef = database.ref('users');

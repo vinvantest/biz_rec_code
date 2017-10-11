@@ -1,6 +1,7 @@
 'use strict';
 
 var elasticsearch = require('elasticsearch');
+var config  = require('./config.js');
 
 function _respond(res, status, data, httpCode) {
      var response = {
@@ -197,7 +198,7 @@ function handleGET (req, res) {
 res.status(403).send('Forbidden!');
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, config) {
 //get lambda api event body template params
   console.log('Body:', req.body);
   console.log('Headers:', req.headers);

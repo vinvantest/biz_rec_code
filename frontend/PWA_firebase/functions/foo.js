@@ -1,8 +1,11 @@
 'use strict';
 
+var config  = require('./config.js');
+
 function handleGET (req, res) {
   // Do something with the GET request
-  res.status(200).send('Hello World! ... foo ran successfully');
+  console.log('config variable is ->'+JSON.stringify(config));
+  res.status(200).send('Hello World! ... foo ran successfully config[] ' + config.consumer_key);
 }
 
 function handlePUT (req, res) {
@@ -12,7 +15,7 @@ function handlePUT (req, res) {
 
 exports.handler = function(req, res, database) {
       // Use database to declare databaseRefs:
-      let usersRef = database.ref('users');
+      var usersRef = database.ref('users');
       switch (req.method) {
       case 'GET':
         handleGET(req, res);
