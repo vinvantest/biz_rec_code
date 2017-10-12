@@ -54,6 +54,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p> User Name: [[user.displayName]]</p>
         <p> Signed in: [[signedin]]</p>
     </div>
+
+
+<custom-style>
+  <style is="custom-style">
+    .flex-wrap {
+      @apply --layout-horizontal;
+      @apply --layout-wrap;
+      width: 200px;
+    }
+  </style>
+</custom-style>
+
+<div class="container flex-wrap">
+  <div>one</div>
+  <div>two</div>
+  <div>three</div>
+  <div>four</div>
+</div>
+
   </template>
 
   <script>
