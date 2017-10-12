@@ -131,6 +131,7 @@ function handlePOST (req, res) {
   //routingValue = routingValue.replace(/[^a-zA-Z0-9_-]/g,'_').replace(/_{2,}/g,'_');
   var resMsg = 'Error - No Alias Created for ['+indexName+']';
   console.log('Checking if ['+indexName+'] Exists');
+  // do not change the termValue as it is the property of index defined in the template
   if(indexType.includes('banks'))
     { aliasToken = '_banks_'; termValue = "bank_userId_routingAliasId"; console.log('aliasToken ['+aliasToken+' termValue ['+termValue+']'); }
   if(indexType.includes('coa'))
@@ -166,12 +167,12 @@ function handlePOST (req, res) {
              { //index exists //Create Alias on routing & term filter customer_uid_for_alias
                console.log('Index ['+indexName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists));
                resMsg = 'Index ['+indexName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists);
-               //check if UUID exists in users index using global_alisas_for_search_users_index
-               var queryBody = { index : config.user_index_search_alias_name , type : 'base_type', id : routingValue };
+               //check if UID exists in users index using global_alisas_for_search_users_index
+               var queryBody = { index : config.user_index_search_alias_name, type : 'base_type', usr_uid : routingValue };
                //now search for the record for user to exists in database
                esClient.get(queryBody)
                  .then(function (resp){
-                   console.log('index ['+indexName+'] includes user with UUID ['+routingValue+']. Creating Alias!');
+                   console.log('index ['+config.user_index_search_alias_name+'] includes user with UUID ['+routingValue+']. Creating Alias for index ['+indexName+']!');
                    var aliasBodyWrite = {
                        "actions": [{
                            "add": {
@@ -190,28 +191,29 @@ function handlePOST (req, res) {
                        }]
                    };
 
+                   //e.g. name: 2344d4523sdg4_banks_read
                    esClient.indices.existsAlias({index: indexName, name: routingValue + aliasToken + 'read'})
                      .then( function (respReadExists) {
                        if(respReadExists)
                        {
-                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read exists checking if write exists'+respReadExists);
+                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias['+routingValue + aliasToken + 'read'+'] for read exists checking if write exists'+respReadExists);
                          //checking wirte alias exists
                          esClient.indices.existsAlias({index: indexName, name: routingValue + aliasToken + 'write'})
                                .then( function (respWriteExists) {
                                  if(respWriteExists)
                                  {
                                    console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read and Write already EXISTS '+respWriteExists);
-                                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Both Alias read and Write already EXISTS = '+respWriteExists;
+                                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Both Alias ['+routingValue + aliasToken + 'read'+'] and ['+routingValue + aliasToken + 'write'+'] Read and Write already EXISTS = '+respWriteExists;
                                     //esClient.close();
                                    success(res,resMsg);
                                  }
                                  else {
-                                   console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias write DOES NOT EXISTS '+respWriteExists);
+                                   console.log('Index ['+indexName+'] exists in ElasticSearch Alias for read exists ['+routingValue + aliasToken + 'read'+'] AND Alias write DOES NOT EXISTS. Creating now! response value ='+respWriteExists);
                                    //put write alias
                                    esClient.indices.putAlias({index: indexName, name: routingValue + aliasToken + 'write', body: aliasBodyWrite })
                                      .then(function (resp){
-                                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias write created as read already existed = '+resp);
-                                         resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias write created as read already existed = '+resp;
+                                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp);
+                                         resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp;
                                           //esClient.close();
                                          success(res,resMsg);
                                        }, function (error) {
@@ -224,12 +226,12 @@ function handlePOST (req, res) {
                                });
                        }
                        else {
-                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read DOES NOT EXISTS'+respReadExists);
+                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+']read DOES NOT EXISTS! creating now! response is ='+respReadExists);
                          //put read alias
                          esClient.indices.putAlias({index: indexName, name: routingValue + aliasToken + 'read', body: aliasBodySearch })
                            .then(function (resp){
-                                   console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read newly created now checking if write exists = '+resp);
-                                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias read newly created now checking if write exists = '+resp;
+                                   console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+']read newly created now checking if write ['+routingValue + aliasToken + 'write'+'] exists = '+resp);
+                                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+'] read newly created now checking if write ['+routingValue + aliasToken + 'write'+'] exists = '+resp;
                                    //now check if write exists
                                    esClient.indices.existsAlias({index: indexName, name: routingValue + aliasToken + 'write'})
                                          .then( function (respWriteEx) {
@@ -266,8 +268,11 @@ function handlePOST (req, res) {
                                }
                            }); //end existsAlias(read)
                  }, function (error) {
-                   console.log('Error: Index ['+indexName+'] exists in ElasticSearch but get(UUID) failed error -'+JSON.stringify(error));
-                   resMsg = 'Error: Index ['+indexName+'] exists in ElasticSearch but get(UUID) failed error -'+JSON.stringify(error);
+
+                   //user uid is not present in user index. Create it.
+                   /* Create multiple aliases for the user*/
+                   console.log('Error: Index ['+indexName+'] exists in ElasticSearch but get(UID) failed error -'+JSON.stringify(error));
+                   resMsg = 'Error: Index ['+indexName+'] exists in ElasticSearch but get(UID) failed error -'+JSON.stringify(error);
                     //esClient.close();
                    failure(res,resMsg,404);
                  }); //end search()

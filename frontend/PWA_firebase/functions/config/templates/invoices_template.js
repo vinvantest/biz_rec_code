@@ -3,7 +3,7 @@ var invoicesTemplate = {
   "order" : 9,
   "settings": {
     "index": {
-      "number_of_shards" : 5,
+      "number_of_shards" : 50,
       "number_of_replicas" : 2,
       "analysis": {
         "analyzer": {

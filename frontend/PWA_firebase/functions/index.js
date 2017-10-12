@@ -3,10 +3,9 @@
 var fooFunction = require('./foo');
 var barFunction = require('./bar');
 var getUsersFunction = require('./getUsers');
-var createIndexESFunction = require('./createIndexES');
 var addTemplateToESFunction = require('./addTemplateToES');
 var createIndexFunction = require('./createIndex');
-var createIndexAliasByRounting = require('./createIndexAliasByRounting');
+var createIndexAliasBasedOnRoutingFunction = require('./createIndexAliasBasedOnRouting');
 
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
@@ -30,10 +29,6 @@ exports.getUsersFunction = functions.https.onRequest((req, res) => {
     getUsersFunction.handler(req, res, database);
 });
 
-exports.createIndexESFunction = functions.https.onRequest((req, res) => {
-    createIndexESFunction.handler(req, res, database);
-});
-
 exports.addTemplateToESFunction = functions.https.onRequest((req, res) => {
     addTemplateToESFunction.handler(req, res, database);
 });
@@ -42,6 +37,6 @@ exports.createIndexFunction = functions.https.onRequest((req, res) => {
     createIndexFunction.handler(req, res, database);
 });
 
-exports.createIndexAliasByRounting = functions.https.onRequest((req, res) => {
-    createIndexAliasByRounting.handler(req, res, database);
+exports.createIndexAliasBasedOnRoutingFunction = functions.https.onRequest((req, res) => {
+    createIndexAliasBasedOnRoutingFunction.handler(req, res, database);
 });

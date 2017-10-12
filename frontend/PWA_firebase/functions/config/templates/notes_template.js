@@ -3,7 +3,7 @@ var notesTemplate = {
   "order" : 9,
   "settings": {
     "index": {
-      "number_of_shards" : 5,
+      "number_of_shards" : 15,
       "number_of_replicas" : 2,
       "analysis": {
         "analyzer": {

@@ -161,7 +161,6 @@ function handlePOST (req, res) {
 		 .then(function (resp) {//template exists
       				console.log('Template ['+templateName+'] already exists in ElasticSearch. Updating tempalate now ->'+JSON.stringify(resp));
               resMsg = 'Template ['+templateName+'] already exists in ElasticSearch. Updating template now';
-              //esClient.close(); //close it in lambda for local host don't close it
               esClient.indices.putTemplate({name: templateName, body: templateBody})
       				.then(function (response) {
       					  console.log('template ['+templateName+'] Updated! '+ JSON.stringify(response));

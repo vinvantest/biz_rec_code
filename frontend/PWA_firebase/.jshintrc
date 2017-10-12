@@ -18,5 +18,6 @@
   "trailing": true,
   "strict": true,
   "unused": "vars",
-  "undef": true
+  "undef": true,
+  "indent": 1
 }

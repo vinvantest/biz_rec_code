@@ -171,12 +171,12 @@ function handleGET (req, res) {
                  .then(function (resp){
                    console.log('Index ['+indexAliasName+'] exists in ElasticSearch AND response is = '+JSON.stringify(resp));
                    //resMsg = 'Index ['+indexAliasName+'] exists in ElasticSearch AND count = '+resp.count;
-                   esClient.close();
+                   //esClient.close();
                    successArray(res,resp.hits.hits);
                  },function (error) {
                    console.log('Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error));
                    resMsg = 'Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error);
-                   esClient.close();
+                   //esClient.close();
                    failure(res,resMsg,500);
                  }); //end search()
              }//end if index Exists
@@ -184,7 +184,7 @@ function handleGET (req, res) {
                //index dosen't exist
                console.log('Index ['+indexAliasName+'] does not exist! Error value is ->'+exists);
                resMsg = 'Index ['+indexAliasName+'] does not exists!'+exists;
-                esClient.close();
+                //esClient.close();
                 failure(res,resMsg,404);
              }//end else index exists
            }); //end then - indices.exists()

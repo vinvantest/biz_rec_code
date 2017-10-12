@@ -27,3 +27,9 @@ var esClient = new elasticsearch.Client({
 });
 
 module.exports = esClient;
+
+/*****
+* Ps: Do not close client connection. No Living Connections errors occur in functions/lambda
+* esClient.close();
+*
+*****/
