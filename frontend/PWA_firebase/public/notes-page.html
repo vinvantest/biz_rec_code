@@ -33,6 +33,11 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+    paper-card.black {
+      --paper-card-background-color: black;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
 
     paper-card.grey {
       --paper-card-background-color: #d4d7db;
@@ -92,7 +97,7 @@
 
     <template is="dom-if" if="[[signedin]]">
       <div style="float:center; width: 60%">
-        <paper-card style="float:center; width: 60%" class="magenta">
+        <paper-card style="float:center; width: 60%" class="black">
            <h4 style="color: white;">Notes</h4>
         </paper-card>
         <a href="/notes-page">
@@ -101,7 +106,7 @@
     </template>
 
     <template is="dom-if" if="[[!signedin]]">
-      <paper-card style="float:center; width: 60%" class="magenta">
+      <paper-card style="float:center; width: 60%" class="black">
            <h4 style="color: white;">Notes</h4>
       </paper-card>
     </template>

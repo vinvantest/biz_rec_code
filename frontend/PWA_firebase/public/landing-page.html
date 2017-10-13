@@ -34,8 +34,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply(--layout-around-justified);
         max-width: inherit;
     }
+
     paper-card.magenta {
       --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+    paper-card.black {
+      --paper-card-background-color: black;
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
@@ -43,8 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     .flex-wrap-horizontal {
       @apply --layout-horizontal;
       @apply --layout-wrap;
-      @apply --layout-center;
-      align: center;
+      width: 400px;
     }
 
     paper-card.flexlayoutCurrentPurple {
@@ -97,21 +102,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </style>
 
-  <template is="dom-if" if="[[signedin]]">
-    <div style="float:center; width: 60%">
-      <paper-card style="float:center; width: 60%" class="magenta">
-         <h4 style="color: white;">Home</h4>
-      </paper-card>
-      <a href="/landing-page">
-      <paper-icon-button icon="icons:refresh" style="color: black;" on-tap="reloadPage"></paper-icon-button></a>
-    </div>
-  </template>
-
-  <template is="dom-if" if="[[!signedin]]">
-    <paper-card style="float:center; width: 60%" class="magenta">
-         <h4 style="color: white;">Home</h4>
-    </paper-card>
-  </template>
+  <paper-card style="float:center; width: 60%" class="black">
+     <h4 style="color: white;">Home</h4>
+  </paper-card>
 
   <template is="dom-if" if="[[!signedin]]">
     <div class="card">
@@ -125,13 +118,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
 <template is="dom-if" if="[[signedin]]">
-  <div style="float:center">
+
     <div class="container flex-wrap-horizontal">
       <div>
         <paper-card class="flexlayoutCurrentPurple">
           <div class="card-content">
               <h3 style="color: white;">One</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -140,7 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutTomatto">
           <div class="card-content">
               <h3 style="color: white;">Two</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -149,7 +142,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutTeal">
           <div class="card-content">
               <h3 style="color: white;">Three</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -158,7 +151,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutBitterSweekPink">
           <div class="card-content">
               <h3 style="color: white;">Four</h3>
-              <p style="color: white;">Value: $ xx,xxx.xx</p>
+              <h5 style="color: white;">Value: $ xx,xxx.xx</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -167,7 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutHoney">
           <div class="card-content">
               <h3 style="color: white;">Five</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -176,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutGrape">
           <div class="card-content">
               <h3 style="color: white;">Six</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -185,7 +178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutTomatto">
           <div class="card-content">
               <h3 style="color: white;">Seven</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
@@ -194,12 +187,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-card class="flexlayoutBark">
           <div class="card-content">
               <h3 style="color: white;">Eight</h3>
-              <p style="color: white;">This is a blog text</p>
+              <h5 style="color: white;">This is a blog text</h5>
               <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
           </div>
         </paper-card>
       </div>
-    </div>
+      <div>
+        <paper-card class="flexlayoutCurrentPurple">
+          <div class="card-content">
+              <h3 style="color: white;">Nine</h3>
+              <h5 style="color: white;">This is a blog text</h5>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+
   </template>
 
   <template is="dom-if" if="[[signedin]]">

@@ -35,8 +35,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply(--layout-around-justified);
         max-width: inherit;
     }
+
     paper-card.magenta {
       --paper-card-background-color: #e02871;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
+    paper-card.black {
+      --paper-card-background-color: black;
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
@@ -132,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template is="dom-if" if="[[signedin]]">
     <div style="float:center; width: 60%">
-      <paper-card style="float:center; width: 60%" class="magenta">
+      <paper-card style="float:center; width: 60%" class="black">
          <h4 style="color: white;">Transactions</h4>
       </paper-card>
       <a href="/transactions-page">
@@ -141,7 +148,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <template is="dom-if" if="[[!signedin]]">
-    <paper-card style="float:center; width: 60%" class="magenta">
+    <paper-card style="float:center; width: 60%" class="black">
          <h4 style="color: white;">Transactions</h4>
     </paper-card>
   </template>

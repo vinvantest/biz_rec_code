@@ -39,11 +39,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+    paper-card.black {
+      --paper-card-background-color: black;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
   </style>
 
   <template is="dom-if" if="[[signedin]]">
     <div style="float:center; width: 60%">
-      <paper-card style="float:center; width: 60%" class="magenta">
+      <paper-card style="float:center; width: 70%" class="black">
          <h4 style="color: white;">Charts of Accounts</h4>
       </paper-card>
       <a href="/chartofaccounts-page">
@@ -52,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <template is="dom-if" if="[[!signedin]]">
-    <paper-card style="float:center; width: 60%" class="magenta">
+    <paper-card style="float:center; width: 70%" class="black">
          <h4 style="color: white;">Charts of Accounts</h4>
     </paper-card>
   </template>
