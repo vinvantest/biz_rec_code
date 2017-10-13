@@ -164,102 +164,100 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
   </template>
 
-  <template is="dom-if" if="[[signedin]]">
-  <paper-card style="float: center; width: 80%">
 
-    <!-- user of paper toggle button
-        <paper-toggle-button class="date-toggle">
-            <span class="toggle-left-label toggle-label"><pre style="font-family: Roboto"><h5>New </h5></pre></span>
-            <span><h5>Reviewed</h5></span>
-        </paper-toggle-button>
-      -->
-      <div style="float:left; width:100%">
-        <div id="leftThing" style="float:left; width:50%;">
-        <paper-checkbox id="newCheckBox" checked class="styled" on-change="toggleCheckBoxNew">
-          New
-          <span class="subtitle">
-            transactions
-          </span>
-        </paper-checkbox>
-      </div>
-      <div id="leftThing" style="float:left; width:50%;">
-        <paper-checkbox id="reviewedCheckBox" class="styled" on-change="toggleCheckBoxReview">
-          Reviewed
-          <span class="subtitle">
-            transactions
-          </span>
-        </paper-checkbox>
-      </div>
-    </div>
-  </paper-card>
+      <paper-card style="float: center; width: 80%">
 
-
-    <iron-ajax
-            id="postUserDataOnLogin"
-            method="POST"
-            url="{{url}}"
-            body="{{postBody}}"
-            handle-as="json"
-            content-type="application/json"
-            on-response="handleResponseAJAX"
-            on-error="handleErrorAJAX"
-            last-response="{{responseData}}"
-            last-error="{{lastError}}">
-    </iron-ajax>
-
-    <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
-      <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
-      <div>
-        <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-        <paper-spinner active class="multi"></paper-spinner>
-        <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+        <!-- user of paper toggle button
+            <paper-toggle-button class="date-toggle">
+                <span class="toggle-left-label toggle-label"><pre style="font-family: Roboto"><h5>New </h5></pre></span>
+                <span><h5>Reviewed</h5></span>
+            </paper-toggle-button>
+          -->
+          <div style="float:left; width:100%">
+            <div id="leftThing" style="float:left; width:50%;">
+            <paper-checkbox id="newCheckBox" checked class="styled" on-change="toggleCheckBoxNew">
+              New
+              <span class="subtitle">
+                transactions
+              </span>
+            </paper-checkbox>
+          </div>
+          <div id="leftThing" style="float:left; width:50%;">
+            <paper-checkbox id="reviewedCheckBox" class="styled" on-change="toggleCheckBoxReview">
+              Reviewed
+              <span class="subtitle">
+                transactions
+              </span>
+            </paper-checkbox>
+          </div>
         </div>
-    </paper-dialog>
+      </paper-card>
 
-    <template is="dom-if" if="[[ajaxError]]">
-        <paper-card style="float:center; width: 90%">
-          <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong>
-          </div>
+
+        <iron-ajax
+                id="postUserDataOnLogin"
+                method="POST"
+                url="{{url}}"
+                body="{{postBody}}"
+                handle-as="json"
+                content-type="application/json"
+                on-response="handleResponseAJAX"
+                on-error="handleErrorAJAX"
+                last-response="{{responseData}}"
+                last-error="{{lastError}}">
+        </iron-ajax>
+
+      <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+          <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
           <div>
-            <p>AjaxError: [[ajaxErrorMsg]]</p>
-            <p>lastError.request: [[lastError.request]]</p>
-            <p>lastError.error: [[lastError.error]]</p>
-            <p>lastError.status: [[lastError.status]]</p>
-            <p>lastError.statusText: [[lastError.statusText]]</p>
-            <p>lastError.response: [[lastError.response]]</p>
-          </div>
-          <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
-          <p>....</p>
-        </paper-card>
-    </template>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            <paper-spinner active class="multi"></paper-spinner>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            </div>
+        </paper-dialog>
 
+        <template is="dom-if" if="[[ajaxError]]">
+            <paper-card style="float:center; width: 90%">
+              <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong>
+              </div>
+              <div>
+                <p>AjaxError: [[ajaxErrorMsg]]</p>
+                <p>lastError.request: [[lastError.request]]</p>
+                <p>lastError.error: [[lastError.error]]</p>
+                <p>lastError.status: [[lastError.status]]</p>
+                <p>lastError.statusText: [[lastError.statusText]]</p>
+                <p>lastError.response: [[lastError.response]]</p>
+              </div>
+              <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+              <p>....</p>
+            </paper-card>
+        </template>
 
-    <div class="card">
-      <div class="circle">3</div>
-      <h1>Transactions Page</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam.</p>
-      <p> User id: [[user.uid]]</p>
-      <p> User Name: [[user.displayName]]</p>
-      <p> Signed in: [[signedin]]</p>
-      <template is="dom-repeat" items="{{responseData}}" as="note">
-        <p> responseData.uid: [[note.data.displayName]]</p>
-        <p> responseData.displayName: [[note.data.displayName]]</p>
-      </template>
+        <template is="dom-if" if="[[signedin]]">
+            <div class="card">
+              <div class="circle">3</div>
+              <h1>Transactions Page</h1>
+              <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
+              <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam.</p>
+              <p> User id: [[user.uid]]</p>
+              <p> User Name: [[user.displayName]]</p>
+              <p> Signed in: [[signedin]]</p>
+              <template is="dom-repeat" items="{{responseData}}" as="note">
+                <p> responseData.uid: [[note.data.displayName]]</p>
+                <p> responseData.displayName: [[note.data.displayName]]</p>
+              </template>
 
-      <template is="dom-if" if=[[newCheckBoxChecked]]>
-        <p><strong> This is new Transactions. New flag: [[newCheckBoxChecked]] </strong></p>
-      </template>
+              <template is="dom-if" if=[[newCheckBoxChecked]]>
+                <p><strong> This is new Transactions. New flag: [[newCheckBoxChecked]] </strong></p>
+              </template>
 
-      <template is="dom-if" if=[[reviewedCheckBoxChecked]]>
-        <p> This is reviewed Transactions. Reviewed flag: [[reviewedCheckBoxChecked]]</p>
-      </template>
+              <template is="dom-if" if=[[reviewedCheckBoxChecked]]>
+                <p> This is reviewed Transactions. Reviewed flag: [[reviewedCheckBoxChecked]]</p>
+              </template>
 
-      <paper-button on-tap="sendPost">Send</paper-button>
-    </div>
-
-
-  </template>
+              <paper-button on-tap="sendPost">Send</paper-button>
+            </div>
+        </template>
 
 </template>
 
