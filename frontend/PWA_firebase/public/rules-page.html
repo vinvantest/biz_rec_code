@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -56,6 +57,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             on-error="handleErrorPostSigninAJAX">
     </iron-ajax>
 
+    <template is="dom-if" if="[[!signedin]]">
+      <div class="card">
+        <div class="circle">
+            <iron-icon icon="social:person-outline"></iron-icon>
+        </div>
+        <h1>You have not loged in!</h1>
+        <p>Login to the app to get the latest data and full features of the app.</p>
+        <p>Tap or Click the avatar button on the top menu bar to enter your credentials.</p>
+      </div>
+    </template>
+
+    <template is="dom-if" if="[[signedin]]">
     <div class="card">
       <div class="circle">3</div>
       <h1>Rules Page</h1>
@@ -99,8 +112,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </iron-collapse>
     </template>
 
-</div>
+    </div>
   </template>
+
+</template>
 
   <script>
     class RulesPage extends Polymer.Element {

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
@@ -109,7 +110,7 @@
                     <div style="float:left; width:100%">
                         <div><h4><u>Notifications:</u></h4></div>
                         <div>
-                          <paper-toggle-button on-tap="toggleNotifications" checked=[[token]]>
+                          <paper-toggle-button on-tap="toggleNotifications" checked="[[token]]">
                           <!-- instead of token you can use a seperate value isSubscribed of model -->
                             Receive Notifications</paper-toggle-button>
                           </div>
@@ -163,17 +164,17 @@
 
             <paper-card class="magenta">
               <div style="float:left; width:100%">
-                <div id="leftThing" style="float:left; width:25%;">
-                      <paper-icon-button id="dashboard-icon-button" dialog-dismiss slot="top" icon="my-icons:dashboard" style="color: white;"></paper-icon-button>
+                <div id="leftThing0" style="float:left; width:25%;" >
+                      <paper-icon-button id="dashboard-icon-button0" dialog-dismiss slot="top" icon="my-icons:dashboard" style="color: white;"></paper-icon-button>
                   </div>
-                  <div id="leftThing" style="float:left; width:25%;">
-                    <paper-icon-button id="transactions-icon-button" dialog-dismiss slot="top" icon="my-icons:gavel" style="color: white;"></paper-icon-button>
+                  <div id="leftThing1" style="float:left; width:25%;">
+                    <paper-icon-button id="transactions-icon-button1" dialog-dismiss slot="top" icon="my-icons:gavel" style="color: white;"></paper-icon-button>
                   </div>
-                <div id="leftThing" style="float:left; width:25%;">
-                    <paper-icon-button id="payments-icon-button" dialog-dismiss slot="top" icon="my-icons:select-all" style="color: white;"></paper-icon-button>
+                <div id="leftThing2" style="float:left; width:25%;">
+                    <paper-icon-button id="payments-icon-button2" dialog-dismiss slot="top" icon="my-icons:select-all" style="color: white;"></paper-icon-button>
                 </div>
-                <div id="leftThing" style="float:right; width:25%;">
-                      <paper-icon-button id="reports-icon-button" on-tap="hire" slot="top" icon="my-icons:line-style" style="color: white;"></paper-icon-button>
+                <div id="leftThing3" style="float:right; width:25%;">
+                      <paper-icon-button id="reports-icon-button3" on-tap="hire" slot="top" icon="my-icons:line-style" style="color: white;"></paper-icon-button>
                 </div>
               </div>
             </paper-card>
@@ -301,7 +302,7 @@
                     ]
                 }
 
-                // if you want service worker to intercept then send msg using data : 
+                // if you want service worker to intercept then send msg using data :
                 {
                 	"registration_ids" : [
                 			"ffDZUQ2Gym4:APA91bEpSBToe7K8CtzoY3DKBQlz707NbHBu1LI0IXyyzeuOBEdtfg78XAai44FU3UXFhhZlWNtAq7dzxxIR0bdjoG0FQDl3pWRidoDFeosSI32_Kel7W5NT6MIUG7IVSn2uK-26N_Ux",

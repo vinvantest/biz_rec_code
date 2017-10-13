@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -44,6 +45,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      <h4 style="color: white;">Payments</h4>
   </paper-card>
 
+  <template is="dom-if" if="[[!signedin]]">
+    <div class="card">
+      <div class="circle">
+          <iron-icon icon="social:person-outline"></iron-icon>
+      </div>
+      <h1>You have not loged in!</h1>
+      <p>Login to the app to get the latest data and full features of the app.</p>
+      <p>Tap or Click the avatar button on the top menu bar to enter your credentials.</p>
+    </div>
+  </template>
+
+  <template is="dom-if" if="[[signedin]]">
     <div class="card">
       <div class="circle">1</div>
       <h1>Payments Page</h1>
@@ -55,6 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p> Signed in: [[signedin]]</p>
     </div>
   </template>
+
+</template>
 
   <script>
     class PaymentsPage extends Polymer.Element {
