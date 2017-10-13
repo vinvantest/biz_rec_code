@@ -39,11 +39,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+
+    .flex-wrap-horizontal {
+      @apply --layout-horizontal;
+      @apply --layout-wrap;
+      @apply --layout-center;
+      align: center;
+    }
+
+    paper-card.flexlayoutCurrentPurple {
+      --paper-card-background-color: #45415E; /*#FCD522;*/
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutTomatto {
+      --paper-card-background-color: #D73A31; /*#FF6E14;*/
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutTeal {
+      --paper-card-background-color: #08708A; /*#B62E00;*/
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutBitterSweekPink {
+      --paper-card-background-color: #E25F70; /*#67190F;*/
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutSeaGreen {
+      --paper-card-background-color: #61C0BF;
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutGrape {
+      --paper-card-background-color: #6C4F70;
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutHoney {
+      --paper-card-background-color: #BEA42E;
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
+    paper-card.flexlayoutBark {
+      --paper-card-background-color: #60412B;
+      box-sizing: border-box;
+      margin:  2px 2px 2px 2px;
+    }
+
   </style>
 
-  <paper-card style="float:center; width: 60%" class="magenta">
-     <h4 style="color: white;">Home</h4>
-  </paper-card>
+  <template is="dom-if" if="[[signedin]]">
+    <div style="float:center; width: 60%">
+      <paper-card style="float:center; width: 60%" class="magenta">
+         <h4 style="color: white;">Home</h4>
+      </paper-card>
+      <a href="/landing-page">
+      <paper-icon-button icon="icons:refresh" style="color: black;" on-tap="reloadPage"></paper-icon-button></a>
+    </div>
+  </template>
+
+  <template is="dom-if" if="[[!signedin]]">
+    <paper-card style="float:center; width: 60%" class="magenta">
+         <h4 style="color: white;">Home</h4>
+    </paper-card>
+  </template>
 
   <template is="dom-if" if="[[!signedin]]">
     <div class="card">
@@ -52,10 +120,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
       <h1>You have not loged in!</h1>
       <p>Login to the app to get the latest data and full features of the app.</p>
-      <p>Tap or Click the avatar button on the top menu bar to enter your credentials.</p>
+      <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
     </div>
   </template>
-  
+
+<template is="dom-if" if="[[signedin]]">
+  <div style="float:center">
+    <div class="container flex-wrap-horizontal">
+      <div>
+        <paper-card class="flexlayoutCurrentPurple">
+          <div class="card-content">
+              <h3 style="color: white;">One</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutTomatto">
+          <div class="card-content">
+              <h3 style="color: white;">Two</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutTeal">
+          <div class="card-content">
+              <h3 style="color: white;">Three</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutBitterSweekPink">
+          <div class="card-content">
+              <h3 style="color: white;">Four</h3>
+              <p style="color: white;">Value: $ xx,xxx.xx</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutHoney">
+          <div class="card-content">
+              <h3 style="color: white;">Five</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutGrape">
+          <div class="card-content">
+              <h3 style="color: white;">Six</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutTomatto">
+          <div class="card-content">
+              <h3 style="color: white;">Seven</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+      <div>
+        <paper-card class="flexlayoutBark">
+          <div class="card-content">
+              <h3 style="color: white;">Eight</h3>
+              <p style="color: white;">This is a blog text</p>
+              <paper-icon-button icon="social:person-outline" style="color: white;"></paper-icon-button>
+          </div>
+        </paper-card>
+      </div>
+    </div>
+  </template>
+
   <template is="dom-if" if="[[signedin]]">
     <div class="card">
       <div class="circle">1</div>
@@ -68,24 +214,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p> Signed in: [[signedin]]</p>
     </div>
   </template>
-
-
-<custom-style>
-  <style is="custom-style">
-    .flex-wrap {
-      @apply --layout-horizontal;
-      @apply --layout-wrap;
-      width: 200px;
-    }
-  </style>
-</custom-style>
-
-<div class="container flex-wrap">
-  <div>one</div>
-  <div>two</div>
-  <div>three</div>
-  <div>four</div>
-</div>
 
   </template>
 
@@ -102,6 +230,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
           }
         };
+      }
+
+      reloadPage(){
+        //console.log('inside reloadPage');
+        location.reload(true);
       }
 
     }

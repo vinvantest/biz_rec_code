@@ -96,7 +96,7 @@
            <h4 style="color: white;">Notes</h4>
         </paper-card>
         <a href="/notes-page">
-        <paper-icon-button icon="icons:refresh" style="color: black;"></paper-icon-button></a>
+        <paper-icon-button icon="icons:refresh" style="color: black;" on-tap="reloadPage"></paper-icon-button></a>
       </div>
     </template>
 
@@ -377,6 +377,11 @@
             //console.log(event.currentTarget.parentElement.parentElement);
             event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
         }
+
+      reloadPage(){
+        //console.log('inside reloadPage');
+        location.reload(true);
+      }
 
       computeSpanHidden(index){
           //console.log('inside computeSpanHidden');
