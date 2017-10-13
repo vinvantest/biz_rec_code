@@ -137,6 +137,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </style>
 
+  <iron-ajax
+          id="postUserDataOnLogin"
+          method="POST"
+          url="{{url}}"
+          body="{{postBody}}"
+          handle-as="json"
+          content-type="application/json"
+          on-response="handleResponseAJAX"
+          on-error="handleErrorAJAX"
+          last-response="{{responseData}}"
+          last-error="{{lastError}}">
+  </iron-ajax>
+
   <template is="dom-if" if="[[signedin]]">
     <div style="float:center; width: 60%">
       <paper-card style="float:center; width: 60%" class="black">
@@ -151,9 +164,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-card style="float:center; width: 60%" class="black">
          <h4 style="color: white;">Transactions</h4>
     </paper-card>
-  </template>
-
-  <template is="dom-if" if="[[!signedin]]">
     <div class="card">
       <div class="circle">
           <iron-icon icon="social:person-outline"></iron-icon>
@@ -164,16 +174,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
   </template>
 
+  <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+    <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
+      <div>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            <paper-spinner active class="multi"></paper-spinner>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+     </div>
+  </paper-dialog>
 
-      <paper-card style="float: center; width: 80%">
-
-        <!-- user of paper toggle button
-            <paper-toggle-button class="date-toggle">
-                <span class="toggle-left-label toggle-label"><pre style="font-family: Roboto"><h5>New </h5></pre></span>
-                <span><h5>Reviewed</h5></span>
-            </paper-toggle-button>
-          -->
-          <div style="float:left; width:100%">
+  <paper-card style="float: center; width: 80%" hidden$="[[signedin]]">
+        <div style="float:left; width:100%">
             <div id="leftThing" style="float:left; width:50%;">
             <paper-checkbox id="newCheckBox" checked class="styled" on-change="toggleCheckBoxNew">
               New
@@ -191,32 +202,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </paper-checkbox>
           </div>
         </div>
-      </paper-card>
+  </paper-card>
 
-
-        <iron-ajax
-                id="postUserDataOnLogin"
-                method="POST"
-                url="{{url}}"
-                body="{{postBody}}"
-                handle-as="json"
-                content-type="application/json"
-                on-response="handleResponseAJAX"
-                on-error="handleErrorAJAX"
-                last-response="{{responseData}}"
-                last-error="{{lastError}}">
-        </iron-ajax>
-
-      <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
-          <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
-          <div>
-            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-            <paper-spinner active class="multi"></paper-spinner>
-            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-            </div>
-        </paper-dialog>
-
-        <template is="dom-if" if="[[ajaxError]]">
+  <template is="dom-if" if="[[ajaxError]]">
             <paper-card style="float:center; width: 90%">
               <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong>
               </div>
@@ -231,10 +219,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
               <p>....</p>
             </paper-card>
-        </template>
+ </template>
 
-        <template is="dom-if" if="[[signedin]]">
-            <div class="card">
+ <template is="dom-if" if="[[signedin]]">
+    <div class="card">
               <div class="circle">3</div>
               <h1>Transactions Page</h1>
               <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
@@ -256,8 +244,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </template>
 
               <paper-button on-tap="sendPost">Send</paper-button>
-            </div>
-        </template>
+    </div>
+ </template>
 
 </template>
 
