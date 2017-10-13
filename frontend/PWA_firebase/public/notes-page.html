@@ -95,21 +95,11 @@
       data="{{notes}}">
    </firebase-query>
 
-    <template is="dom-if" if="[[signedin]]">
-      <div style="float:center; width: 60%">
-        <paper-card style="float:center; width: 60%" class="black">
-           <h4 style="color: white;">Notes</h4>
-        </paper-card>
-        <a href="/notes-page">
-        <paper-icon-button icon="icons:refresh" style="color: black;" on-tap="reloadPage"></paper-icon-button></a>
-      </div>
-    </template>
 
-    <template is="dom-if" if="[[!signedin]]">
-      <paper-card style="float:center; width: 60%" class="black">
+      <paper-card style="float:center; width: 70%" class="black">
            <h4 style="color: white;">Notes</h4>
       </paper-card>
-    </template>
+
 
     <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
           <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
