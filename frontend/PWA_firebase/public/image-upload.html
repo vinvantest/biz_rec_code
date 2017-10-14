@@ -118,13 +118,13 @@
                   upD3Progress.percentage = num / 100 ;
                   upD3Progress.currentText = Math.round(num) + '%';
                   //console.log(upD3Progress.currentText);
-
                 },
                 function error(err){
                   console.log('Error: ' + err.code);
                 },
                 function complete(){
-                  //console.log('Complete: upload ' + file.name);
+                  console.log('Complete: upload ' + file.name);
+                  document.getElementById('toast').show('Upload to server completed!');
                 }
             );
 
