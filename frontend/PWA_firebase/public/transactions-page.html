@@ -150,10 +150,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           last-error="{{lastError}}">
   </iron-ajax>
 
-    <paper-card style="float:center; width: 60%" class="black">
+    <paper-card style="float:center; width: 70%" class="black">
          <h4 style="color: white;">Transactions</h4>
     </paper-card>
 
+    <template is="dom-if" if="[[signedin]]">
     <div class="card">
       <div class="circle">
           <iron-icon icon="social:person-outline"></iron-icon>
@@ -162,7 +163,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <p>Login to the app to get the latest data and full features of the app.</p>
       <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
     </div>
-
+  </template>
 
   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
     <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
