@@ -239,16 +239,22 @@
 
      googleSignIn(){
          this.$.dialog.toggle();
-         /* alternative code
+         //alternative code
           return this.$.auth.signInWithPopup().then(function (result){
             //do something on success
-          }).catch(function (error){
-            if( e.code == 'auth/popup-blocked'){
-             this.$.auth.signInWithRedirect();
-          }
+            document.getElementById('toast').show('You are signed in!');
+          }).catch(function (e){
+              if( e.code == 'auth/popup-blocked'){
+                  //do something on success
+                  this.$.auth.signInWithRedirect().then(function (result){
+                      document.getElementById('toast').show('You are signed in!');
+                   }).catch(function (error){
+                     console.log('Error Login in ->'+error);
+                   });
+             }
         });
-         */
-          //return this.$.auth.signInWithPopup().then(function (result){
+        /************ alternate code
+           //return this.$.auth.signInWithPopup().then(function (result){
            return this.$.auth.signInWithRedirect().then(function (result){
                document.getElementById('toast').show('You are signed in!');
 
@@ -265,7 +271,7 @@
                        access_token: token,
                        loggedin: true
                    };
-                   */
+
                }).catch(function(error) {
                    // Handle Errors here.
                    console.log(error);
@@ -278,8 +284,8 @@
                    // The firebase.auth.AuthCredential type that was used.
                    var credential = error.credential;
                    console.log('Error during the login -', email, ': ', errorCode, ' - ', errorMessage);
-                   */
-               });
+
+               });*************/
      }
 
      _logout(){
