@@ -44,16 +44,54 @@
     <meta name="msapplication-square70x70logo" content="/images/31b30d4f-08f3-4faa-1fc2-15642e70b367.webPlatform.png">
     <meta name="msapplication-square152x152logo" content="/images/7ec23c59-18dd-0218-3cad-09183db6b7a2.webPlatform.png">
 
-    <!-- update the version number as needed -->
+    <!-- update the version number as needed
     <script defer src="/__/firebase/4.5.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
+  include only the Firebase features as you need
     <script defer src="/__/firebase/4.5.0/firebase-auth.js"></script>
     <script defer src="/__/firebase/4.5.0/firebase-database.js"></script>
     <script defer src="/__/firebase/4.5.0/firebase-messaging.js"></script>
     <script defer src="/__/firebase/4.5.0/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
+initialize the SDK after all desired features are loaded
     <script defer src="/__/firebase/init.js"></script>
+ -->
 
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-messaging.js"></script>
+
+    <!-- Leave out Storage -->
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-storage.js"></script>
+
+    <script>
+        var configFirebase = {
+        app_name: "bizrec-dev",
+        authDomain: "bizrec-dev.firebaseapp.com",
+        databaseURL: "https://bizrec-dev.firebaseio.com/",
+        apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
+        storageBucket: "bizrec-dev.appspot.com",
+        messagingSenderId: "531391633867",
+      };
+      firebase.initializeApp(configFirebase);
+    </script>
+    <!--
+    <firebase-app
+        auth-domain="[[configFirebase.authDomain]]"
+        database-url="[[configFirebase.databaseURL]]"
+        api-key="[[configFirebase.apiKey]]"
+        storage-bucket="[[configFirebase.storageBucket]]"
+        messaging-sender-id="[[configFirebase.messagingSenderId]]">
+    </firebase-app>
+  -->
+    <firebase-auth
+        id="auth"
+        user="{{user}}"
+        provider="google"
+        signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
+        on-error="_handleError">
+    </firebase-auth>
     <script>
       /**
       * [polymer-root-path]

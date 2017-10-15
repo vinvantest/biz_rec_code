@@ -106,21 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         messaging-sender-id="[[configFirebase.messagingSenderId]]">
     </firebase-app>
     -->
-    <firebase-app
-        auth-domain="[[configFirebase.authDomain]]"
-        database-url="[[configFirebase.databaseURL]]"
-        api-key="[[configFirebase.apiKey]]"
-        storage-bucket="[[configFirebase.storageBucket]]"
-        messaging-sender-id="[[configFirebase.messagingSenderId]]">
-    </firebase-app>
-    <firebase-auth
-        id="auth"
-        user="{{user}}"
-        provider="google"
-        signed-in="{{signedIn}}"
-        status-known="{{statusKnown}}"
-        on-error="_handleError">
-    </firebase-auth>
+
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route
