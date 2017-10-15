@@ -66,32 +66,24 @@ initialize the SDK after all desired features are loaded
 
     <script>
         var configFirebase = {
-        app_name: "bizrec-dev",
+        //app_name: "bizrec-dev",
         authDomain: "bizrec-dev.firebaseapp.com",
         databaseURL: "https://bizrec-dev.firebaseio.com/",
         apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
         storageBucket: "bizrec-dev.appspot.com",
         messagingSenderId: "531391633867",
       };
-      firebase.initializeApp(configFirebase);
+      //firebase.initializeApp(configFirebase);
     </script>
-    <!--
+
     <firebase-app
-        auth-domain="[[configFirebase.authDomain]]"
-        database-url="[[configFirebase.databaseURL]]"
-        api-key="[[configFirebase.apiKey]]"
-        storage-bucket="[[configFirebase.storageBucket]]"
-        messaging-sender-id="[[configFirebase.messagingSenderId]]">
+        auth-domain="bizrec-dev.firebaseapp.com"
+        database-url=databaseURL: "https://bizrec-dev.firebaseio.com/"
+        api-key="AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8"
+        storage-bucket="bizrec-dev.appspot.com"
+        messaging-sender-id="531391633867">
     </firebase-app>
-  -->
-    <firebase-auth
-        id="auth"
-        user="{{user}}"
-        provider="google"
-        signed-in="{{signedIn}}"
-        status-known="{{statusKnown}}"
-        on-error="_handleError">
-    </firebase-auth>
+
     <script>
       /**
       * [polymer-root-path]
