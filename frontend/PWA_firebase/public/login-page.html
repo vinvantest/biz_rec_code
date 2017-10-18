@@ -211,9 +211,6 @@
       <fb:login-button scope="public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location" onlogin="checkLoginState();">
       </fb:login-button>
 
-      <div id="status">
-      </div>
-
   </template>
 
   <script>
@@ -292,56 +289,31 @@
 
     }
 
-    function facebookLogin(){
-      FB.login(function(response) {
-        // handle the response
-        if (response.status === 'connected') {
-          // Logged into your app and Facebook.
-          document.getElementById('toast').show('You are logged in!');
-          console.log('Facebook Login Response ->' + JSON.stringify(response));
-          //do other stuff
-          this.isFacebookSignedIn = true;
-          this.isGoogleSignedIn = false;
-          this.signedin = true;
-          this.user.uid = response.authResponse.userID;
-          /* public_profile (Default)
-          id
-          cover
-          name
-          first_name
-          last_name
-          age_range
-          link
-          gender
-          locale
-          picture
-          timezone
-          updated_time
-          verified
-          */
-
-          // get public profile info once you console out the reponose object
-          testAPI();
-
-        } else {
-          // The person is not logged into this app or we are unable to tell.
-          document.getElementById('toast').show('Error login to your account!');
-        }
-      }, {
-          scope: 'public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location',
-          return_scopes: true
-        });
-    }
-
     // Here we run a very simple test of the Graph API after login is
     // successful.  See statusChangeCallback() for when this call is made.
     function testAPI() {
       console.log('Welcome!  Fetching your information.... ');
-      FB.api('/me?fields=name,email,user_likes,user_birthday, user_location,user_website', function(response) {
+      FB.api('/me?fields=name,email,picture', function(response) {
         console.log('Successful login for: ' + response.name);
-        console.log('TestAPI() response object ->' + response);
+        console.log('TestAPI() response object ->' + JSON.stringify(response));
+        /*
+        {
+        	"name": "Vinayak Vanarse",
+        	"email": "vinvan_pict@yahoo.com",
+        	"picture": {
+        		"data": {
+        			"is_silhouette": false,
+        			"url": "https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/20770353_10155345596091690_4633787364069113133_n.jpg?oh=3eeb694b48a9a73f6774e67f066a5479&oe=5A68CD0C"
+        		}
+        	},
+        	"id": "10155511839396690"
+        }
+        */
         this.user.displayName = response.name;
-        document.getElementById('tost').show('Thanks for logging in, ' + response.name + '!');
+        this.user.photoURL = response.picture.data.url;
+        this.user.email = response.email;
+        this.user.uid = response.id;
+        document.getElementById('toast').show('Thanks for logging in, ' + response.name + '!');
       });
     }
 
@@ -365,9 +337,6 @@
     signedRequest - a signed parameter that contains information about the person using the app.
     userID - the ID of the person using the app.
 }*/
-
-  </script>
-  <script>
     class LoginPage extends Polymer.Element {
       static get is() { return 'login-page'; }
 
@@ -403,6 +372,62 @@
 
     hire(e) {
         this.$.dialog.toggle();
+     }
+
+     facebookLogin(){
+       return FB.login(function(response) {
+         // handle the response
+               if (response.status === 'connected') {
+                 // Logged into your app and Facebook.
+                 document.getElementById('toast').show('You are logged in!');
+                 console.log('Facebook Login Response ->' + JSON.stringify(response));
+                 /*
+                 Facebook Login Response - > {
+                    	"authResponse": {
+                    		"accessToken": "EAACIWSKCDtIBACZAmRukgsWESkOCwZDZD",
+                    		"userID": "10155511839396690",
+                    		"expiresIn": 4476,
+                    		"signedRequest": "WvKMOAS88Saj_FKGWMnpmYTU5OTM5NjY5MCJ9",
+                    		"grantedScopes": "user_birthday,user_location,user_likes,user_website,user_about_me,email,public_profile"
+                    	},
+                    	"status": "connected"
+                    }
+                 */
+                 //do other stuff
+                 this.isFacebookSignedIn = true;
+                 this.isGoogleSignedIn = false;
+                 this.signedin = true;
+                 var userBody = {
+                   uid: response.authResponse.userID
+                 }
+                 this.user = userBody;
+                 /* public_profile (Default)
+                 id
+                 cover
+                 name
+                 first_name
+                 last_name
+                 age_range
+                 link
+                 gender
+                 locale
+                 picture
+                 timezone
+                 updated_time
+                 verified
+                 */
+
+                 // get public profile info once you console out the reponose object
+                 testAPI();
+                 //this.$.dialog.toggle();
+               } else {
+                 // The person is not logged into this app or we are unable to tell.
+                 document.getElementById('toast').show('Error login to your account!');
+               }
+       }, {
+           scope: 'public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location',
+           return_scopes: true
+         });
      }
 
      googleSignIn(){
