@@ -287,7 +287,7 @@
       }
        else {
         // The person is not logged into your app or we are unable to tell.
-        document.getElementById('Toast').show('Please log into this app.');
+        document.getElementById('toast').show('Please log into this app.');
       }
 
     }
@@ -328,7 +328,7 @@
           document.getElementById('toast').show('Error login to your account!');
         }
       }, {
-          scope: 'public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location'
+          scope: 'public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location',
           return_scopes: true
         });
     }
@@ -339,9 +339,9 @@
       console.log('Welcome!  Fetching your information.... ');
       FB.api('/me?fields=name,email,user_likes,user_birthday, user_location,user_website', function(response) {
         console.log('Successful login for: ' + response.name);
-        console.log('TestAPI() response object ->'response);
+        console.log('TestAPI() response object ->' + response);
         this.user.displayName = response.name;
-        document.getElementById('Tost').show('Thanks for logging in, ' + response.name + '!');
+        document.getElementById('tost').show('Thanks for logging in, ' + response.name + '!');
       });
     }
 
@@ -376,10 +376,10 @@
           user: {
             type: Object,
           },
-          signedin: Boolean,,
+          signedin: Boolean,
           statusKnown: {
             type: Boolean,
-          }
+          },
           storedUser: {
             type: Object,
             value: {
@@ -394,7 +394,7 @@
             type: Boolean,
             value: false
           },
-          isFacebookSignedIn {
+          isFacebookSignedIn : {
             type: Boolean,
             value: false
           }
