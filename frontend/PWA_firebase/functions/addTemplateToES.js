@@ -79,7 +79,7 @@ function failure (res, data, httpCode) {
 }
 
 function handlePOST (req, res) {
-  // Do something with the GET request
+  // Do something with the POST request
   //https://us-central1-bizrec-dev.cloudfunctions.net/addTemplateToESFunction?templateName=users_template_v1&templateType=users
   //no body {}
    var resMsg = '';

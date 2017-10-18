@@ -213,20 +213,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 attr-for-selected="name"
                 fallback-selection="not-found-404"
                 role="main">
-              <landing-page name="landing-page" user="{{user}}" signedin="{{signedIn}}"></landing-page>
-              <dashboard-page name="dashboard-page" user="{{user}}" signedin="{{signedIn}}"></dashboard-page>
-              <transactions-page name="transactions-page" user="{{user}}" signedin="{{signedIn}}"></transactions-page>
-              <payments-page name="payments-page" user="{{user}}" signedin="{{signedIn}}"></payments-page>
-              <invoices-page name="invoices-page" user="{{user}}" signedin="{{signedIn}}"></invoices-page>
-              <banks-page name="banks-page" user="{{user}}" signedin="{{signedIn}}"></banks-page>
-              <reports-page name="reports-page" user="{{user}}" signedin="{{signedIn}}"></reports-page>
-              <rules-page name="rules-page" user="{{user}}" signedin="{{signedIn}}"></rules-page>
-              <settings-page name="settings-page" user="{{user}}" signedin="{{signedIn}}"></settings-page>
-              <customers-page name="customers-page" user="{{user}}" signedin="{{signedIn}}"></customers-page>
+              <landing-page name="landing-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></landing-page>
+              <dashboard-page name="dashboard-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></dashboard-page>
+              <transactions-page name="transactions-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></transactions-page>
+              <payments-page name="payments-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></payments-page>
+              <invoices-page name="invoices-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></invoices-page>
+              <banks-page name="banks-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></banks-page>
+              <reports-page name="reports-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></reports-page>
+              <rules-page name="rules-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></rules-page>
+              <settings-page name="settings-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></settings-page>
+              <customers-page name="customers-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></customers-page>
               <chartofaccounts-page name="chartofaccounts-page" user="{{user}}" signedin="{{signedIn}}"></chartofaccounts-page>
               <notes-page name="notes-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></notes-page>
               <users-page name="users-page" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}"></users-page>
-              <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" routepath="[[routePath]]"></not-found-404>
+              <not-found-404 name="not-found-404" user="{{user}}" signedin="{{signedIn}}" statusknown="{{statusKnown}}" routepath="[[routePath]]"></not-found-404>
             </iron-pages>
       </div>
 
@@ -337,7 +337,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Object,
           },
           statusKnown: {
-            type: Object
+            type: Boolean,
+            value: false
           },
           signedIn:{
             type: Boolean,

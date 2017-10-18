@@ -66,12 +66,11 @@ function handleGET (req, res) {
   var resMsg = '';
   console.log('Inside serer.get(getUsers)');
 
-  var indexAliasName = req.query.indexAliasName;
+  var indexAliasName = config.user_index_search_alias_name;
   if(indexAliasName === null || indexAliasName === undefined) {
     resMsg = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
     failure(res,resMsg,500);
   }
-  console.log('req.params.indexAliasName = ' + JSON.stringify(req.query.indexAliasName));
 
   //get Query params
   console.log('queryParams passed is ->'

@@ -78,8 +78,8 @@ function failure (res, data, httpCode) {
 }
 
 function handlePOST (req, res) {
-  // Do something with the GET request
-  //https://us-central1-bizrec-dev.cloudfunctions.net/addTemplateToESFunction?indexName=users_template_v1&templateType=users
+  // Do something with the POST request
+  //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=users_template_v1&templateType=users
   //no body {}
    var resMsg = '';
    console.log('Inside serer.post(addTemplatetoES)');

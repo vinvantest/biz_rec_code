@@ -1,10 +1,10 @@
-var userTemplate = {
-  "template" : "users-*",
+var settingsTemplate = {
+  "template" : "settings-*",
   "order" : 9,
   "settings": {
     "index": {
       "number_of_shards" : 50,
-      "number_of_replicas" : 1,
+      "number_of_replicas" : 2,
       "analysis": {
         "analyzer": {
               "analyzer_keyword": {
@@ -58,8 +58,8 @@ var userTemplate = {
             }
          ]
   },
-  "aliases": { "global_alisas_for_search_users_index": {},
-               "global_alisas_for_write_users_index": {}
+  "aliases": { "global_alisas_for_search_settings_index": {},
+               "global_alisas_for_write_settings_index": {}
              },
   "dynamic_templates":
   [
@@ -189,64 +189,36 @@ var userTemplate = {
     "base_type" : {
           "date_detection": false,
           "properties"    : {
-            "usr_uid": {"type": "keyword", "index": true},
-            "usr_displayName" : {"type" : "text" , "index" : true	},
-            "usr_firstName" : { "type" : "keyword" , "index" : true	},
-            "usr_familyName" : { "type" : "keyword", "index" : true	 },
-            "usr_middleName" : { "type" : "keyword", "index" : true	 },
-            "usr_emailVerified" : { "type": "boolean", "index" : true},
-            "usr_phoneNumber": { "type": "text", "index": false},
-            "usr_photoURL" : { "type": "text", "index": false },
-            "usr_dob" : { "type" : "date" , "index" : true	},
-            "usr_gender" : { "type" : "keyword" , "index" : true	},
-            "usr_email" : { "type" : "keyword" , "index" : true	},
-            "usr_company" : {
-              "type" : "nested",
-              "include_in_parent": true,
-              "properties" : {
-                        "company_businessName" : { "type" : "keyword", "index" : true	},
-                        "company_ABN_ACN_LC" : { "type" : "keyword" , "index" : true	},
-                        "company_contact" : {"type" : "keyword" , "index" : true	},
-                        "company__email" : {"type" : "keyword", "index" : true	 },
-                        "company_address" :
-                          {
-                          "type" : "nested",
-                          "include_in_parent": true,
-                          "properties" :
-                              {
-                                    "company_address_streetNumber" : { "type" : "text" , "index" : false	},
-                                    "company_address_streetName" : {"type" : "text" , "index" : false	},
-                                    "company_address_streetType" : {"type" : "text" , "index" : false	},
-                                    "company_address_suburb" : {"type" : "keyword" , "index" : true	},
-                                    "company_address_state" : {"type" : "keyword" , "index" : true	},
-                                    "company_address_postcode" : {"type" : "keyword", "index" : true	 },
-                                    "company_address_country" : {"type" : "keyword", "index" : true	 }
-                              }
-                        }
-                      }
-                    },
-            "usr_url" : {"type" : "text", "index" : false	 },
-            "usr_locale" : {"type" : "keyword" , "index" : true	},
-            "usr_currency" : {"type" : "keyword" , "index" : true	},
-            "usr_isSubscritionActive" : { "type" : "boolean" , "index" : true	},
-            "usr_isNotified" : { "type" : "boolean", "index" : true	},
-            "usr_subscriptionType": { "type" : "keyword" , "index" : true	},
-            "usr_subscriptionAmount" : {"type" : "integer", "index" : true	},
-            "usr_subscriptionCostToDate" : { "type" : "long", "index" : true	},
-            "usr_subscriptionFrequency": { "type" : "integer" , "index" : true	},
-            "usr_isUserCloudConnected" : { "type" : "boolean", "index" : true	},
-            "usr_isDropBox" : { "type" : "boolean", "index" : true	},
-            "usr_isGoogle": { "type" : "boolean", "index" : true	},
-            "usr_isBox" : { "type" : "boolean", "index" : true	},
-            "usr_isICloud" : { "type" : "boolean", "index" : true	},
-            "usr_isOneDrive" : { "type" : "boolean", "index" : true	},
-            "usr_invoicePaymentBankBSB" : { "type" : "integer" , "index" : true	},
-            "usr_invoicePaymentBankAccountNumber": { "type" : "integer" , "index" : true	},
-            "usr_invoicePaymentBankAccountName" : { "type" : "keyword" , "index" : true	},
-            "usr_invoicePaymentBankName" : { "type" : "text" , "index" : true	}
+                "sett_userId_routingAliasId"	:	{ "type" :	"keyword" , "index": true	},
+                "sett_providerName"	:	{ "type" :	"text" , "index": true	},
+                "sett_providerAccountId"	:	{ "type" :	"keyword" , "index": true	},
+                "sett_providerIdentifier"	:	{ "type" :	"keyword" , "index": true	},
+                "sett_issettAccountActive"	:	{ "type" :	"keyword" , "index": true	},
+                "sett_issettAccountVerified"	:	{ "type" :	"keyword" , "index": true	},
+                "sett_additonalsettNotes"	:	{ "type" :	"text" , "index": false	},
+                "sett_refreshInfo"	:	{ "type" :	"text" , "index": false	},
+                "sett_refreshInfo_statusCode"	:	{ "type" :	"keyword" , "index": false	},
+                "sett_refreshInfo_statusMessage"	:	{ "type" :	"text" , "index": false	},
+                "sett_refreshInfo_status"	:	{ "type" :	"keyword", "index": false	},
+                "sett_isManual"	:	{ "type" :	"boolean", "index": true	},
+                "sett_createdDate"	:	{ "type" :	"date"	, "index": true},
+                "sett_lastUpdated"	:	{ "type" :	"boolean"	, "index": true},
+                "sett_isAutoRefreshEnabled"	:	{ "type" :	"boolean"	, "index": true},
+                "sett_numberOfTransactionDays"	:	{ "type" :	"keyword"	, "index": false},
+                "sett_settAccountName"	:	{ "type" :	"text" , "index": true},
+                "sett_settAccountNumber"	:	{ "type" :	"long"	, "index": true},
+                "sett_BSB"	:	{ "type" :	"integer", "index": true },
+                "sett_Branch"	:	{ "type" :	"text"	, "index": true },
+                "sett_BranchNumber"	:	{ "type" :	"integer", "index": true },
+                "sett_amountDue"	:	{ "type" :	"long"	, "index": false},
+                "sett_availableBalance"	:	{ "type" :	"long"	, "index": false},
+                "sett_availableCash"	:	{ "type" :	"long"	, "index": false},
+                "sett_availableCredit"	:	{ "type" :	"long"	, "index": false},
+                "sett_nickname"	:	{ "type" :	"keyword"	, "index": true},
+                "sett_status"	:	{ "type" :	"keyword"	, "index": true}
           }
         }
   }
 };
 
-module.exports = userTemplate;
+module.exports = settingsTemplate;
