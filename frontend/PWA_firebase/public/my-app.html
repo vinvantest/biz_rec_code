@@ -10,6 +10,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="bower_components/polymer/polymer-element.html">
+<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<script src="bower_components/firebase/firebase-app.js"></script>
+<script src="bower_components/firebase/firebase-auth.js"></script>
+<script src="bower_components/firebase/firebase-database.js"></script>
+<script src="bower_components/firebase/firebase-firestore.js"></script>
+<script src="bower_components/firebase/firebase-messaging.js"></script>
+<script src="bower_components/firebase/firebase-storage.js"></script>
+
 <link rel="import" href="lazy-import.html">
 
 <link rel="lazy-import" href="landing-page.html">
@@ -97,15 +106,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <!-- firebase-app with app name breaks firebase auth. throws error at signInWithPopup()
+     name="[[configFirebase.app_name]]"
+   -->
     <firebase-app
-        name="[[configFirebase.app_name]]"
         auth-domain="[[configFirebase.authDomain]]"
         database-url="[[configFirebase.databaseURL]]"
         api-key="[[configFirebase.apiKey]]"
         storage-bucket="[[configFirebase.storageBucket]]"
         messaging-sender-id="[[configFirebase.messagingSenderId]]">
     </firebase-app>
-    -->
 
     <firebase-auth
         id="auth"
@@ -366,10 +375,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _userChanged(user){
-        console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
+        //console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
         this.user = user;
-        console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
-        //this.$.user.value = user;
+        //console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
       }
 
       _signedinChanged(signedin){

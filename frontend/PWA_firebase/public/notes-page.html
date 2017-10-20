@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/polymerfire/firebase-messaging.html">
 <link rel="import" href="lazy-import.html">
 
 <dom-module id="notes-page">
@@ -90,7 +96,6 @@
     <!-- <firebase-auth id="auth" user="{{user}}"> </firebase-auth> -->
     <firebase-query
       id="query"
-      
       path="/users/[[user.uid]]/notes"
       data="{{notes}}">
    </firebase-query>

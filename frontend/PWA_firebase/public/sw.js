@@ -25,13 +25,12 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open('bizrecv1').then(cache => {
       return cache.addAll([
+        'bower_components/webcomponentsjs/webcomponents-loader.js',
         `/`,
         `/index.html?timestamp=${timeStamp}`,
         `/ice.html?timestamp=${timeStamp}`,
         `/images/*?timestamp=${timeStamp}`,
-        'manifest.json=${timeStamp}',
-        'bower_components/webcomponentsjs/webcomponents-loader.js',
-        'images/*'
+        'manifest.json=${timeStamp}'
       ])
       .then(() => self.skipWaiting());
     })
