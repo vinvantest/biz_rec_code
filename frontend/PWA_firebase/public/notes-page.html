@@ -4,8 +4,7 @@
 <link rel="import" href="lazy-import.html">
 
 <dom-module id="notes-page">
-
-  <template>
+ <template is="dom-bind">
   <style include="shared-styles">
     :host {
         @apply(--layout-vertical);
@@ -91,6 +90,7 @@
     <!-- <firebase-auth id="auth" user="{{user}}"> </firebase-auth> -->
     <firebase-query
       id="query"
+      
       path="/users/[[user.uid]]/notes"
       data="{{notes}}">
    </firebase-query>
@@ -290,12 +290,21 @@
                 },
                 user: {
                   type: Object,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_userChanged',
                 },
                 signedin: {
                   type: Boolean,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_signedinChanged',
                 },
                 statusKnown: {
                   type: Boolean,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_statusChanged',
                 },
                 myDate: {
                     type: String,
@@ -311,6 +320,19 @@
         _myDateChanged() {
           // if date is changed
 
+        }
+
+        _userChanged(user){
+          this.user = user;
+          //this.$.user.value = user;
+        }
+
+        _signedinChanged(signedin){
+          this.signedin = signedin;
+        }
+
+        _statusChanged(statusKnown){
+          this.statusKnown = statusKnown;
         }
 
         _addNote(){

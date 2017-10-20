@@ -15,7 +15,7 @@
 -->
 
 <dom-module id="login-page">
-  <template>
+  <template is="dom-bind">
     <style include="shared-styles">
     :host {
         @apply(--layout-vertical);
@@ -128,12 +128,23 @@
     </style>
     <firebase-auth
         id="auth"
+
         user="{{user}}"
-        provider="google"
-        status-known="{{statusKnown}}"
         signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
         on-error="_handleError">
     </firebase-auth>
+    
+<!-- works in login but not in notes-page
+    <firebase-auth
+        id="auth"
+        app-name="bizrec-dev"
+        user="{{user}}"
+        signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
+        on-error="_handleError">
+    </firebase-auth>
+  -->
 
     <template is="dom-if" if="[[!user]]">
       <div>
@@ -208,135 +219,10 @@
         </div>
       </paper-dialog>
 
-      <fb:login-button scope="public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location" onlogin="checkLoginState();">
-      </fb:login-button>
-
   </template>
 
   <script>
 
-    window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '149916412415698',
-            cookie     : true,  // enable cookies to allow the server to access
-                                // the session
-            xfbml      : true,  // parse social plugins on this page
-            version    : 'v2.8' // use graph api version 2.8
-          });
-
-          // Now that we've initialized the JavaScript SDK, we call
-          // FB.getLoginStatus().  This function gets the state of the
-          // person visiting this page and can return one of three states to
-          // the callback you provide.  They can be:
-          //
-          // 1. Logged into your app ('connected')
-          // 2. Logged into Facebook, but not your app ('not_authorized')
-          // 3. Not logged into Facebook and can't tell if they are logged into
-          //    your app or not.
-          //
-          // These three cases are handled in the callback function.
-
-          FB.getLoginStatus(function(response) {
-            statusChangeCallback(response);
-          });
-
-    };
-
-    // Load the SDK asynchronously
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=149916412415698";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-
-    // This function is called when someone finishes with the Login
-    // Button.  See the onlogin handler attached to it in the sample
-    // code below.
-    function checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-      });
-    }
-
-    // This is called with the results from from FB.getLoginStatus().
-    function statusChangeCallback(response) {
-      console.log('statusChangeCallback');
-      console.log(response);
-      // The response object is returned with a status field that lets the
-      // app know the current login status of the person.
-      // Full docs on the response object can be found in the documentation
-      // for FB.getLoginStatus().
-      if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        // the user is logged in and has authenticated your
-        // app, and response.authResponse supplies
-        // the user's ID, a valid access token, a signed
-        // request, and the time the access token
-        // and signed request each expire
-        var uid = response.authResponse.userID;
-        var accessToken = response.authResponse.accessToken;
-        testAPI();
-      } else if (response.status === 'not_authorized') {
-        // the user is logged in to Facebook,
-        // but has not authenticated your app
-      }
-       else {
-        // The person is not logged into your app or we are unable to tell.
-        document.getElementById('toast').show('Please log into this app.');
-      }
-
-    }
-
-    // Here we run a very simple test of the Graph API after login is
-    // successful.  See statusChangeCallback() for when this call is made.
-    function testAPI() {
-      console.log('Welcome!  Fetching your information.... ');
-      FB.api('/me?fields=name,email,picture', function(response) {
-        console.log('Successful login for: ' + response.name);
-        console.log('TestAPI() response object ->' + JSON.stringify(response));
-        /*
-        {
-        	"name": "Vinayak Vanarse",
-        	"email": "vinvan_pict@yahoo.com",
-        	"picture": {
-        		"data": {
-        			"is_silhouette": false,
-        			"url": "https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/20770353_10155345596091690_4633787364069113133_n.jpg?oh=3eeb694b48a9a73f6774e67f066a5479&oe=5A68CD0C"
-        		}
-        	},
-        	"id": "10155511839396690"
-        }
-        */
-        this.user.displayName = response.name;
-        this.user.photoURL = response.picture.data.url;
-        this.user.email = response.email;
-        this.user.uid = response.id;
-        document.getElementById('toast').show('Thanks for logging in, ' + response.name + '!');
-      });
-    }
-
-/* response object
-{
-    status: 'connected',
-    authResponse: {
-        accessToken: '...',
-        expiresIn:'...',
-        signedRequest:'...',
-        userID:'...'
-    }
-
-    status specifies the login status of the person using the app. The status can be one of the following:
-    connected - the person is logged into Facebook, and has logged into your app.
-    not_authorized - the person is logged into Facebook, but has not logged into your app.
-    unknown - the person is not logged into Facebook, so you don't know if they've logged into your app or FB.logout() was called before and therefore, it cannot connect to Facebook.
-    authResponse is included if the status is connected and is made up of the following:
-    accessToken - contains an access token for the person using the app.
-    expiresIn - indicates the UNIX time when the token expires and needs to be renewed.
-    signedRequest - a signed parameter that contains information about the person using the app.
-    userID - the ID of the person using the app.
-}*/
     class LoginPage extends Polymer.Element {
       static get is() { return 'login-page'; }
 
@@ -344,16 +230,26 @@
         return {
           user: {
             type: Object,
+            notify: true,
+            readOnly: false,
+            observer: '_userChanged',
           },
-          signedin: Boolean,
+          signedin: {
+            type: Boolean,
+            notify: true,
+            readOnly: false,
+            observer: '_signedinChanged',
+          },
           statusKnown: {
             type: Boolean,
+            notify: true,
+            readOnly: false,
+            observer: '_statusChanged',
           },
           storedUser: {
             type: Object,
             value: {
-              name: "",
-              photo_url: "",
+              name: ""
             }
           },
           errorlogin: {
@@ -370,72 +266,59 @@
         };
       }
 
+      _userChanged(user){
+        console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
+        this.user = user;
+        console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
+        //this.$.user.value = user;
+      }
+
+      _signedinChanged(signedin){
+        this.signedin = signedin;
+      }
+
+      _statusChanged(statusKnown){
+        this.statusKnown = statusKnown;
+      }
+
     hire(e) {
         this.$.dialog.toggle();
      }
 
-     facebookLogin(){
-       return FB.login(function(response) {
-         // handle the response
-               if (response.status === 'connected') {
-                 // Logged into your app and Facebook.
-                 document.getElementById('toast').show('You are logged in!');
-                 console.log('Facebook Login Response ->' + JSON.stringify(response));
-                 /*
-                 Facebook Login Response - > {
-                    	"authResponse": {
-                    		"accessToken": "EAACIWSKCDtIBACZAmRukgsWESkOCwZDZD",
-                    		"userID": "10155511839396690",
-                    		"expiresIn": 4476,
-                    		"signedRequest": "WvKMOAS88Saj_FKGWMnpmYTU5OTM5NjY5MCJ9",
-                    		"grantedScopes": "user_birthday,user_location,user_likes,user_website,user_about_me,email,public_profile"
-                    	},
-                    	"status": "connected"
-                    }
-                 */
-                 //do other stuff
-                 this.isFacebookSignedIn = true;
-                 this.isGoogleSignedIn = false;
-                 this.signedin = true;
-                 var userBody = {
-                   uid: response.authResponse.userID
-                 }
-                 this.user = userBody;
-                 /* public_profile (Default)
-                 id
-                 cover
-                 name
-                 first_name
-                 last_name
-                 age_range
-                 link
-                 gender
-                 locale
-                 picture
-                 timezone
-                 updated_time
-                 verified
-                 */
+     Logout()
+     {
+         FB.logout(function(){
+            document.location.reload();
+          });
+     }
 
-                 // get public profile info once you console out the reponose object
-                 testAPI();
-                 //this.$.dialog.toggle();
-               } else {
-                 // The person is not logged into this app or we are unable to tell.
-                 document.getElementById('toast').show('Error login to your account!');
-               }
-       }, {
-           scope: 'public_profile,email,user_likes,user_birthday,user_about_me,user_website,user_location',
-           return_scopes: true
-         });
+     facebookLogin(){
+       this.$.dialog.toggle();
+       console.log('inside login-page facebookLogin()');
+       var provider = new firebase.auth.FacebookAuthProvider();
+       provider.addScope('user_likes');
+       provider.addScope('user_birthday');
+       provider.addScope('public_profile');
+       provider.addScope('email');
+       return this.$.auth.signInWithPopup(provider).then(function (result){
+         console.log('result' + JSON.stringify(result));
+         document.getElementById('toast').show(result.user.displayName +' are signed in using facebook!');
+        });
+
+        //https://www.facebook.com/v2.8/dialog/oauth?response_type=code%2Cgranted_scopes&client_id=149916412415698&redirect_uri=https%3A%2F%2Fbizrec-dev.firebaseapp.com%2F__%2Fauth%2Fhandler&scope=email%2Cpublic_profile%2Cuser_likes%2Cuser_birthday&state=ALV3dNSDmVZ2hgNb4R4yYxtd_1yL9flYCUAU30ucxn_zOrvSW5cvjxTK7-n4VZrU5bCeVbs9TN624bCdOs1RbQoVNYze_BUArGIFk7V82qiyF0sDMDeGGKLPiZzFihynvt7O4OFeKh0_9Jkz_M6AGeHZhcS0VFJUZlzlteGUrp_c9R8KonwpR9LrWC-rzhHqKIpJHXvohL8juMRSnSrJ1KNiUB_1NcITTDSCtZ1QibMN4oSjDdfkBbnFVgZHTFxu1mK4IdI5htj7caq88Ow3tfz-ZKPqGLgrIfg-txGJzxxScG1bFzkk8NCJm3_h5iiwGzcWIQ81BJMxvgScuhKy1cBr-7RcAiw1wRH5UzxTrwBnUFs9dTMGN3KJwSwqZDlfM3uo2sITSm9N9h2A5oIgbIyNoFxdqcWI-4f-6wAX-ZJ99w&display=popup
      }
 
      googleSignIn(){
          this.$.dialog.toggle();
-         //alternative code
-          return this.$.auth.signInWithPopup().then(function (result){
+         console.log('inside login-page googleSignIn()');
+         var provider = new firebase.auth.GoogleAuthProvider();
+         provider.addScope('https://www.googleapis.com/auth/plus.login');
+         provider.addScope('profile');
+         provider.addScope('email');
+         return this.$.auth.signInWithPopup(provider).then(function (result){
+          //return this.$.auth.signInWithPopup().then(function (result){
             //do something on success
-            document.getElementById('toast').show('You are signed in!');
+            document.getElementById('toast').show(result.user.displayName +' are signed in using google!');
             this.storedUser = result.user;
             this.isGoogleSignedIn = true;
           }).catch(function (e){
@@ -496,68 +379,13 @@
                console.log('app domain is not authorized for OAuth operations for your Firebase project. Edit the list of authorized domains from the Firebase console');
              }
         });
-        /************ alternate code
-           //return this.$.auth.signInWithPopup().then(function (result){
-           return this.$.auth.signInWithRedirect().then(function (result){
-               document.getElementById('toast').show('You are signed in!');
-
-               /* not working - can't access this.storedUser or this.$.storedUser
-               //console.log(JSON.stringify(result));
-               // This gives you a Google Access Token
-               var token = result.credential.accessToken;
-               // The signed-in user info
-               var storedUserX = result.user;
-               this.$.storedUser = {
-                       name: storedUserX.displayName,
-                       photo_url: storedUserX.photo_url,
-                       id_token: storedUserX.id_token,
-                       access_token: token,
-                       loggedin: true
-                   };
-
-               }).catch(function(error) {
-                   // Handle Errors here.
-                   console.log(error);
-                   /*
-                   var errorCode = error.code;
-                   this.$.errorlogin = error.code + ' :: '+ error.message;
-                   var errorMessage = error.message;
-                   // The email of the user's account used.
-                   var email = error.email;
-                   // The firebase.auth.AuthCredential type that was used.
-                   var credential = error.credential;
-                   console.log('Error during the login -', email, ': ', errorCode, ' - ', errorMessage);
-
-               });*************/
      }
 
      _logout(){
-           if(isGoogleSignedIn)
-           {
              return this.$.auth.signOut().then(function (result){
-               //this.$.toastSignOut.open();
-               //Polymer.dom(this.$.toastSignOut).open();
-               //this.errorlogin = '';
-               //this.storedUser = null;
                document.getElementById('toast').show('Signed Out!');
              });
-           }
-           else {
-             console.log('not google signed in user');
-           }
-           if(isFacebookSignedIn)
-           {
-             FB.logout(function(response) {
-                 // Person is now logged out
-                 isFacebookSignedIn = false;
-                 return;
-              });
-           }
-           else {
-             console.log('not facebook signed in user');
-           }
-
-     }
+       }
 
 
   }

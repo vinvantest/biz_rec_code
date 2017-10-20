@@ -55,18 +55,17 @@ initialize the SDK after all desired features are loaded
     <script defer src="/__/firebase/init.js"></script>
  -->
 
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-messaging.js"></script>
-
-    <!-- Leave out Storage -->
-    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-storage.js"></script>
-
+    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="bower_components/firebase/firebase-app.js"></script>
+    <script src="bower_components/firebase/firebase-auth.js"></script>
+    <script src="bower_components/firebase/firebase-database.js"></script>
+    <script src="bower_components/firebase/firebase-firestore.js"></script>
+    <script src="bower_components/firebase/firebase-messaging.js"></script>
+    <script src="bower_components/firebase/firebase-storage.js"></script>
     <script>
         var configFirebase = {
-        //app_name: "bizrec-dev",
+        app_name: "bizrec-dev",
         authDomain: "bizrec-dev.firebaseapp.com",
         databaseURL: "https://bizrec-dev.firebaseio.com/",
         apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
@@ -78,12 +77,23 @@ initialize the SDK after all desired features are loaded
 
     <firebase-app
         auth-domain="bizrec-dev.firebaseapp.com"
+    
         database-url=databaseURL: "https://bizrec-dev.firebaseio.com/"
         api-key="AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8"
         storage-bucket="bizrec-dev.appspot.com"
         messaging-sender-id="531391633867">
     </firebase-app>
 
+<!-- works in login but not in notes
+    <firebase-app
+        auth-domain="bizrec-dev.firebaseapp.com"
+        name="bizrec-dev"
+        database-url=databaseURL: "https://bizrec-dev.firebaseio.com/"
+        api-key="AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8"
+        storage-bucket="bizrec-dev.appspot.com"
+        messaging-sender-id="531391633867">
+    </firebase-app>
+  -->
     <script>
       /**
       * [polymer-root-path]
@@ -124,8 +134,7 @@ initialize the SDK after all desired features are loaded
      }
     </script>
 
-    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
     <script>
         if (!window.HTMLImports) {
             HTMLImports={};
@@ -176,20 +185,6 @@ initialize the SDK after all desired features are loaded
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>
-
-        <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
-        <script>
-            // Initialize Firebase -- above line and script added after deploy
-            var config = {
-              apiKey: "AIzaSyAareWgpGBiGzv5PE_Z21jnaYmRpfYx9H8",
-              authDomain: "bizrec-dev.firebaseapp.com",
-              databaseURL: "https://bizrec-dev.firebaseio.com",
-              projectId: "bizrec-dev",
-              storageBucket: "bizrec-dev.appspot.com",
-              messagingSenderId: "531391633867"
-            };
-            firebase.initializeApp(config);
-      </script>
 
   </body>
 </html>

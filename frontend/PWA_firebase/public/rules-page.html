@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="lazy-import.html">
 
 <dom-module id="rules-page">
-  <template>
+  <template is="dom-bind">
   <style include="shared-styles">
     :host {
       display: block;
@@ -131,13 +131,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return {
           user: {
             type: Object,
+            notify: true,
+            readOnly: false,
+            observer: '_userChanged',
           },
           signedin: {
             type: Boolean,
-          },,
+            notify: true,
+            readOnly: false,
+            observer: '_signedinChanged',
+          },
           statusKnown: {
             type: Boolean,
-          }
+            notify: true,
+            readOnly: false,
+            observer: '_statusChanged',
+          },
           users: {
             type: Array,
             value: [
@@ -148,6 +157,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
 
         };
+      }
+
+      _userChanged(user){
+        this.user = user;
+        //this.$.user.value = user;
+      }
+
+      _signedinChanged(signedin){
+        this.signedin = signedin;
+      }
+
+      _statusChanged(statusKnown){
+        this.statusKnown = statusKnown;
       }
 
       sendPost(){

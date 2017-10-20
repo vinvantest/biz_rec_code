@@ -4,7 +4,7 @@
 <link rel="import" href="lazy-import.html">
 
 <dom-module id="dialog-html">
-  <template>
+  <template is="dom-bind">
     <style include="shared-styles">
     :host {
         @apply(--layout-vertical);
@@ -191,16 +191,38 @@
               return {
                 user: {
                   type: Object,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_userChanged',
                 },
                 signedin: {
                   type: Boolean,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_signedinChanged',
                 },
                 statusKnown: {
                   type: Boolean,
+                  notify: true,
+                  readOnly: false,
+                  observer: '_statusChanged',
                 }
               };
             }
 
+            _userChanged(user){
+              this.$.user = user;
+              //this.$.user.value = user;
+            }
+
+            _signedinChanged(signedin){
+              this.$.signedin = signedin;
+            }
+
+            _statusChanged(statusKnown){
+              this.$.statusKnown = statusKnown;
+            }
+            
             hire(e) {
               if(this.signedin)
                 console.log('user ->'+this.user.displayName);

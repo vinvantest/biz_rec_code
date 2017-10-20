@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="not-found-404.html">
 
 <dom-module id="my-app">
-  <template>
+  <template is="dom-bind">
     <style>
       :host {
         display: block;
@@ -106,15 +106,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         messaging-sender-id="[[configFirebase.messagingSenderId]]">
     </firebase-app>
     -->
+
     <firebase-auth
         id="auth"
+        user="{{user}}"
+        signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
+        on-error="_handleError">
+    </firebase-auth>
+
+<!-- works in login but fails in notes-page
+    <firebase-auth
+        id="auth"
+        app-name="bizrec-dev"
         user="{{user}}"
         provider="google"
         signed-in="{{signedIn}}"
         status-known="{{statusKnown}}"
         on-error="_handleError">
     </firebase-auth>
-
+  -->
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route
         route="{{route}}"
@@ -335,18 +346,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           rootPath: String,
           user: {
             type: Object,
+            notify: true,
+            readOnly: false,
+            observer: '_userChanged',
+          },
+          signedin: {
+            type: Boolean,
+            notify: true,
+            readOnly: false,
+            observer: '_signedinChanged',
           },
           statusKnown: {
             type: Boolean,
-            value: false
-          },
-          signedIn:{
-            type: Boolean,
-            value: false,
-            //observer: "_signedInChanged"
-          },
-
+            notify: true,
+            readOnly: false,
+            observer: '_statusChanged',
+          }
         };
+      }
+
+      _userChanged(user){
+        console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
+        this.user = user;
+        console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
+        //this.$.user.value = user;
+      }
+
+      _signedinChanged(signedin){
+        this.signedin = signedin;
+      }
+
+      _statusChanged(statusKnown){
+        this.statusKnown = statusKnown;
       }
 
       static get observers() {
@@ -381,6 +412,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _login() {
+          console.log('inside my-app _login()');
           var provider = new firebase.auth.GoogleAuthProvider();
           provider.addScope('https://www.googleapis.com/auth/plus.login');
           return this.$.auth.signInWithPopup(provider).then(function (result){
