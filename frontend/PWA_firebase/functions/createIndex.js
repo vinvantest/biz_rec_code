@@ -79,7 +79,7 @@ function failure (res, data, httpCode) {
 
 function handlePOST (req, res) {
   // Do something with the POST request
-  //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=users_template_v1&templateType=users
+  //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=users_index_v1&templateType=users
   //no body {}
    var resMsg = '';
    console.log('Inside serer.post(addTemplatetoES)');
@@ -149,49 +149,59 @@ function handlePOST (req, res) {
       case "users":
             console.log('indexName ['+indexName+'] will use Users Template');
             break;
+      case "settings":
+            console.log('indexName ['+indexName+'] will use settings Template');
+            break;
       default:
             console.log('Error: no matching templateType specified for the indexName ['+indexName+']');
             failure(res,'Error: no matching templateType specified for the indexName ['+indexName+']',404);
     }//end switch
 
 	 console.log('Checking if index Exists('+indexName+')');
-	 esClient.indices.exists(indexName)
-		 .then(function (resp) {//index exists
-				console.log('Index ['+indexName+'] already exists in ElasticSearch. Response is ->'+resp);
-				resMsg = 'Index ['+indexName+'] already exists in ElasticSearch'+JSON.stringify(resp);
-				//check if mapping exists
-				esClient.indices.getMapping({index: indexName})
-					.then(function (response) {
-							resMsg = 'Mapping ['+indexName+'] already exists. Start creating documents. ' + JSON.stringify(response);
-							//esClient.close(); //close it in lambda only
-							success(res,resMsg);
-					},function (error){//mapping doesn't exists
-						console.log('Mapping ['+indexName+'] Not created. Before use create mapping' + JSON.stringify(error));
-						resMsg = 'Mapping ['+indexName+'] Not created. Before use create mapping'+ JSON.stringify(error);
-						//context.succeed(responder.success(JSON.stringify(resMsg)));
-						//esClient.close(); //close it in lambda only
-						success(res,resMsg);
-				});//end indices.getMapping()
-	     }, function (err){ //index dosen't exist. Create one.
-			console.log('Index does not Exists! ... Creating ['+indexName+'] now! Error value is ->'+JSON.stringify(err));
-			resMsg = 'Creating ['+indexName+'] now!'+JSON.stringify(err);
-			esClient.indices.create({index: indexName})
-				.then(function (response) {
-					    console.log('Index ['+indexName+'] Created! Before use create mapping -> '+ JSON.stringify(response));
-						  resMsg = 'Index ['+indexName+'] Created with standard of template mapping.';
-              /* Add alias to indexName before inserting documents */
-              //you won't know what alias to use in the index ... do it at document insertion
-						//context.succeed(responder.success(JSON.stringify(resMsg)));
-						//esClient.close(); //close it in lambda only
-						success(res,resMsg);
-					}, function (error) {
-						console.log('Error: creating index ['+indexName+'] -> ' +JSON.stringify(error));
-						resMsg = 'Error: creating index ['+indexName+']'+JSON.stringify(error);
-						//context.fail(responder.internalServerError('Error: elasticsearch cannot create index and put mapping! -> '+error));
-						//esClient.close(); //close it in lambda only
-						failure(res,resMsg + ' - ' + error,500);
-					});
-	    });//end then - indices.exists()
+	 esClient.indices.exists( { index : indexName } )
+		 .then(function (error,resp) {
+        //index exists check
+        console.log('error value -' + error);
+        console.log('response value - ' + resp);
+
+        if(error){
+          console.log('Index ['+indexName+'] already exists in ElasticSearch. Response is ->'+resp);
+  				resMsg = 'Index ['+indexName+'] already exists in ElasticSearch'+ resp;
+  				//check if mapping exists
+  				esClient.indices.getMapping({index: indexName})
+  					.then(function (response) {
+  							resMsg = 'Mapping ['+indexName+'] already exists. Start creating documents. ' + response;
+  							//esClient.close(); //close it in lambda only
+  							success(res,resMsg);
+  					},function (error){//mapping doesn't exists
+  						console.log('Mapping ['+indexName+'] Not created. Before use create mapping' + JSON.stringify(error));
+  						resMsg = 'Mapping ['+indexName+'] Not created. Before use create mapping'+ error;
+  						//context.succeed(responder.success(JSON.stringify(resMsg)));
+  						//esClient.close(); //close it in lambda only
+  						success(res,resMsg);
+  				});//end indices.getMapping()
+        } // end if
+        else {
+         //index dosen't exist. Create one.
+    			console.log('Index does not Exists! ... Creating ['+indexName+'] now! Error value is ->'+ error);
+    			resMsg = 'Creating ['+indexName+'] now!' + error;
+    			esClient.indices.create({index: indexName})
+    				.then(function (errorCreate, responseCreate) {
+                  console.log('Creating Index - errorCreate value is = ' + errorCreate);
+                  console.log('Create Index - responseCreate value is =' + responseCreate);
+                  if(errorCreate){
+                    console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + responseCreate);
+      						  resMsg = 'Index ['+indexName+'] Created with standard template mapping.';
+       						  success(res,resMsg);
+                  }
+                  else{
+                    console.log('Error: creating index ['+indexName+'] -> ' + errorCreate);
+        						resMsg = 'Error: creating index ['+indexName+']' + errorCreate;
+        						failure(res,resMsg,500);
+                  }
+    					});//end then - create()
+             } //end else
+    });//end then - indices.exists()
 
 }
 

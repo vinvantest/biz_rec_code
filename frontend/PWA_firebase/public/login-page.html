@@ -109,7 +109,6 @@
     #anonSignIn:hover{
         background-color: #414040;
     }
-
       a paper-button,
       a:hover paper-button,
       a:link paper-button,
@@ -125,7 +124,13 @@
       a:active { text-decoration:none; }
       a:link { text-decoration:none; }
 
+      paper-dialog-login{
+        paper-dialog-background-color: black;
+        background-color: #000000;
+      }
+
     </style>
+
     <firebase-auth
         id="auth"
         user="{{user}}"
@@ -160,9 +165,8 @@
             </div>
       </template>
 
-      <paper-dialog id="dialog" backdrop transition="core-transition-bottom" >
+      <paper-dialog id="dialog" backdrop transition="core-transition-bottom" class="paper-dialog-login">
         <div id="signindiv">
-
             <H3>Sign in</H3>
             <div style="float:left; width:100%" class"box">
                 <paper-button id="googSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="googleSignIn" data-auth="#google" raised>
@@ -197,16 +201,16 @@
                               <polygon class="st3" points="132,132 43,63.1 31.6,54.5 132,25.8"/></g></g>
                           </svg>
                       </div>
-                    Google
-                    </paper-button>
+                     Google
+                  </paper-button>
                   <paper-button id="fbSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="facebookLogin" data-auth="#facebook" raised>
                     <div style="width:15px; height:15px">
                         <svg viewBox="0 0 7.94 16.74" style="height:15px;fill:white;">
                             <path d="M5.39,16.79H2.29V8.52H0.22V5.67H2.29V4c0-2.32.63-3.74,3.37-3.74H7.94V3.1H6.51c-1.07,0-1.12.4-1.12,1.14V5.67H8L7.65,8.52H5.39v8.27Z" transform="translate(-0.12 -0.15)" style="stroke:#000;stroke-miterlimit:10;stroke-width:0.20000000298023224px"/>
                         </svg>
                     </div>
-                    Facebook
-                  </paper-button>
+                 Facebook
+                </paper-button>
                   <paper-button id="twtrSignIn" class$="signInButton {{_getMiniClass()}}" on-tap="twitterSignIn" data-auth="#twitter" raised>
                     <div style="width:15px; height:15px; padding: 0 8px 0 2px;">
                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20.34 16.17">

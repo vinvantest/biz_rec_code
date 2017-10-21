@@ -1,5 +1,5 @@
 var suppliersTemplate = {
-  "template" : "suppliers-*",
+  "template" : "suppliers_*",
   "order" : 9,
   "settings": {
     "index": {

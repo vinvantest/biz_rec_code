@@ -1,5 +1,5 @@
 var notesTemplate = {
-  "template" : "notes-*",
+  "template" : "notes_*",
   "order" : 9,
   "settings": {
     "index": {

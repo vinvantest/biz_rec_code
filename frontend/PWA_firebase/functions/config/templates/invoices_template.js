@@ -1,5 +1,5 @@
 var invoicesTemplate = {
-  "template" : "invoices-*",
+  "template" : "invoices_*",
   "order" : 9,
   "settings": {
     "index": {

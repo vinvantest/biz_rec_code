@@ -102,6 +102,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </style>
 
+  <iron-ajax
+          id="checkUserExistAndSetup"
+          method="POST"
+          url="{{url}}"
+          body="{{postBody}}"
+          handle-as="json"
+          content-type="application/json"
+          on-response="handleResponseAJAXCheckUser"
+          on-error="handleErrorAJAXCheckUser"
+          last-response="{{responseData}}"
+          last-error="{{lastError}}">
+  </iron-ajax>
+
   <paper-card style="float:center; width: 70%" class="black">
      <h4 style="color: white;">Home</h4>
   </paper-card>
@@ -116,6 +129,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
     </div>
   </template>
+
+  <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+    <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
+      <div>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+            <paper-spinner active class="multi"></paper-spinner>
+            <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+     </div>
+  </paper-dialog>
+
+  <template is="dom-if" if="[[ajaxError]]">
+            <paper-card style="float:center; width: 90%">
+              <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong>
+              </div>
+              <div>
+                <p>AjaxError: [[ajaxErrorMsg]]</p>
+                <p>lastError.request: [[lastError.request]]</p>
+                <p>lastError.error: [[lastError.error]]</p>
+                <p>lastError.status: [[lastError.status]]</p>
+                <p>lastError.statusText: [[lastError.statusText]]</p>
+                <p>lastError.response: [[lastError.response]]</p>
+              </div>
+              <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+              <p>....</p>
+            </paper-card>
+ </template>
 
 <template is="dom-if" if="[[signedin]]">
 
@@ -242,12 +281,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             notify: true,
             readOnly: false,
             observer: '_statusChanged',
+          },
+          active: {
+            type: Boolean,
+            value: false,
+          },
+          ajaxError: {
+            type: Boolean,
+            value: false,
+          },
+          ajaxErrorMsg: {
+            type: String,
+          },
+          lastError: {
+            type: Object,
+          },
+          responseData: {
+            type: Object,
           }
         };
       }
 
       _userChanged(user){
         this.user = user;
+        console.log('Calling sendPostUserCheckAndSetup() from LandingPage');
+        sendPostUserCheckAndSetup();
         //this.$.user.value = user;
       }
 
@@ -262,6 +320,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       reloadPage(){
         //console.log('inside reloadPage');
         location.reload(true);
+      }
+
+      sendPostUserCheckAndSetup(){
+        this.$.dialogBusy.toggle();
+        this.active = true;
+
+        var temp = this.$.checkUserExistAndSetup;
+        //temp = this.$.checkUserExistAndSetup;
+        console.log('temp is->'+temp);
+        temp.url = "https://us-central1-bizrec-dev.cloudfunctions.net/createUser";
+        temp.params = { isSubscribed: false, isNotified: false };
+        temp.body = this.user;
+        let request = temp.generateRequest();
+        request.completes.then( function(req) {
+            // succesful request, argument is iron-request element
+            console.log('iron request element is->'+req);
+            return;
+          }, function(rejected) {
+            // failed request, argument is an object
+            let req = rejected.request;
+            let error = rejected.error;
+            console.log('API Call - User Insertion - rejected');
+            console.log('req=', req, '    error=', error);
+            return;
+          });
+      }
+
+      handleResponseAJAXCheckUser(data){
+        console.log('inside ***  handleResponseAJAXCheckUser(data)');
+        this.active = false;
+        this.$.dialogBusy.toggle();
+        //var parsedResponse = JSON.stringify(data.detail.response);
+        //console.log('displayName: '+ parsedResponse);
+        const responseX = data.detail;
+        console.log('status', responseX.status, responseX.statusText);
+        var x = responseX.status;
+        switch(true){
+          case (x === 200):
+              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
+              console.log('last response _'+ this.responseData);
+              break;
+          case (x === 404):
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error: Record not found : ' + JSON.stringify(data.detail.response);
+              console.log('Error: Record not found : ' + JSON.stringify(data.detail.response));
+              break;
+          case (x >= 400 && x < 500):
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error (400): Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+              break;
+          case (x >= 500 && x < 600):
+                  this.ajaxError = true;
+                  this.ajaxErrorMsg = 'Error (500): Something went wrong: ';
+                  console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+                  break;
+          default:
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error: Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+        }
+
+      }
+
+      handleErrorAJAXCheckUser(event){
+        console.log('inside ***  handleErrorAJAXCheckUser(event)');
+        var error = event.detail.request.xhr.response;
+        console.log('error -->'+error);
+        // I think one of those two would be what you're looking for.
+        const req = event.detail.request;
+        console.log('event', event);
+        console.log('status code', req.status);
+        console.log('status text', req.statusText);
+        this.ajaxError = true;
+        this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
       }
 
     }

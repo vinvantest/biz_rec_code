@@ -1,5 +1,5 @@
 var settingsTemplate = {
-  "template" : "settings-*",
+  "template" : "settings_*",
   "order" : 9,
   "settings": {
     "index": {

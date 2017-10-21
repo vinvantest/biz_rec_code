@@ -1,5 +1,5 @@
 var transactionsTemplate = {
-  "template" : "transastions-*",
+  "template" : "transastions_*",
   "order" : 9,
   "settings": {
     "index": {

@@ -24,6 +24,9 @@ var getSupplierFunction = require('./getSupplier');
 var getTransactionsFunction = require('./getTransactions');
 var getTransactionFunction = require('./getTransaction');
 var createUserFunction = require('./createUser');
+var deleteIndexFunction = require('./deleteIndex');
+var deleteTemplateFunction = require('./deleteTemplate');
+
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 var functions = require('firebase-functions');
@@ -112,4 +115,12 @@ exports.getTransactionFunction = functions.https.onRequest((req, res) => {
 
 exports.createUserFunction = functions.https.onRequest((req, res) => {
     createUserFunction.handler(req, res, database);
+});
+
+exports.deleteTemplateFunction = functions.https.onRequest((req, res) => {
+    deleteTemplateFunction.handler(req, res, database);
+});
+
+exports.deleteIndexFunction = functions.https.onRequest((req, res) => {
+    deleteIndexFunction.handler(req, res, database);
 });

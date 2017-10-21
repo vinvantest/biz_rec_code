@@ -1,5 +1,5 @@
 var coaTemplate = {
-  "template" : "coa-*",
+  "template" : "coa_*",
   "order" : 9,
   "settings": {
     "index": {

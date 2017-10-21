@@ -1,5 +1,5 @@
 var userTemplate = {
-  "template" : "users-*",
+  "template" : "users_*",
   "order" : 9,
   "settings": {
     "index": {

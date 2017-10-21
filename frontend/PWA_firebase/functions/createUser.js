@@ -84,7 +84,7 @@ function handlePOST (req, res)
 {
   // Do something with the POST request
    var resMsg = '';
-   console.log('Inside serer.post(getInvoices)');
+   console.log('Inside serer.post(createUser)');
    console.log('req.query.isSubscribed = ' + JSON.stringify(req.query.isSubscribed));
    console.log('req.query.isNotified = ' + JSON.stringify(req.query.isNotified));
    console.log('req.body.user = '+req.body.user);
@@ -152,7 +152,7 @@ function handlePOST (req, res)
    var usr_invoicePaymentBankAccountName_clm = configUser.usr_invoicePaymentBankAccountName ;
    var usr_invoicePaymentBankName_clm = configUser.usr_invoicePaymentBankName ;
 
-   var queryBody = {
+   var queryBodyUserObject = {
      usr_uid_clm: userBody.uid,
      usr_displayName_clm : userBody.displayName,
      usr_firstName_clm : 'usr_firstName',
@@ -252,17 +252,17 @@ function handlePOST (req, res)
 				resMsg = 'Index ['+config.users_index_name+'] already exists in ElasticSearch'+JSON.stringify(resp);
 				//check if uid exists
         //check if UID exists in users index using global_alisas_for_search_users_index
-        var queryBody = {
+        var queryBodyCheckUserExists = {
                  index : config.user_index_search_alias_name,
                  type : config.index_base_type,
                  usr_uid : userBody.uid
                };
-        esClient.get(queryBody)
+        esClient.get(queryBodyCheckUserExists)
           .then(function (resp) {
                 //User Uid exists
                 //Update the User object in ES with latest data
-                //esClient.search(queryBody)
-                esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBody})
+                //esClient.search(queryBodyCheckUserExists)
+                esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
                 .then(function (resp) {
                     resMsg = 'User Data existed and now updated Successfully!' ;
                     console.log(resMsg);
@@ -277,8 +277,8 @@ function handlePOST (req, res)
             }, function (error) {
                     resMsg = 'Error : User not found in user Index. Error - ' + JSON.stringify(error);
                     //Insert the User object in ES
-                    //esClient.search(queryBody)
-                    esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBody})
+                    //esClient.search(queryBodyUserObject)
+                    esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
                     .then(function (resp) {
                         resMsg = 'New User Data created Successfully!' ;
                         console.log(resMsg);

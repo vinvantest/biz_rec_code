@@ -1,5 +1,5 @@
 var customersTemplate = {
-  "template" : "customers-*",
+  "template" : "customers*",
   "order" : 9,
   "settings": {
     "index": {

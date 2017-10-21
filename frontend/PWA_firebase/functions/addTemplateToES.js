@@ -147,6 +147,9 @@ function handlePOST (req, res) {
       case "users":
          templateBody = require('./config/templates/users_template.js');
          break;
+      case "settings":
+            templateBody = require('./config/templates/settings_template.js');
+            break;
       default:
          resMsg = 'Error: no matching templateType specified';
          failure(res,resMsg,404);

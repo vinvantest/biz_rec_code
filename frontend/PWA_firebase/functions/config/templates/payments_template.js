@@ -1,5 +1,5 @@
 var paymentsTemplate = {
-  "template" : "payments-*",
+  "template" : "payments_*",
   "order" : 9,
   "settings": {
     "index": {

@@ -1,5 +1,5 @@
 var banksTemplate = {
-  "template" : "banks-*",
+  "template" : "banks_*",
   "order" : 9,
   "settings": {
     "index": {

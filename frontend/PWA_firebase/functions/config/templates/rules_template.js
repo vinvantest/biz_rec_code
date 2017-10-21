@@ -1,5 +1,5 @@
 var rulesTemplate = {
-  "template" : "rules-*",
+  "template" : "rules_*",
   "order" : 9,
   "settings": {
     "index": {
