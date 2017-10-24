@@ -61,6 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      <h4 style="color: white;">Page Not Found</h4>
   </paper-card>
 
+  <template is="dom-if" if="[[signedin]]">
     <div class="card">
       <div class="circle">0</div>
       <h1>Resource Not Found: &nbsp; 404</h1>
@@ -73,6 +74,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </a>
       </p>
     </div>
+  </template>
+
+    <template is="dom-if" if="[[!signedin]]">
+      <div class="card">
+        <div class="circle">
+            <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+        </div>
+        <h1>You have not loged in!</h1>
+        <p>Login to the app to get the latest data and full features of the app.</p>
+        <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
+      </div>
+    </template>
 
   </template>
 

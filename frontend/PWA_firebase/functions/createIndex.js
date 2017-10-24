@@ -81,6 +81,7 @@ function handlePOST (req, res) {
   // Do something with the POST request
   //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=users_index_v1&templateType=users
   //no body {}
+  //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=payments_index_v1&templateType=payments
    var resMsg = '';
    console.log('Inside serer.post(addTemplatetoES)');
    console.log('req.query. = ' + JSON.stringify(req.query.indexName));

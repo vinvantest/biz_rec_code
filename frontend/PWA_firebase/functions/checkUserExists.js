@@ -4,7 +4,7 @@ var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 var configUser = require('./config/specific/user_template_columns.js');
 
-function handleGET(req, res) {
+function handleGET (req, res) {
   // Do something with the GET request
   res.status(403).send('Forbidden!');
 }
@@ -86,37 +86,24 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/createUser?isSubscribed=true&isNotified=false
-// body {} -- user object body
+// https://us-central1-bizrec-dev.cloudfunctions.net/createUserFunction
+// body {user} -- user object body
 function handlePOST (req, res)
 {
   // Do something with the POST request
    var resMsg = '';
-   console.log('Inside serer.post(createUser)');
-   console.log('req.query.isSubscribed = ' + JSON.stringify(req.query.isSubscribed));
-   console.log('req.query.isNotified = ' + JSON.stringify(req.query.isNotified));
-   console.log('req.body.user = '+JSON.stringify(req.body.user));
-   var isSubscribed = req.query.isSubscribed;
-   var isNotified = req.query.isNotified;
+   console.log('Inside serer.post(checkUserExists())');
    var userBody = req.body.user;
    var isSubscribedBoolean = false;
    var isNotifiedBoolean = false;
 
-   if(isSubscribed === null || isSubscribed === undefined) {
-    resMsg = "Error: req.query.isSubscribed required to create Index in ES ->" + isSubscribed;
-    failure(res,resMsg,401);
-   }
-   if(isNotified === null || isNotified === undefined) {
-    resMsg = "Error: req.query.isNotified required to create Index in ES ->" + isNotified;
-    failure(res,resMsg,401);
-   }
    if(userBody === null || userBody === undefined) {
-    resMsg = "Error: req.query.userBody required to create Index in ES ->" + JSON.stringify(userBody);
+    resMsg = "Error: req.query.userBody required to create Index in ES. It's null or undefined ->"+userBody;
     failure(res,resMsg,401);
    }
-
-   if(isSubscribed.includes('true')) isSubscribedBoolean = true; else isSubscribedBoolean = false;
-   if(isNotified.includes('true')) isNotifiedBoolean = true; else isNotifiedBoolean = false;
+   else {
+     console.log('user object passed from client ->'+ JSON.stringify(userBody));
+   }
 
    console.log('config.user_index_name ='+config.user_index_name);
 
@@ -142,7 +129,7 @@ function handlePOST (req, res)
    var usr_companyAddState_clm = configUser.company_address_state ;
    var usr_companyAddPostCode_clm = configUser.company_address_postcode ;
    var usr_companyAddCountry_clm = configUser.company_address_country ;
-   var usr_url_clm = configUser.usr_url ;console.log('usr_url_clm = '+usr_url_clm);
+   var usr_url_clm = configUser.usr_url ; console.log('usr_url_clm = '+usr_url_clm);
    var usr_locale_clm = configUser.usr_locale ;
    var usr_currency_clm = configUser.usr_currency ;
    var usr_isSubscritionActive_clm = configUser.usr_isSubscritionActive ;
@@ -154,9 +141,9 @@ function handlePOST (req, res)
    var usr_isUserCloudConnected_clm = configUser.usr_isUserCloudConnected ;
    var usr_isDropBox_clm = configUser.usr_isDropBox ;
    var usr_isGoogle_clm = configUser.usr_isGoogle;
-   var usr_isBox_clm = configUser.usr_isBox ;
+   var usr_isBox_clm = configUser.usr_isBox ; console.log('usr_isBox_clm = '+usr_isBox_clm);
    var usr_isICloud_clm = configUser.usr_isICloud ;
-   var usr_isOneDrive_clm = configUser.usr_isOneDrive ; console.log('usr_isOneDrive_clm = '+usr_isOneDrive_clm);
+   var usr_isOneDrive_clm = configUser.usr_isOneDrive ;
    var usr_invoicePaymentBankBSB_clm = configUser.usr_invoicePaymentBankBSB ;
    var usr_invoicePaymentBankAccountNumber_clm = configUser.usr_invoicePaymentBankAccountNumber;
    var usr_invoicePaymentBankAccountName_clm = configUser.usr_invoicePaymentBankAccountName ;
@@ -254,8 +241,8 @@ function handlePOST (req, res)
 		  console.log("-- esClient Health --",resp);
 	});
 
-	 console.log('Checking if index Exists('+ config.user_index_name +')');
-	 esClient.indices.exists({index: config.user_index_name})
+	 console.log('Checking if index Exists('+config.user_index_name+')');
+	 esClient.indices.exists({ index: config.user_index_name})
 		 .then(function (error,resp) {
 
        console.log('error value -' + error);
@@ -291,24 +278,11 @@ function handlePOST (req, res)
                                 resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser;
                                 //esClient.close(); //use in lambda only
                                 success(res,resMsg);
-                        });
-                    }, function (error) {
-                            resMsg = 'Error : User not found in user Index. Creating new user record! Error - ' + error;
-                            console.log(resMsg);
-                            //Insert the User object in ES
-                            //esClient.search(queryBodyUserObject)
-                            esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
-                            .then(function (resp) {
-                                resMsg = 'New User Data created Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                success(res,resMsg);
-                                },
-                                  function (error) {
-                                    resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed!' + error;
-                                    //esClient.close(); //use in lambda only
-                                    failure(res,resMsg,500);
                             });
+                    }, function (error) {
+                            resMsg = 'Error : User not found in user Index -' + error;
+                            console.log(resMsg);
+                            failure(res, resMsg, 404);
                       });//End: check user exists
        }//end if
        else{
