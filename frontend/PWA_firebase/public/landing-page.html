@@ -100,35 +100,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       margin:  2px 2px 2px 2px;
     }
 
+    paper-button.green {
+      background-color: var(--paper-green-500);
+      color: white;
+    }
+    paper-button.green[active] {
+      background-color: var(--paper-red-500);
+    }
+
+    paper-checkbox {
+    font-family: 'Roboto', sans-serif;
+    margin: 24px;
+    }
+
+    paper-checkbox:first-child {
+      --primary-color: #ff5722;
+    }
+
+    paper-checkbox.styled {
+      align-self: center;
+      border: 0px solid var(--paper-grey-200);
+      padding: 8px 16px;
+      --paper-checkbox-checked-color: var(--paper-pink-500);
+      --paper-checkbox-checked-ink-color: var(--paper-black-500);
+      --paper-checkbox-unchecked-color: var(--paper-grey-500);
+      --paper-checkbox-unchecked-ink-color: var(--paper-grey-500);
+      --paper-checkbox-label-color: var(--paper-black-500);
+      --paper-checkbox-label-spacing: 0;
+      --paper-checkbox-margin: 8px 16px 8px 0;
+      --paper-checkbox-vertical-align: top;
+    }
+
+    paper-checkbox .subtitle {
+      display: block;
+      font-size: 0.8em;
+      margin-top: 2px;
+      max-width: 150px;
+    }
+
   </style>
 
-  <iron-ajax
-          auto
-          id="checkUserExists"
-          method="POST"
-          url="https://us-central1-bizrec-dev.cloudfunctions.net/checkUserExistsFunction"
-          body="{{user}}"
-          handle-as="json"
-          headers='{"Content-Type": "someConType", "Access-Control-Allow-Origin": "https://bizrec-dev.firebaseapp.com"}'
-          content-type="application/json"
-          on-response="handleResponseAJAXCheckUserExists"
-          on-error="handleErrorAJAXCheckUserExists"
-          last-response="{{responseDataUserExists}}"
-          last-error="{{lastErrorUserExists}}">
-  </iron-ajax>
-
+<!-- This works with params and body provided in the declaration
   <iron-ajax
           id="checkUserExistAndSetup"
           method="POST"
           url="{{url}}"
-          body="{{postBody}}"
+          body="{{user}}"
           handle-as="json"
+          headers='{"Access-Control-Allow-Origin": "https://bizrec-dev.firebaseapp.com"}'
           content-type="application/json"
-          on-response="handleResponseAJAXCheckUser"
-          on-error="handleErrorAJAXCheckUser"
+          on-response="handleResponseAJAXCheckUserAndSetup"
+          on-error="handleErrorAJAXCheckUserAndSetup"
           last-response="{{responseData}}"
           last-error="{{lastError}}">
   </iron-ajax>
+-->
+
+<iron-ajax
+        id="checkUserExistAndSetup"
+        method="POST"
+        url="{{url}}"
+        handle-as="json"
+        headers='{"Access-Control-Allow-Origin": "https://bizrec-dev.firebaseapp.com"}'
+        content-type="application/json"
+        on-response="handleResponseAJAXCheckUserAndSetup"
+        on-error="handleErrorAJAXCheckUserAndSetup"
+        last-response="{{responseData}}"
+        last-error="{{lastError}}">
+</iron-ajax>
 
   <paper-card style="float:center; width: 70%" class="black">
      <h4 style="color: white;">Home</h4>
@@ -154,30 +193,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      </div>
   </paper-dialog>
 
-  <paper-dialog id="dialogSetupUser" backdrop transition="core-transition-bottom">
-    <div><h4 style="color: grey;">Lets set you up</h4></div>
-            <div style="float:left; width:100%">
-                  <div id="leftThing" style="float:left; width:50%;">
-                  <paper-checkbox id="notifyCheckBox" checked class="styled">
-                    Notify
-                    <span class="subtitle">
-                      Recieve
-                    </span>
-                  </paper-checkbox>
-                </div>
-                <div id="leftThing" style="float:left; width:50%;">
-                  <paper-checkbox id="subscribeCheckBox" checked class="styled">
-                    Subscribe
-                    <span class="subtitle">
-                      Premium
-                    </span>
-                  </paper-checkbox>
-                </div>
+  <paper-card id="paperCardUserSetup" style="float: center; width: 80%" hidden$="[[signedin || firstLoadFlag]]">
+        <div style="float:left; width:100%">
+          <div id="leftThing0" style="float:left; width:25%;">
+                <paper-icon-button id="dashboard-icon-button0" icon="hardware:power-input" style="color: black;"></paper-icon-button>
             </div>
-            <div>
-                <paper-button raised on-tap="sendPostUserCheckAndSetup">Setup</paper-button>
+            <div id="leftThing1" style="float:left; width:25%;">
+              <paper-icon-button id="transactions-icon-button1" icon="hardware:power-input" style="color: black;"></paper-icon-button>
             </div>
-  </paper-dialog>
+          <div id="leftThing2" style="float:left; width:25%;">
+              <paper-icon-button id="payments-icon-button2" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+          <div id="leftThing3" style="float:right; width:25%;">
+                <paper-icon-button id="reports-icon-button3" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+        </div>
+          <div><span> &nbsp; </span></div>
+        <div><b><h4 style="color: black;">Let's sync your data with server!</h4></b></div>
+        <div style="float:left; width:100%">
+              <div id="leftThing" style="float:left; width:50%;">
+              <paper-checkbox id="notifyCheckBox" checked class="styled">
+                Notify
+                <span class="subtitle">
+                  notifications
+                </span>
+              </paper-checkbox>
+            </div>
+            <div id="leftThing" style="float:left; width:50%;">
+              <paper-checkbox id="subscribeCheckBox" checked class="styled">
+                Subscribe
+                <span class="subtitle">
+                  premium
+                </span>
+              </paper-checkbox>
+            </div>
+        </div>
+        <div>
+            <paper-button raised on-tap="sendPostUserCheckAndSetup" class="green">Start</paper-button>
+        </div>
+        <div><span> &nbsp; </span></div>
+        <div style="float:left; width:100%">
+          <div id="leftThing0" style="float:left; width:25%;" >
+                <paper-icon-button id="dashboard-icon-button0" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+            <div id="leftThing1" style="float:left; width:25%;">
+              <paper-icon-button id="transactions-icon-button1" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+          <div id="leftThing2" style="float:left; width:25%;">
+              <paper-icon-button id="payments-icon-button2" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+          <div id="leftThing3" style="float:right; width:25%;">
+                <paper-icon-button id="reports-icon-button3" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+        </div>
+      </paper-card>
 
   <template is="dom-if" if="[[ajaxError]]">
             <paper-card style="float:center; width: 90%">
@@ -339,9 +408,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           responseData: {
             type: Object,
           },
-          userExistsFlag: {
+          firstLoadFlag: {
             type: Boolean,
-            value: false,
+            value: true,
             notify: true
           }
         };
@@ -349,12 +418,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _userChanged(user){
         this.user = user;
-        // sendPostUserCheckAndSetup() method never gets called from observer. Not found error.
-        //if(user!= null || user!= undefined){
-        //  console.log('Calling sendPostUserCheckAndSetup() from LandingPage');
-        //  sendPostUserCheckAndSetup();
-        //}
-        //this.$.user.value = user;
       }
 
       _signedinChanged(signedin){
@@ -372,53 +435,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       sendPostUserCheckAndSetup(){
         console.log('###### inside sendPostUserCheckAndSetup() ######');
-       this.$.dialogBusy.toggle();
-       this.active = true;
-
-        var ajaxObject = this.$.checkUserExistAndSetup;
         if(this.user!=null || this.user!=undefined)
+        {
+          this.$.dialogBusy.toggle();
+          var ajaxObject = this.$.checkUserExistAndSetup;
           console.log('user ->'+JSON.stringify(this.user));
+          console.log('this.$.nofityCheckBox ->' + this.$.notifyCheckBox.checked);
+          console.log('this.$.subscribeCheckBox ->' + this.$.subscribeCheckBox.checked);
+          ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/createUserFunction";
+          ajaxObject.params = {
+                    isNotified: this.$.notifyCheckBox.checked ,
+                    isSubscribed: this.$.subscribeCheckBox.checked
+                  };
+          ajaxObject.body = {
+                    user: this.user
+                };
+          console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+          let request = ajaxObject.generateRequest();
+          request.completes.then( function(req) {
+              // succesful request, argument is iron-request element
+              console.log('iron request element is->'+req);
+              return;
+            }, function(rejected) {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              console.log('API Call - User Insertion - rejected');
+              console.log('req=', req, '    error=', error);
+              this.$.dialogBusy.toggle();
+              this.ajaxError = true;
+              this.ajaxErrorMsg = error;
+              return;
+            });
+        }
         else {
             console.log('user is null or undefined -'+this.user);
+            document.getElementById('toast').show('Login to the app to complete Sync!');
         }
-        console.log('this.$.nofityCheckBox ->' + this.$.notifyCheckBox.checked);
-        console.log('this.$.subscribeCheckBox ->' + this.$.subscribeCheckBox.checked);
-        ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/createUserFunction";
-        ajaxObject.params = {
-                  isNotified: this.$.notifyCheckBox.checked ,
-                  isSubscribed: this.$.subscribeCheckBox.checked
-                };
-        if(this.user != null || this.user != undefined)
-        {
-          ajaxObject.body = {
-                  user: this.user
-              };
-          console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
-        let request = ajaxObject.generateRequest();
-        request.completes.then( function(req) {
-            // succesful request, argument is iron-request element
-            console.log('iron request element is->'+req);
-            return;
-          }, function(rejected) {
-            // failed request, argument is an object
-            let req = rejected.request;
-            let error = rejected.error;
-            console.log('API Call - User Insertion - rejected');
-            console.log('req=', req, '    error=', error);
-            return;
-          });
-        }
-        else{
-          document.getElementById('toast').show('Login to the app to complete Setup!');
-        }
+
       }
 
-      handleResponseAJAXCheckUser(data){
-        console.log('inside ***  handleResponseAJAXCheckUser(data)');
+      handleResponseAJAXCheckUserAndSetup(data){
+        console.log('inside ***  handleResponseAJAXCheckUserAndSetup(data)');
         this.active = false;
-
-        //var parsedResponse = JSON.stringify(data.detail.response);
-        //console.log('displayName: '+ parsedResponse);
         const responseX = data.detail;
         console.log('status', responseX.status, responseX.statusText);
         var x = responseX.status;
@@ -426,18 +485,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case (x === 200):
               console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
               console.log('last response _'+ this.responseData);
-              document.getElementById('toast').show(this.user.displayName+' exists and updated Successfully!');
-              break;
-          case (x === 404):
-              this.$.dialogSetupUser.toggle();
-              //this.ajaxError = true;
-              //this.ajaxErrorMsg = 'Error: Record not found : ' + JSON.stringify(data.detail.response);
-              console.log('Error: user not found. Create it in the Server: ' + JSON.stringify(data.detail.response));
+              document.getElementById('toast').show(this.user.displayName+' Synced with server Successfully!');
+              this.firstLoadFlag = false;
               break;
           case (x >= 400 && x < 500):
               this.ajaxError = true;
               this.ajaxErrorMsg = 'Error (400): Something went wrong: ';
               console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+              if(x === 404 || x === 401)
+              {
+                document.getElementById('toast').show(this.user.displayName+' Synced with server Failed!');
+              }
               break;
           case (x >= 500 && x < 600):
                   this.ajaxError = true;
@@ -452,8 +510,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       }
 
-      handleErrorAJAXCheckUser(event){
-        console.log('inside ***  handleErrorAJAXCheckUser(event)');
+      handleErrorAJAXCheckUserAndSetup(event){
+        console.log('inside ***  handleErrorAJAXCheckUserAndSetup(event)');
         var error = event.detail.request.xhr.response;
         console.log('error -->'+error);
         // I think one of those two would be what you're looking for.
@@ -461,69 +519,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log('event', event);
         console.log('status code', req.status);
         console.log('status text', req.statusText);
-        this.ajaxError = true;
-        this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
-      }
-
-      handleResponseAJAXCheckUserExists(data){
-        console.log('inside ***  handleResponseAJAXCheckUserExists(data)');
-        this.active = false;
-        this.$.dialogBusy.toggle();
-        //var parsedResponse = JSON.stringify(data.detail.response);
-        //console.log('displayName: '+ parsedResponse);
-        const responseX = data.detail;
-        console.log('status', responseX.status, responseX.statusText);
-        var x = responseX.status;
-        switch(true){
-          case (x === 200):
-              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
-              console.log('last response _'+ this.responseData);
-              document.getElementById('toast').show('User succesful created on Server!');
-              break;
-          case (x === 404):
-              this.ajaxError = true;
-              this.ajaxErrorMsg = 'Error: Record not found : ' + JSON.stringify(data.detail.response);
-              console.log('Error: Record not found : ' + JSON.stringify(data.detail.response));
-              break;
-          case (x >= 400 && x < 500):
-              this.ajaxError = true;
-              this.ajaxErrorMsg = 'Error (400): Something went wrong: ';
-              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
-              break;
-          case (x >= 500 && x < 600):
-                  this.ajaxError = true;
-                  this.ajaxErrorMsg = 'Error (500): Something went wrong: ';
-                  console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
-                  break;
-          default:
-              this.ajaxError = true;
-              this.ajaxErrorMsg = 'Error: Something went wrong: ';
-              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
-        }
-
-      }
-
-      handleErrorAJAXCheckUserExists(event){
-        console.log('inside ***  handleErrorAJAXCheckUserExists(event)');
-        var error = event.detail.request.xhr.response;
-        console.log('error -->'+JSON.stringify(error));
-        // I think one of those two would be what you're looking for.
-        const req = event.detail.request;
-        console.log('event', event);
-        console.log('status code', req.status);
-        console.log('status text', req.statusText);
-        this.ajaxError = true;
-        if(req.status === 401)
+        if( req.status === 500 )
         {
-          console.log('user not found in ES');
-          document.getElementById('toast').show('Login to check if user exists!');
+          console.log('user not found or updated in ES');
+          document.getElementById('toast').show('First time login. Setup required!');
           if(this.user != null || this.user != undefined)
           {
             console.log('setting up user by enabling toggle on dialog box after user has loged in');
             console.log('user object is ->'+this.user);
             this.ajaxError = false;
-            this.$.dialogSetupUser.toggle();
+            //this.$.dialogSetupUser.toggle();
           }
+        }
+        if( req.status === 404 || req.status === 401 )
+        {
+          document.getElementById('toast').show(this.user.displayName+' Synced with server Failed!');
+        }
+        else {
+          this.ajaxError = true;
         }
         this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
       }

@@ -115,8 +115,8 @@ function handlePOST (req, res)
     failure(res,resMsg,401);
    }
 
-   if(isSubscribed.includes('true')) isSubscribedBoolean = true; else isSubscribedBoolean = false;
-   if(isNotified.includes('true')) isNotifiedBoolean = true; else isNotifiedBoolean = false;
+   if(isSubscribed.includes('true')) isSubscribedBoolean = true;
+   if(isNotified.includes('true')) isNotifiedBoolean = true;
 
    console.log('config.user_index_name ='+config.user_index_name);
 
@@ -263,53 +263,53 @@ function handlePOST (req, res)
 
        if(error)
        {
-                console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
-         				resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
+        console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
+        resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
 
-                //check if uid exists
-                //check if UID exists in users index using global_alisas_for_search_users_index
-                var queryBodyCheckUserExists = {
-                         index : config.user_index_search_alias_name,
-                         type : config.index_base_type,
-                         usr_uid : userBody.uid
-                       };
-                esClient.get(queryBodyCheckUserExists)
-                  .then(function (respUserCheck) {
-                        console.log('User exists in user index - '+ respUserCheck);
-                        //User Uid exists
-                        //Update the User object in ES with latest data
-                        //esClient.search(queryBodyCheckUserExists)
-                        esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
-                        .then(function (respInsertUser) {
-                            resMsg = 'User Data existed and now updated Successfully!' ;
-                            console.log(resMsg);
-                            //esClient.close(); //use in lambda only
-                            success(res,resMsg);
-                            },
-                              function (errorInsertUser) {
-                                console.log('Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser);
-                                resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser;
-                                //esClient.close(); //use in lambda only
-                                success(res,resMsg);
-                        });
-                    }, function (error) {
-                            resMsg = 'Error : User not found in user Index. Creating new user record! Error - ' + error;
-                            console.log(resMsg);
-                            //Insert the User object in ES
-                            //esClient.search(queryBodyUserObject)
-                            esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
-                            .then(function (resp) {
-                                resMsg = 'New User Data created Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                success(res,resMsg);
-                                },
-                                  function (error) {
-                                    resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed!' + error;
-                                    //esClient.close(); //use in lambda only
-                                    failure(res,resMsg,500);
-                            });
-                      });//End: check user exists
+        //check if uid exists
+        //check if UID exists in users index using global_alisas_for_search_users_index
+        var queryBodyCheckUserExists = {
+             index : config.user_index_search_alias_name,
+             type : config.index_base_type,
+             usr_uid : userBody.uid
+        };
+        esClient.get(queryBodyCheckUserExists)
+          .then(function (respUserCheck) {
+              console.log('User exists in user index - '+ respUserCheck);
+              //User Uid exists
+              //Update the User object in ES with latest data
+              //esClient.search(queryBodyCheckUserExists)
+              esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
+                  .then(function (respInsertUser) {
+                      resMsg = 'User Data existed and now updated Successfully!' ;
+                      console.log(resMsg);
+                      //esClient.close(); //use in lambda only
+                      success(res,resMsg);
+                      },
+                      function (errorInsertUser) {
+                      console.log('Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser);
+                      resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser;
+                      //esClient.close(); //use in lambda only
+                      success(res,resMsg);
+                      });
+              }, function (error) {
+                  resMsg = 'Error : User not found in user Index. Creating new user record! Error - ' + error;
+                  console.log(resMsg);
+                  //Insert the User object in ES
+                  //esClient.search(queryBodyUserObject)
+                  esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
+                      .then(function (resp) {
+                          resMsg = 'New User Data created Successfully!' ;
+                          console.log(resMsg);
+                          //esClient.close(); //use in lambda only
+                          success(res,resMsg);
+                        },
+                        function (error) {
+                          resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed!' + error;
+                          //esClient.close(); //use in lambda only
+                          failure(res,resMsg,500);
+                      });
+              });//End: check user exists
        }//end if
        else{
          //index dosen't exist. Create one.
