@@ -155,6 +155,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           last-error="{{lastError}}">
   </iron-ajax>
 -->
+<firebase-query
+  id="query"
+  path="/users/[[user.uid]]/profile"
+  data="{{profile}}">
+</firebase-query>
 
 <iron-ajax
         id="checkUserExistAndSetup"
@@ -517,6 +522,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case (x === 200):
               console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
               console.log('last response _'+ this.responseData);
+              this.$.query.ref.push({ name: this.user.displayName, data: this.user });
               document.getElementById('toast').show(this.user.displayName+' Synced with server Successfully!');
               this.firstLoadFlag = false;
               this.busyDialogLoadMsg = 'Data loaded succesfully!';
