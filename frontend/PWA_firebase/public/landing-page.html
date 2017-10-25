@@ -110,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     paper-checkbox {
     font-family: 'Roboto', sans-serif;
-    margin: 24px;
+    margin: 5px;
     }
 
     paper-checkbox:first-child {
@@ -120,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     paper-checkbox.styled {
       align-self: center;
       border: 0px solid var(--paper-grey-200);
-      padding: 8px 16px;
+      padding: 4px 8px;
       --paper-checkbox-checked-color: var(--paper-pink-500);
       --paper-checkbox-checked-ink-color: var(--paper-black-500);
       --paper-checkbox-unchecked-color: var(--paper-grey-500);
@@ -185,37 +185,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
-    <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
-      <div>
+    <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
+      <div hidden$="[[!busyDialogLoadFlag]]">
             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
             <paper-spinner active class="multi"></paper-spinner>
             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
      </div>
+     <div hidden$="[[busyDialogLoadFlag]]">
+       <paper-button raised on-tap="dismissDialogBusy" class="green">Ok</paper-button>
+     </div>
   </paper-dialog>
 
-  <paper-card id="paperCardUserSetup" style="float: center; width: 80%" hidden$="[[signedin || firstLoadFlag]]">
+  <div style="float: center; width: 90%" hidden$="[[_computeFirstLogin(signedin, firstLoadFlag)]]">
+    <paper-card id="paperCardUserSetup">
         <div style="float:left; width:100%">
-          <div id="leftThing0" style="float:left; width:25%;">
-                <paper-icon-button id="dashboard-icon-button0" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          <div id="leftThing00" style="float:left; width:25%;">
+                <paper-icon-button id="dashboard-icon-button00" icon="hardware:power-input" style="color: black;"></paper-icon-button>
             </div>
-            <div id="leftThing1" style="float:left; width:25%;">
-              <paper-icon-button id="transactions-icon-button1" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            <div id="leftThing11" style="float:left; width:25%;">
+              <paper-icon-button id="transactions-icon-button11" icon="hardware:power-input" style="color: black;"></paper-icon-button>
             </div>
-          <div id="leftThing2" style="float:left; width:25%;">
-              <paper-icon-button id="payments-icon-button2" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          <div id="leftThing22" style="float:left; width:25%;">
+              <paper-icon-button id="payments-icon-button22" icon="hardware:power-input" style="color: black;"></paper-icon-button>
           </div>
-          <div id="leftThing3" style="float:right; width:25%;">
-                <paper-icon-button id="reports-icon-button3" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          <div id="leftThing33" style="float:right; width:25%;">
+                <paper-icon-button id="reports-icon-button33" icon="hardware:power-input" style="color: black;"></paper-icon-button>
           </div>
         </div>
-          <div><span> &nbsp; </span></div>
         <div><b><h4 style="color: black;">Let's sync your data with server!</h4></b></div>
         <div style="float:left; width:100%">
               <div id="leftThing" style="float:left; width:50%;">
               <paper-checkbox id="notifyCheckBox" checked class="styled">
                 Notify
                 <span class="subtitle">
-                  notifications
+                  Receive notifications
                 </span>
               </paper-checkbox>
             </div>
@@ -223,7 +226,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-checkbox id="subscribeCheckBox" checked class="styled">
                 Subscribe
                 <span class="subtitle">
-                  premium
+                  Get premium features
                 </span>
               </paper-checkbox>
             </div>
@@ -247,6 +250,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-card>
+      <div><span>&nbsp;</span></div>
+    </div>
 
   <template is="dom-if" if="[[ajaxError]]">
             <paper-card style="float:center; width: 90%">
@@ -266,7 +271,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <template is="dom-if" if="[[signedin]]">
 
+  <paper-card style="float: center; width: 100%">
+
     <div class="container flex-wrap-horizontal">
+
       <div>
         <paper-card class="flexlayoutCurrentPurple">
           <div class="card-content">
@@ -348,7 +356,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </paper-card>
       </div>
+
     </div>
+
+    </paper-card>
 
   </template>
 
@@ -412,6 +423,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: true,
             notify: true
+          },
+          busyDialogLoadMsg: {
+            type: String,
+            value: 'Loading Information From Server',
+            notify: true
+          },
+          busyDialogLoadFlag: {
+            type: Boolean,
+            value: true,
+            notify: true
           }
         };
       }
@@ -433,11 +454,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         location.reload(true);
       }
 
+      _computeFirstLogin(signedin, firstLoadFlag){
+        return (!signedin || !firstLoadFlag);
+      }
+
+      dismissDialogBusy(){
+        this.$.dialogBusy.toggle();
+        this.busyDialogLoadFlag = true;
+        this.busyDialogLoadMsg = 'Loading Information From Server';
+      }
+
       sendPostUserCheckAndSetup(){
         console.log('###### inside sendPostUserCheckAndSetup() ######');
         if(this.user!=null || this.user!=undefined)
         {
           this.$.dialogBusy.toggle();
+          this.active = true;
           var ajaxObject = this.$.checkUserExistAndSetup;
           console.log('user ->'+JSON.stringify(this.user));
           console.log('this.$.nofityCheckBox ->' + this.$.notifyCheckBox.checked);
@@ -469,7 +501,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
         }
         else {
-            console.log('user is null or undefined -'+this.user);
+            console.log('user is null or undefined -'+ this.user);
             document.getElementById('toast').show('Login to the app to complete Sync!');
         }
 
@@ -487,6 +519,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               console.log('last response _'+ this.responseData);
               document.getElementById('toast').show(this.user.displayName+' Synced with server Successfully!');
               this.firstLoadFlag = false;
+              this.busyDialogLoadMsg = 'Data loaded succesfully!';
+              this.busyDialogLoadFlag = false;
               break;
           case (x >= 400 && x < 500):
               this.ajaxError = true;
@@ -549,4 +583,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     window.customElements.define(LandingPage.is, LandingPage);
   </script>
+
+<!--  ***************** Reference Code **********************
+//http://jsbin.com/sivamupogi/edit?html,output
+Reference Code to test Polymer Boolean Conditions with hidden$=""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base href="http://polygit.org/components/">
+  <script src="webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link href="polymer/polymer.html" rel="import">
+  <title>JS Bin</title>
+</head>
+<body>
+  <hide-test><hide-test>
+</body>
+
+<dom-module id="hide-test">
+  <template>
+    <div hidden$="[[hideMe(signedin,firstTimeFlag)]]">[[someContent]]</div>
+    <div>
+      <span>signedin:</span><span>[[signedin]]</span>
+      <button on-tap="changeOne">Change signedin</button>
+    </div>
+    <div>
+      <span>firstTimeFlag:</span><span>[[firstTimeFlag]]</span>
+      <button on-tap="changeTwo">Change firstTimeFlag</button>
+    </div>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'hide-test',
+    properties: {
+      someContent: {
+        type: String,
+        value: "Show paper-card!"
+      },
+      signedin: {
+        type: Boolean,
+        value: false
+      },
+      firstTimeFlag: {
+        type: Boolean,
+        value: true
+      },
+    },
+    hideMe: function(signedin, firstTimeFlag) {
+      return (!signedin || !firstTimeFlag);
+    },
+    changeOne: function() {
+      this.signedin = !this.signedin;
+    },
+    changeTwo: function() {
+      this.firstTimeFlag = !this.firstTimeFlag;
+    },
+  });
+</script>
+-->
+
+
+  </script>
+
 </dom-module>
