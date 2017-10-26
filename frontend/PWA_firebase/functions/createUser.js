@@ -114,97 +114,69 @@ function handlePOST (req, res)
     resMsg = "Error: req.query.userBody required to create Index in ES ->" + JSON.stringify(userBody);
     failure(res,resMsg,401);
    }
-
+   else{
+     if(userBody.uid === null || userBody.uid === undefined)
+     {
+       resMsg = "Error: req.query.userBody.uid required to create Index in ES ->" + JSON.stringify(userBody);
+       failure(res,resMsg,401);
+     }
+     else{
+       console.log('usr_uid = '+userBody.uid);
+       if(userBody.displayName === null || userBody.displayName === undefined) userBody.displayName = 'usr_displayName';
+       if(userBody.emailVerified === null || userBody.emailVerified === undefined) userBody.emailVerified = false;
+       if(userBody.phoneNumber === null || userBody.phoneNumber === undefined) userBody.phoneNumber = 'usr_phoneNumber';
+       if(userBody.photoURL === null || userBody.photoURL === undefined) userBody.photoURL = 'usr_photoURL';
+       if(userBody.email === null || userBody.email === undefined) userBody.email = 'usr_email';
+     }
+   }
    if(isSubscribed.includes('true')) isSubscribedBoolean = true;
    if(isNotified.includes('true')) isNotifiedBoolean = true;
-
    console.log('config.user_index_name ='+config.user_index_name);
 
-   var usr_uid_clm = configUser.usr_uid; console.log('usr_uid_clm = '+usr_uid_clm);
-   var usr_displayName_clm = configUser.usr_displayName ; console.log('usr_displayName_clm = '+usr_displayName_clm);
-   var usr_firstName_clm = configUser.usr_firstName ;
-   var usr_familyName_clm = configUser.usr_familyName ;
-   var usr_middleName_clm = configUser.usr_middleName;
-   var usr_emailVerified_clm = configUser.usr_emailVerified ;
-   var usr_phoneNumber_clm = configUser.usr_phoneNumber;
-   var usr_photoURL_clm = configUser.usr_photoURL ;
-   var usr_dob_clm = configUser.usr_dob ;
-   var usr_gender_clm = configUser.usr_gender ;
-   var usr_email_clm = configUser.usr_email ;
-   var usr_businessName_clm = configUser.company_businessName ;
-   var usr_ABN_clm = configUser.company_ABN_ACN_LC ;
-   var usr_contact_clm = configUser.company_contact ;
-   var usr_companyEmail_clm = configUser.company__email ;
-   var usr_companyAddStreet_clm = configUser.company_address_streetNumber ;
-   var usr_companyAddStName_clm = configUser.company_address_streetName ;
-   var usr_companyAddStType_clm = configUser.company_address_streetType ;
-   var usr_companyAddSuburb_clm = configUser.company_address_suburb ;
-   var usr_companyAddState_clm = configUser.company_address_state ;
-   var usr_companyAddPostCode_clm = configUser.company_address_postcode ;
-   var usr_companyAddCountry_clm = configUser.company_address_country ;
-   var usr_url_clm = configUser.usr_url ;console.log('usr_url_clm = '+usr_url_clm);
-   var usr_locale_clm = configUser.usr_locale ;
-   var usr_currency_clm = configUser.usr_currency ;
-   var usr_isSubscritionActive_clm = configUser.usr_isSubscritionActive ;
-   var usr_isNotified_clm = configUser.usr_isNotified ;
-   var usr_subscriptionType_clm = configUser.usr_subscriptionType;
-   var usr_subscriptionAmount_clm = configUser.usr_subscriptionAmount ;
-   var usr_subscriptionCostToDate_clm = configUser.usr_subscriptionCostToDate;
-   var usr_subscriptionFrequency_clm = configUser.usr_subscriptionFrequency;
-   var usr_isUserCloudConnected_clm = configUser.usr_isUserCloudConnected ;
-   var usr_isDropBox_clm = configUser.usr_isDropBox ;
-   var usr_isGoogle_clm = configUser.usr_isGoogle;
-   var usr_isBox_clm = configUser.usr_isBox ;
-   var usr_isICloud_clm = configUser.usr_isICloud ;
-   var usr_isOneDrive_clm = configUser.usr_isOneDrive ; console.log('usr_isOneDrive_clm = '+usr_isOneDrive_clm);
-   var usr_invoicePaymentBankBSB_clm = configUser.usr_invoicePaymentBankBSB ;
-   var usr_invoicePaymentBankAccountNumber_clm = configUser.usr_invoicePaymentBankAccountNumber;
-   var usr_invoicePaymentBankAccountName_clm = configUser.usr_invoicePaymentBankAccountName ;
-   var usr_invoicePaymentBankName_clm = configUser.usr_invoicePaymentBankName ;
-
    var queryBodyUserObject = {
-     usr_uid_clm: userBody.uid,
-     usr_displayName_clm : userBody.displayName,
-     usr_firstName_clm : 'usr_firstName',
-     usr_familyName_clm : 'usr_familyName',
-     usr_middleName_clm : 'usr_middleName',
-     usr_emailVerified_clm : userBody.emailVerified,
-     usr_phoneNumber_clm: userBody.phoneNumber,
-     usr_photoURL_clm : userBody.photoURL,
-     usr_dob_clm : 'usr_dob',
-     usr_gender_clm : 'usr_gender',
-     usr_email_clm : userBody.email,
-     usr_businessName_clm : 'company_businessName',
-     usr_ABN_clm : 'company_ABN_ACN_LC'	,
-     usr_contact_clm : 'company_contact',
-     usr_companyEmail_clm : 'company__email',
-     usr_companyAddStreet_clm : 'company_address_streetNumber',
-     usr_companyAddStName_clm : 'company_address_streetName',
-     usr_companyAddStType_clm : 'company_address_streetType',
-     usr_companyAddSuburb_clm : 'company_address_suburb',
-     usr_companyAddState_clm : 'company_address_state',
-     usr_companyAddPostCode_clm : 'company_address_postcode',
-     usr_companyAddCountry_clm : 'company_address_country',
-     usr_url_clm : 'usr_url',
-     usr_locale_clm : 'usr_locale',
-     usr_currency_clm : 'usr_currency',
-     usr_isSubscritionActive_clm : isSubscribedBoolean,
-     usr_isNotified_clm : isNotifiedBoolean,
-     usr_subscriptionType_clm: 'usr_subscriptionType',
-     usr_subscriptionAmount_clm : 'usr_subscriptionAmount',
-     usr_subscriptionCostToDate_clm : 'usr_subscriptionCostToDate',
-     usr_subscriptionFrequency_clm: 'usr_subscriptionFrequency',
-     usr_isUserCloudConnected_clm : 'usr_isUserCloudConnected',
-     usr_isDropBox_clm : 'usr_isDropBox',
-     usr_isGoogle_clm: 'usr_isGoogle',
-     usr_isBox_clm : 'usr_isBox',
-     usr_isICloud_clm : 'usr_isICloud',
-     usr_isOneDrive_clm : 'usr_isOneDrive',
-     usr_invoicePaymentBankBSB_clm : 'usr_invoicePaymentBankBSB',
-     usr_invoicePaymentBankAccountNumber_clm : 'usr_invoicePaymentBankAccountNumber',
-     usr_invoicePaymentBankAccountName_clm : 'usr_invoicePaymentBankAccountName',
-     usr_invoicePaymentBankName_clm : 'usr_invoicePaymentBankName'
+     [configUser.usr_uid]: userBody.uid,
+     [configUser.usr_displayName] : userBody.displayName,
+     [configUser.usr_firstName] : 'usr_firstName',
+     [configUser.usr_familyName] : 'usr_familyName',
+     [configUser.usr_middleName] : 'usr_middleName',
+     [configUser.usr_emailVerified]: userBody.emailVerified,
+     [configUser.usr_phoneNumber]: userBody.phoneNumber,
+     [configUser.usr_photoURL] : userBody.photoURL,
+     //[configUser.usr_dob] : 'usr_dob', //don't give date object. will be wrong if absent in user.DOB
+     [configUser.usr_gender] : 'usr_gender',
+     [configUser.usr_email] : userBody.email,
+     [configUser.usr_businessName] : 'company_businessName',
+     [configUser.usr_ABN] : 'company_ABN_ACN_LC'	,
+     [configUser.usr_contact] : 'company_contact',
+     [configUser.usr_companyEmail] : 'company__email',
+     [configUser.usr_companyAddStreet] : 'company_address_streetNumber',
+     [configUser.usr_companyAddStName] : 'company_address_streetName',
+     [configUser.usr_companyAddStType] : 'company_address_streetType',
+     [configUser.usr_companyAddSuburb] : 'company_address_suburb',
+     [configUser.usr_companyAddState] : 'company_address_state',
+     [configUser.usr_companyAddPostCode] : 'company_address_postcode',
+     [configUser.usr_companyAddCountry] : 'company_address_country',
+     [configUser.usr_url] : 'usr_url',
+     [configUser.usr_locale] : 'usr_locale',
+     [configUser.usr_currency] : 'usr_currency',
+     [configUser.usr_isSubscritionActive] : isSubscribedBoolean,
+     [configUser.usr_isNotified] : isNotifiedBoolean,
+     [configUser.usr_subscriptionType]: 'usr_subscriptionType',
+     [configUser.usr_subscriptionAmount] : 0,
+     [configUser.usr_subscriptionCostToDate] : 0,
+     [configUser.usr_subscriptionFrequency]: 0,
+     [configUser.usr_isUserCloudConnected] : false,
+     [configUser.usr_isDropBox] : false,
+     [configUser.usr_isGoogle]: false,
+     [configUser.usr_isBox] : false,
+     [configUser.usr_isICloud] : false,
+     [configUser.usr_isOneDrive] : false,
+     [configUser.usr_invoicePaymentBankBSB] : 0,
+     [configUser.usr_invoicePaymentBankAccountNumber] : 0,
+     [configUser.usr_invoicePaymentBankAccountName] : 'usr_invoicePaymentBankAccountName',
+     [configUser.usr_invoicePaymentBankName] : 'usr_invoicePaymentBankName'
    };
+
    /*
      //firebase-auth Google provider --> "user" object
      {
@@ -271,33 +243,86 @@ function handlePOST (req, res)
         var queryBodyCheckUserExists = {
              index : config.user_index_search_alias_name,
              type : config.index_base_type,
-             usr_uid : userBody.uid
+             body: {
+               query: {
+                    match: {
+                      [configUser.usr_uid] : userBody.uid
+                    }
+                  }
+             }
         };
-        esClient.get(queryBodyCheckUserExists)
+
+        console.log('queryBodyCheckUserExists (raw) is->'+queryBodyCheckUserExists);
+        console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
+        //Note esClient.get() require index, type, and id of the documdnt. If id known then no issues. here we are
+        //seaching based on uid parameter of the user object. not its ES id. hence .get() dosen't work
+        //If used, it will create duplicate records.
+        //esClient.get(queryBodyCheckUserExists)
+        esClient.search(queryBodyCheckUserExists)
           .then(function (respUserCheck) {
-              console.log('User exists in user index - '+ respUserCheck);
-              //User Uid exists
-              //Update the User object in ES with latest data
-              //esClient.search(queryBodyCheckUserExists)
-              esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
-                  .then(function (respInsertUser) {
-                      resMsg = 'User Data existed and now updated Successfully!' ;
+            console.log('hits.total =' + respUserCheck.hits.total);
+            if(respUserCheck.hits.total === 0){
+              //user doesn't exists
+              console.log('User does not exists in user index. Creating now! - '+ JSON.stringify(respUserCheck));
+              esClient.index({
+                                index: config.user_index_write_alias_name,
+                                type: config.index_base_type,
+                                body: queryBodyUserObject
+                  })
+                    .then(function (respInsertUser) {
+                      resMsg = 'New User Data Created Successfully!' ;
                       console.log(resMsg);
                       //esClient.close(); //use in lambda only
                       success(res,resMsg);
                       },
                       function (errorInsertUser) {
-                      console.log('Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser);
+                      console.log('Error : New user document creation ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser);
                       resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser;
-                      //esClient.close(); //use in lambda only
                       success(res,resMsg);
                       });
-              }, function (error) {
+              }
+              else if(respUserCheck.hits.total === 1 ){
+                //only one record for the user. Update the user record for the user.uid
+                console.log('User exists in user index. Updating now! - '+ JSON.stringify(respUserCheck));
+                var hits = respUserCheck.hits.hits;
+                console.log('hits object - '+ JSON.stringify(hits[0]));
+                //User Uid exists
+                //Update the User object in ES with latest data
+                esClient.index({
+                                  index: config.user_index_write_alias_name,
+                                  type: config.index_base_type,
+                                  id: hits[0].id,
+                                  body: queryBodyUserObject
+                    })
+                      .then(function (respInsertUser) {
+                        resMsg = 'User Data existed and now updated Successfully!' ;
+                        console.log(resMsg);
+                        //esClient.close(); //use in lambda only
+                        success(res,resMsg);
+                        },
+                        function (errorInsertUser) {
+                        console.log('Error : User document update ['+config.user_index_write_alias_name+'] Failed! But old record exists.' + errorInsertUser);
+                        resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed! But old record exists.' + errorInsertUser;
+                        //esClient.close(); //use in lambda only
+                        success(res,resMsg);
+                        });
+              }
+              else{
+                //user has multiple records. Delete rest!
+                console.log('Too many copies of the user present! Contact System Adminstrator!');
+                resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
+                failure(res,resMsg,500);
+              }
+          }, function (error) {
                   resMsg = 'Error : User not found in user Index. Creating new user record! Error - ' + error;
                   console.log(resMsg);
                   //Insert the User object in ES
                   //esClient.search(queryBodyUserObject)
-                  esClient.index({index: config.user_index_write_alias_name, type: config.index_base_type, body: queryBodyUserObject})
+                  esClient.index({
+                                  index: config.user_index_write_alias_name,
+                                  type: config.index_base_type,
+                                  body: queryBodyUserObject
+                    })
                       .then(function (resp) {
                           resMsg = 'New User Data created Successfully!' ;
                           console.log(resMsg);
