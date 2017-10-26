@@ -229,10 +229,8 @@ function handlePOST (req, res)
 	 console.log('Checking if index Exists('+ config.user_index_name +')');
 	 esClient.indices.exists({index: config.user_index_name})
 		 .then(function (error,resp) {
-
        console.log('error value -' + error);
        console.log('response value - ' + resp);
-
        if(error)
        {
         console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
@@ -251,8 +249,6 @@ function handlePOST (req, res)
                   }
              }
         };
-
-        console.log('queryBodyCheckUserExists (raw) is->'+queryBodyCheckUserExists);
         console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
         //Note esClient.get() require index, type, and id of the documdnt. If id known then no issues. here we are
         //seaching based on uid parameter of the user object. not its ES id. hence .get() dosen't work
@@ -358,7 +354,7 @@ function handlePOST (req, res)
                 console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
                 console.log('*****');
-                resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
+                resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed! Duplicate records of the user exists. Contact System Adminstrator.' + error;
                 failure(res,resMsg,500);
               }
           }, function (error) {

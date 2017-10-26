@@ -38,6 +38,10 @@ var checkUserExistsFunction = require('./checkUserExists');
 var createUserFunction = require('./createUser');
 var deleteIndexFunction = require('./deleteIndex');
 var deleteTemplateFunction = require('./deleteTemplate');
+var createBankAliasBasedOnRoutingFunction = require('./createBankAliasBasedOnRouting');
+var createCustomerAliasBasedOnRoutingFunction = require('./createCustomerAliasBasedOnRouting');
+var sendWelcomeEmailFunction = require('./sendWelcomeEmail');
+var sendByeEmailFunction = require('./sendByeEmail');
 
 // Pass database to child functions so they have access to it
 exports.fooFunction = functions.https.onRequest((req, res) => {
@@ -178,4 +182,27 @@ exports.deleteIndexFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         deleteIndexFunction.handler(req, res, database);
     });
+});
+
+/************ BACKEND TRIGGERED FUNCTIONS ***********/
+
+exports.createBankAliasBasedOnRoutingFunction = functions.database.ref('/users/{uid}/profile')
+.onWrite( event => {
+  createBankAliasBasedOnRoutingFunction.handler(event, database);
+});
+
+
+exports.createCustomerAliasBasedOnRoutingFunction = functions.database.ref('/users/{uid}/profile')
+.onWrite( event => {
+  createCustomerAliasBasedOnRoutingFunction.handler(event, database);
+});
+
+/************ SEND EMAILS ON AUTHENTICATION - NODEMAILER BACKEND FUNCTION *******/
+
+exports.sendWelcomeEmail = functions.auth.user().onCreate(event => {
+    sendWelcomeEmailFunction.handler(event, database);
+});
+
+exports.sendByeEmail = functions.auth.user().onDelete(event => {
+    sendByeEmailFunction.handler(event, database);
 });

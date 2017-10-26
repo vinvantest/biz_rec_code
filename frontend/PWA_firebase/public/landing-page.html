@@ -537,7 +537,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               //console.log('this.user.token.accessToken = '+this.user.stsTokenManager.accessToken);
               //console.log('this.user.token.expirationTime = '+this.user.stsTokenManager.expirationTime);
               console.log('*****************');
-              this.$.query.ref.push({
+              //this.$.query.ref.push({ // this will create new records
+              this.$.query.ref.set({
                               username: this.user.displayName,
                               uid: this.user.uid,
                               photo_url: this.user.photoURL,
