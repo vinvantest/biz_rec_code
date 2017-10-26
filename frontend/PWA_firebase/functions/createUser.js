@@ -260,6 +260,7 @@ function handlePOST (req, res)
         //esClient.get(queryBodyCheckUserExists)
         esClient.search(queryBodyCheckUserExists)
           .then(function (respUserCheck) {
+            //check hits if there are any user records!
             console.log('hits.total =' + respUserCheck.hits.total);
             if(respUserCheck.hits.total === 0){
               //user doesn't exists
