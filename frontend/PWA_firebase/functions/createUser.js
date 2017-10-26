@@ -289,11 +289,55 @@ function handlePOST (req, res)
                 console.log('hits object - '+ JSON.stringify(hits[0]));
                 //User Uid exists
                 //Update the User object in ES with latest data
-                esClient.index({
+                esClient.update({
                                   index: config.user_index_write_alias_name,
                                   type: config.index_base_type,
-                                  id: hits[0].id,
-                                  body: queryBodyUserObject
+                                  id: hits[0]._id,
+                                  body: {
+                                    doc: {
+                                      [configUser.usr_uid]: userBody.uid,
+                                      [configUser.usr_displayName] : userBody.displayName,
+                                      [configUser.usr_firstName] : 'usr_firstName',
+                                      [configUser.usr_familyName] : 'usr_familyName',
+                                      [configUser.usr_middleName] : 'usr_middleName',
+                                      [configUser.usr_emailVerified]: userBody.emailVerified,
+                                      [configUser.usr_phoneNumber]: userBody.phoneNumber,
+                                      [configUser.usr_photoURL] : userBody.photoURL,
+                                      //[configUser.usr_dob] : 'usr_dob', //don't give date object. will be wrong if absent in user.DOB
+                                      [configUser.usr_gender] : 'usr_gender',
+                                      [configUser.usr_email] : userBody.email,
+                                      [configUser.usr_businessName] : 'company_businessName',
+                                      [configUser.usr_ABN] : 'company_ABN_ACN_LC'	,
+                                      [configUser.usr_contact] : 'company_contact',
+                                      [configUser.usr_companyEmail] : 'company__email',
+                                      [configUser.usr_companyAddStreet] : 'company_address_streetNumber',
+                                      [configUser.usr_companyAddStName] : 'company_address_streetName',
+                                      [configUser.usr_companyAddStType] : 'company_address_streetType',
+                                      [configUser.usr_companyAddSuburb] : 'company_address_suburb',
+                                      [configUser.usr_companyAddState] : 'company_address_state',
+                                      [configUser.usr_companyAddPostCode] : 'company_address_postcode',
+                                      [configUser.usr_companyAddCountry] : 'company_address_country',
+                                      [configUser.usr_url] : 'usr_url',
+                                      [configUser.usr_locale] : 'usr_locale',
+                                      [configUser.usr_currency] : 'usr_currency',
+                                      [configUser.usr_isSubscritionActive] : isSubscribedBoolean,
+                                      [configUser.usr_isNotified] : isNotifiedBoolean,
+                                      [configUser.usr_subscriptionType]: 'usr_subscriptionType',
+                                      [configUser.usr_subscriptionAmount] : 0,
+                                      [configUser.usr_subscriptionCostToDate] : 0,
+                                      [configUser.usr_subscriptionFrequency]: 0,
+                                      [configUser.usr_isUserCloudConnected] : false,
+                                      [configUser.usr_isDropBox] : false,
+                                      [configUser.usr_isGoogle]: false,
+                                      [configUser.usr_isBox] : false,
+                                      [configUser.usr_isICloud] : false,
+                                      [configUser.usr_isOneDrive] : false,
+                                      [configUser.usr_invoicePaymentBankBSB] : 0,
+                                      [configUser.usr_invoicePaymentBankAccountNumber] : 0,
+                                      [configUser.usr_invoicePaymentBankAccountName] : 'usr_invoicePaymentBankAccountName',
+                                      [configUser.usr_invoicePaymentBankName] : 'usr_invoicePaymentBankName'
+                                    }
+                                }
                     })
                       .then(function (respInsertUser) {
                         resMsg = 'User Data existed and now updated Successfully!' ;
@@ -311,6 +355,9 @@ function handlePOST (req, res)
               else{
                 //user has multiple records. Delete rest!
                 console.log('Too many copies of the user present! Contact System Adminstrator!');
+                console.log('*****');
+                console.log(JSON.stringify(respUserCheck));
+                console.log('*****');
                 resMsg = 'Error : New User document creation ['+config.user_index_write_alias_name+'] Failed! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
                 failure(res,resMsg,500);
               }
