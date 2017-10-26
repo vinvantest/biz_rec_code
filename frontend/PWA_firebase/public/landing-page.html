@@ -155,6 +155,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           last-error="{{lastError}}">
   </iron-ajax>
 -->
+<firebase-query
+  id="query"
+  path="/users/[[user.uid]]/profile"
+  data="{{profile}}">
+</firebase-query>
 
 <iron-ajax
         id="checkUserExistAndSetup"
@@ -517,6 +522,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           case (x === 200):
               console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
               console.log('last response _'+ this.responseData);
+              console.log('*****************');
+              console.log('this.user.displayName = '+this.user.displayName);
+              console.log('this.user.uid = '+this.user.uid);
+              console.log('this.user.photoUrl = '+this.user.photoURL);
+              console.log('this.user.email = '+this.user.email);
+              console.log('this.user.emailVerified = '+this.user.emailVerified);
+              console.log('this.user.phoneNumber = '+this.user.phoneNumber);
+              console.log('this.user.isAnonymous = '+this.user.isAnonymous);
+              console.log('this.user.provider = '+ this.user.providerData[0].providerId);
+              console.log('this.user.provider_uid = '+ this.user.providerData[0].uid);
+              //console.log('this.user.token.apiKey = '+this.user.stsTokenManager.apiKey);
+              //console.log('this.user.token.refreshToken = '+this.user.stsTokenManager.refreshToken);
+              //console.log('this.user.token.accessToken = '+this.user.stsTokenManager.accessToken);
+              //console.log('this.user.token.expirationTime = '+this.user.stsTokenManager.expirationTime);
+              console.log('*****************');
+              this.$.query.ref.push({
+                              username: this.user.displayName,
+                              uid: this.user.uid,
+                              photo_url: this.user.photoURL,
+                              email: this.user.email,
+                              email_verified: this.user.emailVerified,
+                              phonenumber: this.user.phoneNumber,
+                              is_anonymous: this.user.isAnonymous,
+                              provider: this.user.providerData[0].providerId,
+                              provider_uid: this.user.providerData[0].uid
+                              //token_api_key: this.user.stsTokenManager.apiKey
+                              //token_refes_htoken: this.user.stsTokenManager.refreshToken,
+                              //token_access_token: this.user.stsTokenManager.accessToken,
+                              //token_expiration_time: this.user.stsTokenManager.expirationTime
+                            });
               document.getElementById('toast').show(this.user.displayName+' Synced with server Successfully!');
               this.firstLoadFlag = false;
               this.busyDialogLoadMsg = 'Data loaded succesfully!';
