@@ -77,7 +77,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/createBankFunction?uid=HJIOFS#53345DD&bankId=HLH343HS52
+//https://us-central1-bizrec-dev.cloudfunctions.net/getBankFunction?uid=HJIOFS#53345DD&bankId=HLH343HS52
 //no body {} -- banks body
 function handleGET (req, res)
 {
@@ -117,55 +117,61 @@ function handleGET (req, res)
 	});
 
 	 console.log('Checking if index Exists('+config.banks_index_name+')');
-	 esClient.indices.exists(config.banks_index_name)
-		 .then(function (resp) {
-        //index exists
-				console.log('Index ['+config.banks_index_name+'] already exists in ElasticSearch. Response is ->'+resp);
-				resMsg = 'Index ['+config.banks_index_name+'] already exists in ElasticSearch'+JSON.stringify(resp);
-				//check if uid exists
-        //check if UID exists in users index using global_alisas_for_search_users_index
-        var queryBody = {
-                 index : config.user_index_search_alias_name,
-                 type : config.index_base_type,
-                 usr_uid : routingUid
-               };
-        esClient.get(queryBody)
-          .then(function (resp) {
-                //User Uid exists
-                //Insert banks to the index
-                var indexAliasName = routingUid+config.banks_alias_token_read;
-                var columnName = config.banks_routing_column_name;
-                console.log('Alias name derived through routing is ->'+indexAliasName);
-                queryBody = {
-                  index: indexAliasName,
-                  type: config.index_base_type,
-                  columnName : routingUid,
-                  id: bankId
+	 esClient.indices.exists({index: config.banks_index_name})
+		 .then(function (error,resp) {
+       console.log('error value -' + error);
+       console.log('response value - ' + resp);
+       if(error)
+       {
+         //index exists
+         console.log('Index ['+config.banks_index_name+'] already exists in ElasticSearch. Response is ->'+resp);
+         resMsg = 'Index ['+config.banks_index_name+'] already exists in ElasticSearch'+JSON.stringify(resp);
+         //check if uid exists
+         //check if UID exists in users index using global_alisas_for_search_users_index
+         var queryBody = {
+                  index : config.user_index_search_alias_name,
+                  type : config.index_base_type,
+                  usr_uid : routingUid
                 };
-                //esClient.search(queryBody)
-                esClient.get(queryBody)
-                .then(function (resp) {
-                    resMsg = 'Banks Data Retrieved Successfully!' ;
-                    console.log(resMsg);
-                    //esClient.close(); //use in lambda only
-                    success(res,resp.hits.hits[0]);
-                    },
-                      function (error) {
-                        resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                        //esClient.close(); //use in lambda only
-                      failure(res,resMsg,500);
-                });
-            }, function (error) {
-                resMsg = 'Error : User not found in user Index. Error - ' + JSON.stringify(error);
-                //esClient.close(); //use in lambda only
-                failure(res,resMsg,500);
-          });//End: check user exists
-	     }, function (err){
+         esClient.get(queryBody)
+           .then(function (resp) {
+                 //User Uid exists
+                 //Insert banks to the index
+                 var indexAliasName = routingUid+config.banks_alias_token_read;
+                 var columnName = config.banks_routing_column_name;
+                 console.log('Alias name derived through routing is ->'+indexAliasName);
+                 queryBody = {
+                   index: indexAliasName,
+                   type: config.index_base_type,
+                   columnName : routingUid,
+                   id: bankId
+                 };
+                 //esClient.search(queryBody)
+                 esClient.get(queryBody)
+                 .then(function (resp) {
+                     resMsg = 'Banks Data Retrieved Successfully!' ;
+                     console.log(resMsg);
+                     //esClient.close(); //use in lambda only
+                     success(res,resp.hits.hits[0]);
+                     },
+                       function (error) {
+                         resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
+                         //esClient.close(); //use in lambda only
+                       failure(res,resMsg,500);
+                 });
+             }, function (error) {
+                 resMsg = 'Error : User not found in user Index. Error - ' + JSON.stringify(error);
+                 //esClient.close(); //use in lambda only
+                 failure(res,resMsg,500);
+           });//End: check user record exists
+       } // end if - index exists
+       else {
          //index dosen't exist. Create one.
-    			console.log('Index does not Exists! Can not insert banks. Error value is ->'+JSON.stringify(err));
-    			resMsg = 'Index does not Exists!. Error Value = '+JSON.stringify(err);
+          console.log('Index does not Exists! Can not insert banks. Error value is ->'+JSON.stringify(err));
+          resMsg = 'Index does not Exists!. Error Value = '+JSON.stringify(err);
           failure(res,resMsg,404);
-	    });//end then - indices.exists()
+       } // end else - index doesn't exist
+	  });//end then - indices.exists()
 
 }
 

@@ -77,7 +77,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/createbanksFunction?uid=HJIOFS#53345DD
+//https://us-central1-bizrec-dev.cloudfunctions.net/getbanksFunction?uid=HJIOFS#53345DD
 //no body {}
 function handleGET (req, res)
 {
@@ -111,7 +111,7 @@ function handleGET (req, res)
 	});
 
 	 console.log('Checking if index Exists('+config.banks_index_name+')');
-	 esClient.indices.exists(config.banks_index_name)
+	 esClient.indices.exists({ index: config.banks_index_name })
 		 .then(function (resp) {
         //index exists
 				console.log('Index ['+config.banks_index_name+'] already exists in ElasticSearch. Response is ->'+resp);
