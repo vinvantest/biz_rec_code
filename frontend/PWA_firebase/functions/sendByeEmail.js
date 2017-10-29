@@ -1,47 +1,62 @@
 'use strict';
 
-const nodemailer = require('nodemailer');
-// Configure the email transport using the default SMTP transport and a GMail account.
-// For Gmail, enable these:
-// 1. https://www.google.com/settings/security/lesssecureapps
-// 2. https://accounts.google.com/DisplayUnlockCaptcha
-// For other types of transports such as Sendgrid see https://nodemailer.com/transports/
-// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
+var config  = require('./config.js');
 
-//const gmailEmail = encodeURIComponent(functions.config().gmail.email);
-//const gmailPassword = encodeURIComponent(functions.config().gmail.password);
-//const mailTransport = nodemailer.createTransport(
-//    `smtps://${gmailEmail}:${gmailPassword}@smtp.gmail.com`);
+const sendgrid = require('sendgrid');
+const clientSendGrid = sendgrid(config.email_sendgrid_apikey_template);
 
-const mailTransport = nodemailer.createTransport(
-    `smtps://ramhanse@gmail.com:ramhanse1@smtp.gmail.com`);
-// Your company name to include in the emails
-// TODO: Change this to your app or company name to customize the email sent.
-const APP_NAME = 'BizRec';
-
-// Sends a goodbye email to the given user.
-function sendGoodbyEmail(email, displayName) {
-  const mailOptions = {
-    from: `${APP_NAME} <noreply@firebase.com>`,
-    to: email
-  };
-
-  // The user unsubscribed to the newsletter.
-  mailOptions.subject = `Bye!`;
-  mailOptions.text = `Hey ${displayName || ''}!, We confirm that we have deleted your ${APP_NAME} account.`;
-  return mailTransport.sendMail(mailOptions).then(() => {
-    console.log('Account deletion confirmation email sent to:', email);
-  });
-}
+const APP_NAME = config.email_app_name;
 
 exports.handler = function(event, database)
 {
   var usersRef = database.ref('users');
-  // [END onDeleteTrigger]
-  const user = event.data;
-  const email = user.email;
-  const displayName = user.displayName;
-  console.log( 'event data ='+JSON.stringify(event.data.val()) );
-
-  return sendGoodbyEmail(email, displayName);
+  const user = event.data; // The Firebase user.
+  console.log( 'event data ='+JSON.stringify(event.data) );
+  var obj = {
+        "personalizations": [
+          {
+          "to": [
+              {
+                "email": user.email,
+                "name": user.displayName
+              }
+            ],
+             "substitutions": {
+                "%name%": user.displayName
+            },
+            "subject": `Bye ${APP_NAME}!`
+          }
+        ],
+        "from": {
+          "email": config.email_from,
+          "name": APP_NAME
+        },
+        "reply_to": {
+          "email": config.email_customer_service,
+          "name": "Bizrec Customer Service"
+        },
+        "subject": `Bye ${APP_NAME}!`,
+        "template_id": config.email_bye_template_id
+      };
+  const request = clientSendGrid.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: parseBody(email, displayName, config.email_welcome_template_id),
+  });
+  // Send the email!
+  clientSendGrid.API(request, function (error, response) {
+        if (error) {
+           console.log('Error response received -' + error);
+           return;
+         }
+         else {
+           console.log('Sendgrid :: response.statusCode = '+ response.statusCode);
+           console.log('SendGrid :: Response after sending email successfully - Welcome Email Operation!');
+           console.log('SendGrid :: response = '+JSON.stringify(response));
+           console.log('respnose.body = '+ response.body);
+           console.log('response.headers' + response.headers);
+           return;
+         }
+      });
+  return;
 };

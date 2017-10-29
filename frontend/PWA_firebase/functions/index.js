@@ -43,6 +43,8 @@ var createCustomerAliasBasedOnRoutingFunction = require('./createCustomerAliasBa
 var sendWelcomeEmailFunction = require('./sendWelcomeEmail');
 var sendByeEmailFunction = require('./sendByeEmail');
 
+var testSendMailFunction = require('./testSendMail');
+
 // Pass database to child functions so they have access to it
 exports.fooFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -197,12 +199,22 @@ exports.createCustomerAliasBasedOnRoutingFunction = functions.database.ref('/use
   createCustomerAliasBasedOnRoutingFunction.handler(event, database);
 });
 
+/************ ### TEST BACKEND TRIGGERED FUNCTIONS ### ***********/
+
+exports.testSendMailFunction = functions.https.onRequest((req, res) => {
+    //var corsFn = cors();
+    //corsFn(req, res, () => {
+    cors(req, res, () => {
+        testSendMailFunction.handler(req, res, database);
+    });
+});
+
 /************ SEND EMAILS ON AUTHENTICATION - NODEMAILER BACKEND FUNCTION *******/
 
-exports.sendWelcomeEmail = functions.auth.user().onCreate(event => {
+exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
     sendWelcomeEmailFunction.handler(event, database);
 });
 
-exports.sendByeEmail = functions.auth.user().onDelete(event => {
+exports.sendByeEmailFunction = functions.auth.user().onDelete(event => {
     sendByeEmailFunction.handler(event, database);
 });

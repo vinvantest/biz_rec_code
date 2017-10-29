@@ -4,11 +4,25 @@ var config = {
 	access_token : 'YOUR_ACCESS_TOKEN',
 	access_token_secret : 'YOUR_ACCESS_TOKEN_SECRET',
 
+	email_app_name: 'BizRec',
+	email_service: 'gmail',
+	email_host: 'smtp.gmail.com',
+	email_auth_user: 'ramhanse@gmail.com',
+	email_auth_pass: 'ramhanse1',
+	email_from: 'BizRec <customerservice@bizrec.com>',
+	email_cc: 'ramhanse@gmail.com',
+	email_customer_service: 'customerservice@bizrec.com',
+
+	email_sendgrid_apikey: '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',
+	email_sendgrid_apikey_template: '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',
+	email_welcome_template_id: '209b701b-0921-4ef4-aa94-3d5d9d93d617',
+	email_bye_template_id : '8457a373-65ae-4bcd-827f-76c2497605a6',
+
 	index_base_type: 'base_type',
 
 	user_index_search_alias_name : 'global_alisas_for_search_users_index',
 	user_index_write_alias_name : 'global_alisas_for_write_users_index',
-	
+
 	user_index_name: 'users_index_v1',
 
 	banks_index_name: 'banks_index_v1',

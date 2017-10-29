@@ -1,47 +1,84 @@
 'use strict';
 
-const nodemailer = require('nodemailer');
-// Configure the email transport using the default SMTP transport and a GMail account.
-// For Gmail, enable these:
-// 1. https://www.google.com/settings/security/lesssecureapps
-// 2. https://accounts.google.com/DisplayUnlockCaptcha
-// For other types of transports such as Sendgrid see https://nodemailer.com/transports/
-// TODO: Configure the `gmail.email` and `gmail.password` Google Cloud environment variables.
+var config  = require('./config.js');
 
-//const gmailEmail = encodeURIComponent(functions.config().gmail.email);
-//const gmailPassword = encodeURIComponent(functions.config().gmail.password);
-//const mailTransport = nodemailer.createTransport(
-//    `smtps://${gmailEmail}:${gmailPassword}@smtp.gmail.com`);
+const sendgrid = require('sendgrid');
+const clientSendGrid = sendgrid(config.email_sendgrid_apikey_template);
 
-const mailTransport = nodemailer.createTransport(
-    `smtps://ramhanse@gmail.com:ramhanse1@smtp.gmail.com`);
-
-// Your company name to include in the emails
-// TODO: Change this to your app or company name to customize the email sent.
-const APP_NAME = 'BizRec';
-
-// Sends a welcome email to the given user.
-function sendWelcomeEmail(email, displayName) {
-  const mailOptions = {
-    from: `${APP_NAME} <noreply@firebase.com>`,
-    to: email
-  };
-
-  // The user subscribed to the newsletter.
-  mailOptions.subject = `Welcome to ${APP_NAME}!`;
-  mailOptions.text = `Hey ${displayName || ''}! Welcome to ${APP_NAME}. I hope you will enjoy our service.`;
-  return mailTransport.sendMail(mailOptions).then(() => {
-    console.log('New welcome email sent to:', email);
-  });
-}
+const APP_NAME = config.email_app_name;
 
 exports.handler = function(event, database)
 {
   var usersRef = database.ref('users');
   const user = event.data; // The Firebase user.
-  const email = user.email; // The email of the user.
-  const displayName = user.displayName; // The display name of the user.
-  console.log( 'event data ='+JSON.stringify(event.data.val()) );
-
-  return sendWelcomeEmail(email, displayName);
+  console.log( 'event data ='+JSON.stringify(event.data) );
+  var obj = {
+        "personalizations": [
+          {
+          "to": [
+              {
+                "email": user.email,
+                "name": user.displayName
+              }
+            ],
+             "substitutions": {
+                "%name%": user.displayName
+            },
+            "subject": `Welcome to ${APP_NAME}!`
+          }
+        ],
+        "from": {
+          "email": config.email_from,
+          "name": APP_NAME
+        },
+        "reply_to": {
+          "email": config.email_customer_service,
+          "name": "Bizrec Customer Service"
+        },
+        "subject": `Welcome to ${APP_NAME}!`,
+        "template_id": config.email_welcome_template_id
+      };
+  const request = clientSendGrid.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: parseBody(email, displayName, config.email_welcome_template_id),
+  });
+  // Send the email!
+  clientSendGrid.API(request, function (error, response) {
+        if (error) {
+           console.log('Error response received -' + error);
+           return;
+         }
+         else {
+           console.log('Sendgrid :: response.statusCode = '+ response.statusCode);
+           console.log('SendGrid :: Response after sending email successfully - Welcome Email Operation!');
+           console.log('SendGrid :: response = '+JSON.stringify(response));
+           console.log('respnose.body = '+ response.body);
+           console.log('response.headers' + response.headers);
+           return;
+         }
+      });
+  return;
 };
+
+/* event.data =
+
+{
+	"displayName": "Ramhigh Low",
+	"email": "testbizvv@gmail.com",
+	"emailVerified": true,
+	"metadata": {
+		"creationTime": "2017-10-27T00:16:16Z",
+		"lastSignInTime": "2017-10-27T00:16:16Z"
+	},
+	"photoURL": "https://lh5.googleusercontent.com/-7k6JG8RCtRI/AAAAAAAAAAI/AAAAAAAAAAc/aKrbE08MqDI/photo.jpg",
+	"providerData": [{
+		"displayName": "Ramhigh Low",
+		"email": "testbizvv@gmail.com",
+		"photoURL": "https://lh5.googleusercontent.com/-7k6JG8RCtRI/AAAAAAAAAAI/AAAAAAAAAAc/aKrbE08MqDI/photo.jpg",
+		"providerId": "google.com",
+		"uid": "106907019373764493113"
+	}],
+	"uid": "MePBMojfc4hXaM5x490hWAcxsIs2"
+}
+*/
