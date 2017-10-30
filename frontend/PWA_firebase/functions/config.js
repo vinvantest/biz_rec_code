@@ -13,8 +13,6 @@ var config = {
 	email_cc: 'ramhanse@gmail.com',
 	email_customer_service: 'customerservice@bizrec.com',
 
-	email_sendgrid_apikey: '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',
-	email_sendgrid_apikey_template: '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',
 	email_welcome_template_id: '209b701b-0921-4ef4-aa94-3d5d9d93d617',
 	email_bye_template_id : '8457a373-65ae-4bcd-827f-76c2497605a6',
 

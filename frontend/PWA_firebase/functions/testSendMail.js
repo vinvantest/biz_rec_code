@@ -4,7 +4,6 @@ var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
 const sendgrid = require('sendgrid');
-const clientSendGrid = sendgrid(config.email_sendgrid_apikey_template);
 const APP_NAME = config.email_app_name;
 
 function handlePOST (req, res) {
@@ -130,7 +129,7 @@ function parseBody(email, displayName, templateId) {
 
 //https://us-central1-bizrec-dev.cloudfunctions.net/getBankFunction?uid=HJIOFS#53345DD&bankId=HLH343HS52
 //no body {} -- banks body
-function handleGET (req, res)
+function handleGET (req, res, functions)
 {
   // Do something with the GET request
   const email = req.query.email; // The email of the user.
@@ -169,6 +168,7 @@ function handleGET (req, res)
       return Promise.reject(err);
     });
     */
+    const clientSendGrid = sendgrid(functions.config().sendgrid.key);
     // Put everything together into an email request object
     const request = clientSendGrid.emptyRequest({
       method: 'POST',
@@ -193,12 +193,12 @@ function handleGET (req, res)
 
 }
 
-exports.handler = function(req, res, database)
+exports.handler = function(req, res, database, functions)
 {
   var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
-    handleGET(req, res);
+    handleGET(req, res, functions);
     break;
   case 'PUT':
     handlePUT(req, res);

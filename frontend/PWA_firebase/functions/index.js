@@ -4,6 +4,17 @@
 var functions = require('firebase-functions');
 const cors = require('cors')({origin: true});
 
+//Env.variable keys
+/*
+return request({
+    url: 'https://someservice.com/api/some/call',
+    headers: {
+      'X-Client-ID': functions.config().someservice.id,
+      'Authorization': `Bearer ${functions.config().someservice.key}`
+    },
+    body: {email: email}
+  });
+*/
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 var admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
@@ -11,7 +22,6 @@ var database = admin.database();
 
 var fooFunction = require('./foo');
 var barFunction = require('./bar');
-
 
 var getUsersFunction = require('./getUsers');
 var addTemplateToESFunction = require('./addTemplateToES');
@@ -42,6 +52,7 @@ var deleteTemplateFunction = require('./deleteTemplate');
 var databaseTrigger1Function = require('./databaseTrigger1');
 var databaseTrigger2Function = require('./databaseTrigger2');
 
+var createUserOnAuthFunction = require('./createUserOnAuth');
 var createBankIndexAliasForUserFunction = require('./createBankIndexAliasForUser');
 var createCAOIndexAliasForUserFunction = require('./createCAOIndexAliasForUser');
 var createCustomerIndexAliasForUserFunction = require('./createCustomerIndexAliasForUser');
@@ -217,7 +228,7 @@ exports.databaseTrigger2Function = functions.database.ref('/users/{uid}/profile'
 
 exports.testSendMailFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-        testSendMailFunction.handler(req, res, database);
+        testSendMailFunction.handler(req, res, database, functions);
     });
 });
 
@@ -230,11 +241,11 @@ exports.testAliasCreationFunction = functions.https.onRequest((req, res) => {
 /************ SEND EMAILS ON AUTHENTICATION - SENDGRID BACKEND FUNCTION *******/
 
 exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
-    sendWelcomeEmailFunction.handler(event, database);
+    sendWelcomeEmailFunction.handler(event, database, functions);
 });
 
 exports.sendByeEmailFunction = functions.auth.user().onDelete(event => {
-    sendByeEmailFunction.handler(event, database);
+    sendByeEmailFunction.handler(event, database, functions);
 });
 
 /************ SETUP ALIAS for logged in customer AUTHENTICATION - BACKEND FUNCTION *******/
@@ -277,4 +288,8 @@ exports.createSupplierIndexAliasForUserFunction = functions.auth.user().onCreate
 
 exports.createTransactionIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
     createTransactionIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createUserOnAuthFunction = functions.auth.user().onCreate(event => {
+    createUserOnAuthFunction.handler(event, database);
 });

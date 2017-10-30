@@ -3,12 +3,12 @@
 var config  = require('./config.js');
 
 const sendgrid = require('sendgrid');
-const clientSendGrid = sendgrid(config.email_sendgrid_apikey_template);
-
 const APP_NAME = config.email_app_name;
 
-exports.handler = function(event, database)
+exports.handler = function(event, database, functions)
 {
+  const clientSendGrid = sendgrid(functions.config().sendgrid.key);
+  
   var usersRef = database.ref('users');
   const user = event.data; // The Firebase user.
   console.log( 'event data ='+JSON.stringify(event.data) );
