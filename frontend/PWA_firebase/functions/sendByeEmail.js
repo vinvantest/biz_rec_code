@@ -41,7 +41,7 @@ exports.handler = function(event, database)
   const request = clientSendGrid.emptyRequest({
     method: 'POST',
     path: '/v3/mail/send',
-    body: parseBody(email, displayName, config.email_welcome_template_id),
+    body: obj,
   });
   // Send the email!
   clientSendGrid.API(request, function (error, response) {

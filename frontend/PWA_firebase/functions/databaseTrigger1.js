@@ -7,7 +7,7 @@ var config  = require('./config.js');
 exports.handler = function(event, database)
 {
   var usersRef = database.ref('users');
-  console.log('inside Backend Function1 - createBankAliasBasedOnRouting');
+  console.log('inside Backend Function1 - databaseTrigger1');
   console.log( 'event data ='+JSON.stringify(event.data.val()) );
   console.log('event.params.uid =' + event.params.uid );
 

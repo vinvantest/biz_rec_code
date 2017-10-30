@@ -38,12 +38,26 @@ var checkUserExistsFunction = require('./checkUserExists');
 var createUserFunction = require('./createUser');
 var deleteIndexFunction = require('./deleteIndex');
 var deleteTemplateFunction = require('./deleteTemplate');
-var createBankAliasBasedOnRoutingFunction = require('./createBankAliasBasedOnRouting');
-var createCustomerAliasBasedOnRoutingFunction = require('./createCustomerAliasBasedOnRouting');
+
+var databaseTrigger1Function = require('./databaseTrigger1');
+var databaseTrigger2Function = require('./databaseTrigger2');
+
+var createBankIndexAliasForUserFunction = require('./createBankIndexAliasForUser');
+var createCAOIndexAliasForUserFunction = require('./createCAOIndexAliasForUser');
+var createCustomerIndexAliasForUserFunction = require('./createCustomerIndexAliasForUser');
+var createInvoiceIndexAliasForUserFunction = require('./createInvoiceIndexAliasForUser');
+var createNoteIndexAliasForUserFunction = require('./createNoteIndexAliasForUser');
+var createPaymentIndexAliasForUserFunction = require('./createPaymentIndexAliasForUser');
+var createRuleIndexAliasForUserFunction = require('./createRuleIndexAliasForUser');
+var createSettingIndexAliasForUserFunction = require('./createSettingIndexAliasForUser');
+var createSupplierIndexAliasForUserFunction = require('./createSupplierIndexAliasForUser');
+var createTransactionIndexAliasForUserFunction = require('./createTransactionIndexAliasForUser');
+
 var sendWelcomeEmailFunction = require('./sendWelcomeEmail');
 var sendByeEmailFunction = require('./sendByeEmail');
 
 var testSendMailFunction = require('./testSendMail');
+var testAliasCreationFunction = require('./testAliasCreation');
 
 // Pass database to child functions so they have access to it
 exports.fooFunction = functions.https.onRequest((req, res) => {
@@ -186,30 +200,34 @@ exports.deleteIndexFunction = functions.https.onRequest((req, res) => {
     });
 });
 
-/************ BACKEND TRIGGERED FUNCTIONS ***********/
+/************ BACKEND TRIGGERED FUNCTIONS - DATABASE Path ***********/
 
-exports.createBankAliasBasedOnRoutingFunction = functions.database.ref('/users/{uid}/profile')
+exports.databaseTrigger1Function = functions.database.ref('/users/{uid}/profile')
 .onWrite( event => {
-  createBankAliasBasedOnRoutingFunction.handler(event, database);
+  databaseTrigger1Function.handler(event, database);
 });
 
 
-exports.createCustomerAliasBasedOnRoutingFunction = functions.database.ref('/users/{uid}/profile')
+exports.databaseTrigger2Function = functions.database.ref('/users/{uid}/profile')
 .onWrite( event => {
-  createCustomerAliasBasedOnRoutingFunction.handler(event, database);
+  databaseTrigger2Function.handler(event, database);
 });
 
 /************ ### TEST BACKEND TRIGGERED FUNCTIONS ### ***********/
 
 exports.testSendMailFunction = functions.https.onRequest((req, res) => {
-    //var corsFn = cors();
-    //corsFn(req, res, () => {
     cors(req, res, () => {
         testSendMailFunction.handler(req, res, database);
     });
 });
 
-/************ SEND EMAILS ON AUTHENTICATION - NODEMAILER BACKEND FUNCTION *******/
+exports.testAliasCreationFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        testAliasCreationFunction.handler(req, res, database);
+    });
+});
+
+/************ SEND EMAILS ON AUTHENTICATION - SENDGRID BACKEND FUNCTION *******/
 
 exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
     sendWelcomeEmailFunction.handler(event, database);
@@ -217,4 +235,46 @@ exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
 
 exports.sendByeEmailFunction = functions.auth.user().onDelete(event => {
     sendByeEmailFunction.handler(event, database);
+});
+
+/************ SETUP ALIAS for logged in customer AUTHENTICATION - BACKEND FUNCTION *******/
+
+exports.createBankIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createBankIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createCAOIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createCAOIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createCustomerIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createCustomerIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createInvoiceIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createInvoiceIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createNoteIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createNoteIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createPaymentIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createPaymentIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createRuleIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createRuleIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createSettingIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createSettingIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createSupplierIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createSupplierIndexAliasForUserFunction.handler(event, database);
+});
+
+exports.createTransactionIndexAliasForUserFunction = functions.auth.user().onCreate(event => {
+    createTransactionIndexAliasForUserFunction.handler(event, database);
 });
