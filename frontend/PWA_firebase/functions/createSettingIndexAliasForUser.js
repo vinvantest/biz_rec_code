@@ -1,9 +1,8 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
-function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken)
+function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, esClient)
 {
   console.log('index ['+indexName+'] with UUID ['+routingValue+']. Creating Alias for index ['+indexName+']!');
   var aliasBodyWrite = {
@@ -106,7 +105,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
 }
 
 //sample uid: 3LsrOoGQAQOBVC1vU89bNpFuXwA3
-function handlePOST (user ) {
+function handlePOST (user, esClient ) {
 
     // Do something with the POST request
      var resMsg = '';
@@ -235,13 +234,13 @@ function handlePOST (user ) {
    return;
 }
 
-exports.handler = function(event, database)
+exports.handler = function(event, database, esClient)
 {
   var usersRef = database.ref('users');
   const user = event.data; // The Firebase user.
   console.log( 'event data ='+JSON.stringify(event.data) );
 
-  return handlePOST(user);
+  return handlePOST(user, esClient);
 
 };
 

@@ -1,10 +1,9 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 var configUser = require('./config/specific/user_template_columns.js');
 
-function handlePOST (user)
+function handlePOST (user, esClient)
 {
   // Do something with the POST request
    var resMsg = '';
@@ -260,13 +259,13 @@ function handlePOST (user)
 
 }//end POST
 
-exports.handler = function(event, database)
+exports.handler = function(event, database, esClient)
 {
   var usersRef = database.ref('users');
   const user = event.data; // The Firebase user.
   console.log( 'event data ='+JSON.stringify(event.data) );
 
-  return handlePOST(user);
+  return handlePOST(user, esClient);
 
 };
 

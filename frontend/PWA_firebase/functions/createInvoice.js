@@ -1,6 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
 function handleGET (req, res) {
@@ -79,7 +78,7 @@ function failure (res, data, httpCode) {
 
 //https://us-central1-bizrec-dev.cloudfunctions.net/createInvoiceFunction?uid=HJIOFS#53345DD
 //no body {} -- invoice body
-function handlePOST (req, res)
+function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
    var resMsg = '';
@@ -164,7 +163,7 @@ function handlePOST (req, res)
 
 }
 
-exports.handler = function(req, res, database)
+exports.handler = function(req, res, database, esClient)
 {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
@@ -177,7 +176,7 @@ exports.handler = function(req, res, database)
     handlePUT(req, res);
     break;
   case 'POST':
-      handlePOST(req, res);
+      handlePOST(req, res, esClient);
       break;
   case 'DELETE':
        handleDELETE(req, res);

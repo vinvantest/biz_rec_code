@@ -1,6 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 var configUser = require('./config/specific/user_template_columns.js');
 
@@ -86,7 +85,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, req, res)
+function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, req, res, esClient)
 {
   console.log('index ['+indexName+'] with UUID ['+routingValue+']. Creating Alias for index ['+indexName+']!');
   var aliasBodyWrite = {
@@ -192,7 +191,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
 //Check through Postman
 //Alis = https://iad1-10914-0.es.objectrocket.com:20914/_alias/*
 //index = https://iad1-10914-0.es.objectrocket.com:20914/banks*
-function handlePOST (req, res ) {
+function handlePOST (req, res, esClient ) {
   // Do something with the POST request
    var resMsg = '';
    console.log('Inside handlePOST(user)');
@@ -304,7 +303,7 @@ function handlePOST (req, res ) {
      {
       console.log('Index ['+indexName+'] already exists in ElasticSearch. Response is ->'+error);
       resMsg = 'Index ['+indexName+'] already exists in ElasticSearch -'+JSON.stringify(resp);
-      checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, req, res);
+      checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, req, res, esClient);
      }//end if
      else{
        //index dosen't exist.
@@ -316,7 +315,7 @@ function handlePOST (req, res ) {
 
 }
 
-exports.handler = function(req, res, database)
+exports.handler = function(req, res, database, esClient)
 {
   var usersRef = database.ref('users');
   switch (req.method) {
@@ -327,7 +326,7 @@ exports.handler = function(req, res, database)
     handlePUT(req, res);
     break;
   case 'POST':
-      handlePOST(req, res);
+      handlePOST(req, res, esClient);
       break;
   case 'DELETE':
        handleDELETE(req, res);

@@ -1,6 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
 function handleGET (req, res) {
@@ -77,7 +76,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue, resMsg)
+function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue, resMsg, esClient)
 {
   console.log('index ['+config.user_index_search_alias_name+'] includes user with UUID ['+routingValue+']. Creating Alias for index ['+indexName+']!');
   var aliasBodyWrite = {
@@ -179,7 +178,7 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
 //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexAliasBasedOnRoutingFunction?routingValue=UUID&indexType=banks
 //1. body {} send users object {user}
 //2. indexType = 'users' is not valid
-function handlePOST (req, res) {
+function handlePOST (req, res, esClient) {
   // Do something with the POST request
    var resMsg = '';
    console.log('Inside serer.post(addTemplatetoES)');
@@ -348,7 +347,7 @@ function handlePOST (req, res) {
 
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, esClient) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
   var usersRef = database.ref('users');
@@ -360,7 +359,7 @@ exports.handler = function(req, res, database) {
     handlePUT(req, res);
     break;
   case 'POST':
-      handlePOST(req, res);
+      handlePOST(req, res, esClient);
       break;
   case 'DELETE':
        handleDELETE(req, res);

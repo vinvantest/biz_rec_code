@@ -1,8 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
-//var config  = require('./config.js');
-
 function handleGET (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
@@ -77,7 +74,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function handlePOST (req, res) {
+function handlePOST (req, res, esClient) {
   // Do something with the POST request
   //https://us-central1-bizrec-dev.cloudfunctions.net/createIndexFunction?indexName=users_index_v1&templateType=users
   //no body {}
@@ -206,7 +203,7 @@ function handlePOST (req, res) {
 
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, esClient) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
   var usersRef = database.ref('users');
@@ -218,7 +215,7 @@ exports.handler = function(req, res, database) {
     handlePUT(req, res);
     break;
   case 'POST':
-      handlePOST(req, res);
+      handlePOST(req, res, esClient);
       break;
   case 'DELETE':
        handleDELETE(req, res);

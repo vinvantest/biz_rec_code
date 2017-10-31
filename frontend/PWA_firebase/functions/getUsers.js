@@ -1,6 +1,5 @@
 'use strict';
 
-var esClient = require('elasticsearch');
 var config  = require('./config.js');
 
 function _respond(res, status, data, httpCode) {
@@ -61,7 +60,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function handleGET (req, res) {
+function handleGET (req, res, esClient) {
   // Do something with the GET request
   var resMsg = '';
   console.log('Inside serer.get(getUsers)');
@@ -220,13 +219,13 @@ function handlePOST (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, esClient) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
   var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
-    handleGET(req, res);
+    handleGET(req, res, esClient);
     break;
   case 'PUT':
     handlePUT(req, res);

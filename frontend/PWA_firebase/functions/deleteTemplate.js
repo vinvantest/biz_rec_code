@@ -1,8 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
-//var config  = require('./config.js');
-
 function handleGET (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
@@ -77,7 +74,7 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function handleDELETE (req, res) {
+function handleDELETE (req, res, esClient) {
   // Do something with the Delete request
   //https://us-central1-bizrec-dev.cloudfunctions.net/deleteIndexFunction?templateName=users_index_v1
   //no body {}
@@ -137,7 +134,7 @@ function handleDELETE (req, res) {
 
 }
 
-exports.handler = function(req, res, database) {
+exports.handler = function(req, res, database, esClient) {
   //server.get('/getUsers/:indexAliasName', function (req, res, next)
 	//{
   var usersRef = database.ref('users');
@@ -152,7 +149,7 @@ exports.handler = function(req, res, database) {
       handlePOST(req, res);
       break;
   case 'DELETE':
-       handleDELETE(req, res);
+       handleDELETE(req, res, esClient);
        break;
   default:
     res.status(500).send({ error: 'Something blew up!' });

@@ -1,6 +1,5 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
 function handlePOST (req, res) {
@@ -79,7 +78,7 @@ function failure (res, data, httpCode) {
 
 //https://us-central1-bizrec-dev.cloudfunctions.net/createrulesFunction?uid=HJIOFS#53345DD&rulesId=HSJ#%DFGDS#
 //no body {} -- rules body
-function handleGET (req, res)
+function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
@@ -169,12 +168,12 @@ function handleGET (req, res)
 
 }
 
-exports.handler = function(req, res, database)
+exports.handler = function(req, res, database, esClient)
 {
   var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
-    handleGET(req, res);
+    handleGET(req, res, esClient);
     break;
   case 'PUT':
     handlePUT(req, res);

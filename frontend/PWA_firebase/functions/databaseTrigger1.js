@@ -1,10 +1,10 @@
 'use strict';
 
-var esClient = require('./config/elasticsearch/elasticConfig.js');
+//var esClient = require('./config/elasticsearch/elasticConfig.js');
 var config  = require('./config.js');
 
 
-exports.handler = function(event, database)
+exports.handler = function(event, database, esClient)
 {
   var usersRef = database.ref('users');
   console.log('inside Backend Function1 - databaseTrigger1');
