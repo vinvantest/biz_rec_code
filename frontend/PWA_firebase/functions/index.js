@@ -35,58 +35,85 @@ var esClient = new elasticsearch.Client({
   hosts: hosts
 });
 
-/***********    FUNCTIONS       *********************/
-var fooFunction = require('./foo');
-var barFunction = require('./bar');
+/***********    FUNCTIONS Dummy     *********************/
+var fooFunction = require('./util/foo');
+var barFunction = require('./util/bar');
 
-var getUsersFunction = require('./getUsers');
-var addTemplateToESFunction = require('./addTemplateToES');
-var createIndexFunction = require('./createIndex');
-var createIndexAliasBasedOnRoutingFunction = require('./createIndexAliasBasedOnRouting');
-var createInvoiceFunction = require('./createInvoice');
-var getBanksFunction = require('./getBanks');
-var getBankFunction = require('./getBank');
-var getCoasFunction = require('./getCoas');
-var getCoaFunction = require('./getCoa');
-var getCustomersFunction = require('./getCustomers');
-var getCustomerFunction = require('./getCustomer');
-var getInvoicesFunction = require('./getInvoices');
-var getInvoiceFunction = require('./getInvoice');
-var getPaymentsFunction = require('./getPayments');
-var getPaymentFunction = require('./getPayment');
-var getRulesFunction = require('./getRules');
-var getRuleFunction = require('./getRule');
-var getSuppliersFunction = require('./getSuppliers');
-var getSupplierFunction = require('./getSupplier');
-var getTransactionsFunction = require('./getTransactions');
-var getTransactionFunction = require('./getTransaction');
-var checkUserExistsFunction = require('./checkUserExists');
-var createUserFunction = require('./createUser');
-var deleteIndexFunction = require('./deleteIndex');
-var deleteTemplateFunction = require('./deleteTemplate');
+/***********   SETUP FUNCTIONS     *********************/
+var deleteIndexFunction = require('./setup_functions/deleteIndex');
+var deleteTemplateFunction = require('./setup_functions/deleteTemplate');
+var addTemplateToESFunction = require('./setup_functions/addTemplateToES');
+var createIndexFunction = require('./setup_functions/createIndex');
 
-var createBankFunction = require('./createBank');
+/***********   UTIL FUNCTIONS     *********************/
+var createIndexAliasBasedOnRoutingFunction = require('./util/createIndexAliasBasedOnRouting');
 
-var databaseTrigger1Function = require('./databaseTrigger1');
-var databaseTrigger2Function = require('./databaseTrigger2');
+/***********   BANKS FUNCTIONS     *********************/
+var createBankFunction = require('./banks/createBank');
+var getBanksFunction = require('./banks/getBanks');
+var getBankFunction = require('./banks/getBank');
 
-var createUserOnAuthFunction = require('./createUserOnAuth');
-var createBankIndexAliasForUserFunction = require('./createBankIndexAliasForUser');
-var createCAOIndexAliasForUserFunction = require('./createCAOIndexAliasForUser');
-var createCustomerIndexAliasForUserFunction = require('./createCustomerIndexAliasForUser');
-var createInvoiceIndexAliasForUserFunction = require('./createInvoiceIndexAliasForUser');
-var createNoteIndexAliasForUserFunction = require('./createNoteIndexAliasForUser');
-var createPaymentIndexAliasForUserFunction = require('./createPaymentIndexAliasForUser');
-var createRuleIndexAliasForUserFunction = require('./createRuleIndexAliasForUser');
-var createSettingIndexAliasForUserFunction = require('./createSettingIndexAliasForUser');
-var createSupplierIndexAliasForUserFunction = require('./createSupplierIndexAliasForUser');
-var createTransactionIndexAliasForUserFunction = require('./createTransactionIndexAliasForUser');
+/***********   COAS FUNCTIONS     *********************/
+var getCoasFunction = require('./coas/getCoas');
+var getCoaFunction = require('./coas/getCoa');
 
-var sendWelcomeEmailFunction = require('./sendWelcomeEmail');
-var sendByeEmailFunction = require('./sendByeEmail');
+/***********   CUSTOMERS FUNCTIONS     *********************/
+var getCustomersFunction = require('./customers/getCustomers');
+var getCustomerFunction = require('./customers/getCustomer');
 
-var testSendMailFunction = require('./testSendMail');
-var testAliasCreationFunction = require('./testAliasCreation');
+/***********   INVOICES FUNCTIONS     *********************/
+var createInvoiceFunction = require('./invoices/createInvoice');
+var getInvoicesFunction = require('./invoices/getInvoices');
+var getInvoiceFunction = require('./invoices/getInvoice');
+
+/***********   PAYMENTS FUNCTIONS     *********************/
+var getPaymentsFunction = require('./payments/getPayments');
+var getPaymentFunction = require('./payments/getPayment');
+
+/***********   RULES FUNCTIONS     *********************/
+var getRulesFunction = require('./rules/getRules');
+var getRuleFunction = require('./rules/getRule');
+
+/***********   SUPPLIERS FUNCTIONS     *********************/
+var getSuppliersFunction = require('./suppliers/getSuppliers');
+var getSupplierFunction = require('./suppliers/getSupplier');
+
+/***********   TRANSACTIONS FUNCTIONS     *********************/
+var getTransactionsFunction = require('./transactions/getTransactions');
+var getTransactionFunction = require('./transactions/getTransaction');
+
+/***********   USERS FUNCTIONS     *********************/
+var checkUserExistsFunction = require('./users/checkUserExists');
+var createUserFunction = require('./users/createUser');
+var getUsersFunction = require('./users/getUsers');
+
+/***********   DATABASE TRIGGERS FUNCTIONS     *********************/
+var databaseTrigger1Function = require('./database_triggers/databaseTrigger1');
+var databaseTrigger2Function = require('./database_triggers/databaseTrigger2');
+
+/***********   AUTH TRIGGERS FUNCTIONS     *********************/
+var createUserOnAuthFunction = require('./auth_triggers/createUserOnAuth');
+var createBankIndexAliasForUserFunction = require('./auth_triggers/createBankIndexAliasForUser');
+var createCAOIndexAliasForUserFunction = require('./auth_triggers/createCAOIndexAliasForUser');
+var createCustomerIndexAliasForUserFunction = require('./auth_triggers/createCustomerIndexAliasForUser');
+var createInvoiceIndexAliasForUserFunction = require('./auth_triggers/createInvoiceIndexAliasForUser');
+var createNoteIndexAliasForUserFunction = require('./auth_triggers/createNoteIndexAliasForUser');
+var createPaymentIndexAliasForUserFunction = require('./auth_triggers/createPaymentIndexAliasForUser');
+var createRuleIndexAliasForUserFunction = require('./auth_triggers/createRuleIndexAliasForUser');
+var createSettingIndexAliasForUserFunction = require('./auth_triggers/createSettingIndexAliasForUser');
+var createSupplierIndexAliasForUserFunction = require('./auth_triggers/createSupplierIndexAliasForUser');
+var createTransactionIndexAliasForUserFunction = require('./auth_triggers/createTransactionIndexAliasForUser');
+
+/***********   EMAILS FUNCTIONS     *********************/
+var sendWelcomeEmailFunction = require('./emails/sendWelcomeEmail');
+var sendByeEmailFunction = require('./emails/sendByeEmail');
+
+/***********   TEST FUNCTIONS     *********************/
+var testSendMailFunction = require('./test_functions/testSendMail');
+var testAliasCreationFunction = require('./test_functions/testAliasCreation');
+
+/********************************************************/
+
 
 exports.fooFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
