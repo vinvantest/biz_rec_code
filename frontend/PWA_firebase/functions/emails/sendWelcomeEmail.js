@@ -5,7 +5,7 @@ var config  = require('../config.js');
 const sendgrid = require('sendgrid');
 const APP_NAME = config.email_app_name;
 
-exports.handler = function(event, database)
+exports.handler = function(event, database, functions)
 {
   const clientSendGrid = sendgrid(functions.config().sendgrid.key);
 
