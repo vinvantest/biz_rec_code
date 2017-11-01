@@ -76,7 +76,7 @@ function failure (res, data, httpCode) {
 
 function handleDELETE (req, res, esClient) {
   // Do something with the Delete request
-  //https://us-central1-bizrec-dev.cloudfunctions.net/deleteIndexFunction?templateName=users_index_v1
+  //https://us-central1-bizrec-dev.cloudfunctions.net/deleteTemplateFunction?templateName=users_index_v1
   //no body {}
    var resMsg = '';
    console.log('Inside serer.post(deleteTemplate)');
@@ -110,27 +110,24 @@ function handleDELETE (req, res, esClient) {
 		 .then(function (resp) {
        //index exists
        //delete index
-				console.log('Template ['+templateName+'] already exists in ElasticSearch. Response is ->'+resp);
-				resMsg = 'Template ['+templateName+'] already exists in ElasticSearch'+ resp;
+				console.log('Template ['+templateName+'] already exists in ElasticSearch. Response is ->'+JSON.stringify(resp) );
 				//delete the index
-				esClient.deleteTemplate({id: templateName})
+				esClient.indices.deleteTemplate({name : templateName})
 					.then(function (response) {
 							resMsg = 'Delete ['+templateName+'] succesfull' + response;
-							//esClient.close(); //close it in lambda only
 							success(res,resMsg);
 					},function (error){
             //delete index failure
-						console.log('Delete '+templateName+'] failed' + JSON.stringify(error));
-						resMsg = 'Delete ['+templateName+'] Failed. Try again later! ->'+ error;
-  					//esClient.close(); //close it in lambda only
+						resMsg = 'Delete ['+templateName+'] Failed. Try again later! ->'+ JSON.stringify(error);
+            console.log(resMsg);
 						failure(res,resMsg,500);
 				});//end indices.deleteTemplate()
 	     }, function (err){
              //index dosen't exist. Create one.
-    			  console.log('Template does not Exists! ->'+JSON.stringify(err));
-      			resMsg = 'Error: ['+templateName+'] does not exists!' + err;
-      			success(res,resMsg);
-	  });//end then - indices.exists()
+      			resMsg = 'Error: ['+templateName+'] does not exists!' + JSON.stringify(err);
+            console.log(resMsg);
+      			failure(res,resMsg, 500);
+	  });//end then - getTemplate())
 
 }
 

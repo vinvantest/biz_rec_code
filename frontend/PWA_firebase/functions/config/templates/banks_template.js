@@ -215,7 +215,10 @@ var banksTemplate = {
                 "bank_availableCash"	:	{ "type" :	"long"	, "index": false},
                 "bank_availableCredit"	:	{ "type" :	"long"	, "index": false},
                 "bank_nickname"	:	{ "type" :	"keyword"	, "index": true},
-                "bank_status"	:	{ "type" :	"keyword"	, "index": true}
+                "bank_status"	:	{ "type" :	"keyword"	, "index": true},
+                "bank_record_created" : { "type" :	"date"	, "index": true },
+                "bank_is_record_updated" : { "type" :	"boolean", "index": true },
+                "bank_record_updated" : { "type" :	"date"	, "index": true }
           }
         }
   }

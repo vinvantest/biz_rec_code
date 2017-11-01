@@ -117,26 +117,26 @@ function handleDELETE (req, res, esClient) {
           //delete the index
   				esClient.indices.delete( { index: indexName })
   					.then(function (response) {
-  							resMsg = 'Delete ['+indexName+'] succesfull' + response;
+  							resMsg = 'Delete ['+indexName+'] succesfull' + JSON.stringify(response);
   							//esClient.close(); //close it in lambda only
   							success(res,resMsg);
   					},function (error){
               //delete index failure
   						console.log('Delete '+indexName+'] failed' + JSON.stringify(error));
-  						resMsg = 'Delete ['+indexName+'] Failed. Try again later! ->'+ error;
+  						resMsg = 'Delete ['+indexName+'] Failed. Try again later! ->'+ JSON.stringify(error);
     					//esClient.close(); //close it in lambda only
   						failure(res,resMsg,500);
   				});//end indices.delete()
         }
         else{
-          resMsg = 'Index ['+indexName+'] does not exists in ElasticSearch'+ error;
+          resMsg = 'Index ['+indexName+'] does not exists in ElasticSearch'+ JSON.stringify(error);
           failure(res,resMsg,500);
         }
 
 	     }, function (err){
              //index dosen't exist. Create one.
     			  console.log('Index does not Exists! ->'+JSON.stringify(err));
-      			resMsg = 'Error: ['+indexName+'] does not exists!' + err;
+      			resMsg = 'Error: ['+indexName+'] does not exists!' + JSON.stringify(err);
       			success(res,resMsg);
 	  });//end then - indices.exists()
 

@@ -196,7 +196,10 @@ var coaTemplate = {
                 "coa_CoASubCategoryName"	:	{ "type" :	"keyword"	, "index": true},
                 "coa_tax"	:	{ "type" :	"keyword"	, "index": true},
                 "coa_tax_type"	:	{ "type" :	"keyword"	, "index": true},
-                "coa_tax_percentage"	:	{ "type" :	"keyword", "index": false	}
+                "coa_tax_percentage"	:	{ "type" :	"keyword", "index": false	},
+                "coa_record_created" : { "type" :	"date"	, "index": true },
+                "coa_is_record_updated" : { "type" :	"boolean", "index": true },
+                "coa_record_updated" : { "type" :	"date"	, "index": true }
           }
     }
   }

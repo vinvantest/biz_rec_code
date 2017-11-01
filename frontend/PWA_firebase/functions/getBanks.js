@@ -76,20 +76,31 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/getbanksFunction?uid=HJIOFS#53345DD
+//https://us-central1-bizrec-dev.cloudfunctions.net/getbanksFunction?uid=HJIOFS#53345DD&page=0&size=10
 //no body {}
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
    console.log('Inside serer.post(getbanks)');
-   console.log('req.query.uid = ' + JSON.stringify(req.query.uid));
+   console.log('req.query.uid = ' + req.query.uid);
+   console.log('req.query.page = ' + req.query.page);
+   console.log('req.query.size = ' + req.query.size);
    var routingUid = req.query.uid;
+   var page = req.query.page;
+   var sizeVal = req.query.size;
+   var fromVal = 0;
 
    if(routingUid === null || routingUid === undefined) {
     resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
     failure(res,resMsg,401);
    }
+   if(sizeVal == null || sizeVal === undefined)
+      sizeVal = 10;
+   if(page === null || page === undefined)
+      fromVal = 0;
+   else
+      fromVal  = page * Number(sizeVal);
 
    resMsg = 'Data not found in index in ES';
 
@@ -161,12 +172,12 @@ function handleGET (req, res, esClient)
                  type: config.index_base_type,
                  [config.banks_routing_column_name] : routingUid,
                  body: {
+                   from: fromVal,
+                   size: Number(sizeVal),
                    query: {
-                        match: {
-                          //[configUser.usr_uid] : userBody.uid
-                        },
-                        sort:{ //may be ES sorts records by timestamp
-                          'created': 'desc'
+                        match_all: {},
+                        sort: {
+                          [config.banks_record_updated_column_name]: 'desc'
                         }
                       }
                  }
@@ -175,13 +186,11 @@ function handleGET (req, res, esClient)
                .then(function (resp) {
                    resMsg = 'Banks Data Retrieved Successfully!' ;
                    console.log(resMsg);
-                   //esClient.close(); //use in lambda only
                    successArray(res,resp.hits.hits);
                    },
                      function (error) {
                        resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                       //esClient.close(); //use in lambda only
-                       failure(res,resMsg,500);
+                         failure(res,resMsg,500);
                    });
                }
              else{
@@ -229,3 +238,28 @@ exports.handler = function(req, res, database, esClient)
     break;
   }
 };
+
+/*
+Convert ISO Date String to Date object
+function converToLocalTime(serverDate) {
+
+    var dt = new Date(Date.parse(serverDate));
+    var localDate = dt;
+
+    var gmt = localDate;
+        var min = gmt.getTime() / 1000 / 60; // convert gmt date to minutes
+        var localNow = new Date().getTimezoneOffset(); // get the timezone
+        // offset in minutes
+        var localTime = min - localNow; // get the local time
+
+    var dateStr = new Date(localTime * 1000 * 60);
+    // dateStr = dateStr.toISOString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    // this will return as just the server date format i.e., yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+    dateStr = dateStr.toString("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    return dateStr;
+}
+
+Convert Date to ISO Date string
+var dt = new Date("30 July 2010 15:05 UTC");
+document.write(dt.toISOString());
+*/

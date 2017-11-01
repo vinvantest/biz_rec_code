@@ -207,7 +207,10 @@ var paymentsTemplate = {
               "pymt_isReceiptAttached"	:	{ "type" :	"boolean", "index" : true		},
               "pymt_paymentNote"	:	{ "type" :	"text", "index" : true	 },
               "pymt_isPartialPayment"	:	{ "type" :	"boolean"	, "index" : true	},
-              "pymt_partialPaymentAmount"	:	{ "type" :	"long" , "index" : false	}
+              "pymt_partialPaymentAmount"	:	{ "type" :	"long" , "index" : false	},
+              "pymt_record_created" : { "type" :	"date"	, "index": true },
+              "pymt_is_record_updated" : { "type" :	"boolean", "index": true },
+              "pymt_record_updated" : { "type" :	"date"	, "index": true }
           }
     }
   }

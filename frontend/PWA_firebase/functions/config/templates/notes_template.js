@@ -195,7 +195,10 @@ var notesTemplate = {
             "note_noteSubcategoryId"	:	{ "type" :	"keyword", "index" : true},
             "note_noteSubcategoryName"	:	{ "type" :	"keyword", "index" : true },
             "note_noteTitle"	:	{ "type" :	"text", "index" : true },
-            "note_noteText"	:	{ "type" :	"text"	, "index" : false }
+            "note_noteText"	:	{ "type" :	"text"	, "index" : false },
+            "note_record_created" : { "type" :	"date"	, "index": true },
+            "note_is_record_updated" : { "type" :	"boolean", "index": true },
+            "note_record_updated" : { "type" :	"date"	, "index": true }
           }
     }
   }

@@ -65,6 +65,8 @@ var createUserFunction = require('./createUser');
 var deleteIndexFunction = require('./deleteIndex');
 var deleteTemplateFunction = require('./deleteTemplate');
 
+var createBankFunction = require('./createBank');
+
 var databaseTrigger1Function = require('./databaseTrigger1');
 var databaseTrigger2Function = require('./databaseTrigger2');
 
@@ -200,6 +202,8 @@ exports.getTransactionFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+/************ CREATE FUNCTIONS **************************************/
+
 exports.checkUserExistsFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
            checkUserExistsFunction.handler(req, res, database, esClient);
@@ -211,6 +215,14 @@ exports.createUserFunction = functions.https.onRequest((req, res) => {
            createUserFunction.handler(req, res, database, esClient);
          });
 });
+
+exports.createBankFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+           createBankFunction.handler(req, res, database, esClient);
+         });
+});
+
+/************ DELETE FUNCTIONS **************************************/
 
 exports.deleteTemplateFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {

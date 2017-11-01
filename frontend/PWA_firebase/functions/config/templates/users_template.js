@@ -243,7 +243,10 @@ var userTemplate = {
             "usr_invoicePaymentBankBSB" : { "type" : "integer" , "index" : true	},
             "usr_invoicePaymentBankAccountNumber": { "type" : "integer" , "index" : true	},
             "usr_invoicePaymentBankAccountName" : { "type" : "keyword" , "index" : true	},
-            "usr_invoicePaymentBankName" : { "type" : "text" , "index" : true	}
+            "usr_invoicePaymentBankName" : { "type" : "text" , "index" : true	},
+            "usr_record_created" : { "type" :	"date"	, "index": true },
+            "usr_is_record_updated" : { "type" :	"boolean", "index": true },
+            "usr_record_updated" : { "type" :	"date"	, "index": true }
           }
         }
   }

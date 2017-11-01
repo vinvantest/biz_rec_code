@@ -215,7 +215,10 @@ var settingsTemplate = {
                 "sett_availableCash"	:	{ "type" :	"long"	, "index": false},
                 "sett_availableCredit"	:	{ "type" :	"long"	, "index": false},
                 "sett_nickname"	:	{ "type" :	"keyword"	, "index": true},
-                "sett_status"	:	{ "type" :	"keyword"	, "index": true}
+                "sett_status"	:	{ "type" :	"keyword"	, "index": true},
+                "sett_record_created" : { "type" :	"date"	, "index": true },
+                "sett_is_record_updated" : { "type" :	"boolean", "index": true },
+                "sett_record_updated" : { "type" :	"date"	, "index": true }
           }
         }
   }

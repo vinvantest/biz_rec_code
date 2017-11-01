@@ -213,7 +213,10 @@ var suppliersTemplate = {
                           "supp_company_address_postcode"	:	{ "type" :	"keyword"	, "index" : true },
                           "supp_company_address_country"	:	{ "type" :	"keyword"	, "index" : true },
                           "supp_company_address_contact"	:	{ "type" :	"keyword"	, "index" : false	},
-                          "supp_company_address_email"	:	{ "type" :	"keyword", "index" : false }
+                          "supp_company_address_email"	:	{ "type" :	"keyword", "index" : false },
+                          "supp_record_created" : { "type" :	"date"	, "index": true },
+                          "supp_is_record_updated" : { "type" :	"boolean", "index": true },
+                          "supp_record_updated" : { "type" :	"date"	, "index": true }
                   }
                 }
           }

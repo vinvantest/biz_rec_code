@@ -215,7 +215,10 @@ var customersTemplate = {
                       "cust_company_address_contact"	:	{ "type" :	"keyword", "index" : false 	},
                       "cust_company_address_email"	:	{ "type" :	"keyword", "index" : false 	}
                     }
-                  }
+                  },
+            "cust_record_created" : { "type" :	"date"	, "index": true },
+            "cust_is_record_updated" : { "type" :	"boolean", "index": true },
+            "cust_record_updated" : { "type" :	"date"	, "index": true }
           }
     }
   }

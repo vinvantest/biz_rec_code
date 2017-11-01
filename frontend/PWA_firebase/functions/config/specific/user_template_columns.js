@@ -39,7 +39,10 @@ var configUserTemplate = {
 	usr_invoicePaymentBankBSB : 'usr_invoicePaymentBankBSB',
 	usr_invoicePaymentBankAccountNumber: 'usr_invoicePaymentBankAccountNumber',
 	usr_invoicePaymentBankAccountName : 'usr_invoicePaymentBankAccountName',
-	usr_invoicePaymentBankName : 'usr_invoicePaymentBankName'
+	usr_invoicePaymentBankName : 'usr_invoicePaymentBankName',
+	usr_recordCreated: 'usr_record_created',
+	usr_isRecordUpdated: 'usr_is_record_updated',
+	usr_recordUpdated: 'usr_record_updated'
 
 };
 

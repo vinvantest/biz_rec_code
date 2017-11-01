@@ -83,8 +83,8 @@ function handleGET (req, res, esClient)
   // Do something with the GET request
    var resMsg = '';
    console.log('Inside serer.post(getbanks)');
-   console.log('req.query.uid = ' + JSON.stringify(req.query.uid));
-   console.log('req.query.bankId = ' + JSON.stringify(req.query.bankId));
+   console.log('req.query.uid = ' + req.query.uid);
+   console.log('req.query.bankId = ' + req.query.bankId);
    var routingUid = req.query.uid;
    var bankId = req.query.bankId;
 
@@ -165,19 +165,17 @@ function handleGET (req, res, esClient)
                 queryBody = {
                   index: indexAliasName,
                   type: config.index_base_type,
-                  [config.banks_routing_column_name] : routingUid,
+                  //[config.banks_routing_column_name] : routingUid,
                   id: bankId
                 };
                 esClient.get(queryBody)
                 .then(function (resp) {
                     resMsg = 'Banks Data Retrieved Successfully!' ;
                     console.log(resMsg);
-                    //esClient.close(); //use in lambda only
                     success(res,resp.hits.hits[0]);
                     },
                       function (error) {
                         resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                        //esClient.close(); //use in lambda only
                         failure(res,resMsg,500);
                     });
                 }

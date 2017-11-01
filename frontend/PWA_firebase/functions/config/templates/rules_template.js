@@ -197,7 +197,10 @@ var rulesTemplate = {
                 "rule_CoASubCategoryId"	:	{ "type" :	"keyword", "index" : true		},
                 "rule_bankAccount"	:	{ "type" :	"keyword", "index" : true		},
                 "rule_dateCreated"	:	{ "type" :	"keyword", "index" : true		},
-                "rule_isRuleActive"	:	{ "type" :	"boolean", "index" : true		}
+                "rule_isRuleActive"	:	{ "type" :	"boolean", "index" : true		},
+                "rule_record_created" : { "type" :	"date"	, "index": true },
+                "rule_is_record_updated" : { "type" :	"boolean", "index": true },
+                "rule_record_updated" : { "type" :	"date"	, "index": true }
           }
     }
   }

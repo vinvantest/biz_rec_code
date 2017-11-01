@@ -220,7 +220,10 @@ var transactionsTemplate = {
             "tran_splitBusinessAmount"	:	{ "type" :	"long"	, "index" : true	},
             "tran_splitPersonalAmount"	:	{ "type" :	"long"	, "index" : true	},
             "tran_isReceiptAttached"	:	{ "type" :	"boolean", "index" : true		},
-            "tran_receiptURL"	:	{ "type" :	"text"	, "index" : false	}
+            "tran_receiptURL"	:	{ "type" :	"text"	, "index" : false	},
+            "tran_record_created" : { "type" :	"date"	, "index": true },
+            "tran_is_record_updated" : { "type" :	"boolean", "index": true },
+            "tran_record_updated" : { "type" :	"date"	, "index": true }
           }
         }
   }
