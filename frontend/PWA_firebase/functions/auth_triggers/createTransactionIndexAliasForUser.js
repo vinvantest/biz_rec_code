@@ -50,7 +50,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
                   //put write alias
                   esClient.indices.putAlias({index: indexName, name: routingValue + aliasToken + 'write', body: aliasBodyWrite })
                     .then(function (resp){
-                        resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp;
+                        resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+JSON.stringify(resp);
                         console.log(resMsg);
                         return;
                       }, function (error) {

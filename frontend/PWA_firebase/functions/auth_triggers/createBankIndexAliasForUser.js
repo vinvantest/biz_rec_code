@@ -50,7 +50,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
                   //put write alias
                   esClient.indices.putAlias({index: indexName, name: routingValue + aliasToken + 'write', body: aliasBodyWrite })
                     .then(function (resp){
-                        resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp;
+                        resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+ JSON.stringify(resp);
                         console.log(resMsg);
                         return;
                       }, function (error) {
@@ -66,8 +66,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
         //put read alias
         esClient.indices.putAlias({index: indexName, name: routingValue + aliasToken + 'read', body: aliasBodySearch })
           .then(function (resp){
-                  console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+']read newly created now checking if write ['+routingValue + aliasToken + 'write'+'] exists = '+resp);
-                  resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+'] read newly created now checking if write ['+routingValue + aliasToken + 'write'+'] exists = '+resp;
+                  console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'read'+']read newly created now checking if write ['+routingValue + aliasToken + 'write'+'] exists = '+JSON.stringify(resp));
                   //now check if write exists
                   esClient.indices.existsAlias({index: indexName, name: routingValue + aliasToken + 'write'},
                     function (errorWirteEx, respWriteEx, statusWriteEx) {
