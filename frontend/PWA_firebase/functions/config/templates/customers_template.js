@@ -196,7 +196,7 @@ var customersTemplate = {
             "cust_contactMiddleName"	:	{ "type" :	"text" , "index" : true 	},
             "cust_email"	:	{ "type" :	"keyword" , "index" : true 	},
             "cust_currency"	:	{ "type" :	"keyword" , "index" : true 	},
-            "cust_discount"	:	{ "type" :	"integer" , "index" : true 	},
+            "cust_discount"	:	{ "type" :	"double" , "index" : true 	},
             "cust_businessCardURL"	:	{ "type" :	"text" , "index" : false 	},
             "cust_company"	:	{
                 "type" : "nested",

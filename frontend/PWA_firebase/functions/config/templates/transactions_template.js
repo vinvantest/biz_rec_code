@@ -119,7 +119,7 @@ var transactionsTemplate = {
        "integers_feild_template_name": {
            "match_mapping_type": "integer",
            "mapping": {
-           "type": "long"
+           "type": "double"
            }
        }
      },
@@ -190,11 +190,11 @@ var transactionsTemplate = {
           "date_detection": false,
           "properties"    : {
             "tran_userId_routingAliasId"	:	{ "type" :	"keyword", "index" : true		},
-            "tran_accountId"	:	{ "type" :	"long", "index" : true		},
+            "tran_accountId"	:	{ "type" :	"double", "index" : true		},
             "tran_accountNicName"	:	{ "type" :	"keyword", "index" : true		},
             "tran_accountName"	:	{ "type" :	"keyword", "index" : true		},
             "tran_date "	:	{ "type" :	"date", "index" : true		},
-            "tran_amount "	:	{ "type" :	"long"	, "index" : true	},
+            "tran_amount "	:	{ "type" :	"double"	, "index" : true	},
             "tran_baseType "	:	{ "type" :	"keyword"	, "index" : true	},
             "tran_category "	:	{ "type" :	"keyword"	, "index" : true	},
             "tran_postDate"	:	{ "type" :	"date"	, "index" : true	},
@@ -217,8 +217,8 @@ var transactionsTemplate = {
             "tran_providerName"	:	{ "type" :	"keyword"	, "index" : true	},
             "tran_isBusinessOrPersonalExpense"	:	{ "type" :	"boolean", "index" : true		},
             "tran_isSplitTransaction"	:	{ "type" :	"boolean"	, "index" : true	},
-            "tran_splitBusinessAmount"	:	{ "type" :	"long"	, "index" : true	},
-            "tran_splitPersonalAmount"	:	{ "type" :	"long"	, "index" : true	},
+            "tran_splitBusinessAmount"	:	{ "type" :	"double"	, "index" : true	},
+            "tran_splitPersonalAmount"	:	{ "type" :	"double"	, "index" : true	},
             "tran_isReceiptAttached"	:	{ "type" :	"boolean", "index" : true		},
             "tran_receiptURL"	:	{ "type" :	"text"	, "index" : false	},
             "tran_record_created" : { "type" :	"date"	, "index": true },

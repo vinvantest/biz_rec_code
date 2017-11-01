@@ -119,7 +119,7 @@ var coaTemplate = {
        "integers_feild_template_name": {
            "match_mapping_type": "integer",
            "mapping": {
-           "type": "long"
+           "type": "double"
            }
        }
      },

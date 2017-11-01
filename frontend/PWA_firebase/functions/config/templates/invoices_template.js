@@ -119,7 +119,7 @@ var invoicesTemplate = {
        "integers_feild_template_name": {
            "match_mapping_type": "integer",
            "mapping": {
-           "type": "long"
+           "type": "double"
            }
        }
      },
@@ -214,15 +214,15 @@ var invoicesTemplate = {
             "inv_purchaseOrderNumber"	:	{ "type" :	"keyword", "index" : true	},
             "inv_dateOfService"	:	{ "type" :	"date", "index" : true	},
             "inv_goodsOrServiceDescription"	:	{ "type" :	"text", "index" : true	},
-            "inv_TAX_Percentage"	:	{ "type" :	"integer", "index" : false	},
-            "inv_TAX_amount"	:	{ "type" :	"long"	, "index" : false},
+            "inv_TAX_Percentage"	:	{ "type" :	"double", "index" : false	},
+            "inv_TAX_amount"	:	{ "type" :	"double"	, "index" : false},
             "inv_TAX_Exemption"	:	{ "type" :	"keyword"	, "index" : false},
-            "inv_netAmount"	:	{ "type" :	"long"	, "index" : true},
+            "inv_netAmount"	:	{ "type" :	"double"	, "index" : true},
             "inv_currency"	:	{ "type" :	"keyword"	, "index" : true},
-            "inv_discount"	:	{ "type" :	"integer"	, "index" : true},
+            "inv_discount"	:	{ "type" :	"double"	, "index" : true},
             "inv_creditNotes"	:	{ "type" :	"text"	, "index" : true},
-            "inv_BankBSB"	:	{ "type" :	"integer"	, "index" : false},
-            "inv_BankAccount"	:	{ "type" :	"long"	, "index" : false},
+            "inv_BankBSB"	:	{ "type" :	"double"	, "index" : false},
+            "inv_BankAccount"	:	{ "type" :	"double"	, "index" : false},
             "inv_BankAccountName"	:	{ "type" :	"keyword"	, "index" : false},
             "inv_isNew"	:	{ "type" :	"boolean"	, "index" : true},
             "inv_isPaid"	:	{ "type" :	"boolean"	, "index" : true},

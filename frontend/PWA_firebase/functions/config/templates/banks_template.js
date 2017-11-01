@@ -119,7 +119,7 @@ var banksTemplate = {
        "integers_feild_template_name": {
            "match_mapping_type": "integer",
            "mapping": {
-           "type": "long"
+           "type": "double"
            }
        }
      },
@@ -206,14 +206,14 @@ var banksTemplate = {
                 "bank_isAutoRefreshEnabled"	:	{ "type" :	"boolean"	, "index": true},
                 "bank_numberOfTransactionDays"	:	{ "type" :	"keyword"	, "index": false},
                 "bank_bankAccountName"	:	{ "type" :	"text" , "index": true},
-                "bank_bankAccountNumber"	:	{ "type" :	"long"	, "index": true},
-                "bank_BSB"	:	{ "type" :	"integer", "index": true },
+                "bank_bankAccountNumber"	:	{ "type" :	"double"	, "index": true},
+                "bank_BSB"	:	{ "type" :	"double", "index": true },
                 "bank_Branch"	:	{ "type" :	"text"	, "index": true },
-                "bank_BranchNumber"	:	{ "type" :	"integer", "index": true },
-                "bank_amountDue"	:	{ "type" :	"long"	, "index": false},
-                "bank_availableBalance"	:	{ "type" :	"long"	, "index": false},
-                "bank_availableCash"	:	{ "type" :	"long"	, "index": false},
-                "bank_availableCredit"	:	{ "type" :	"long"	, "index": false},
+                "bank_BranchNumber"	:	{ "type" :	"double", "index": true },
+                "bank_amountDue"	:	{ "type" :	"double"	, "index": false},
+                "bank_availableBalance"	:	{ "type" :	"double"	, "index": false},
+                "bank_availableCash"	:	{ "type" :	"double"	, "index": false},
+                "bank_availableCredit"	:	{ "type" :	"double"	, "index": false},
                 "bank_nickname"	:	{ "type" :	"keyword"	, "index": true},
                 "bank_status"	:	{ "type" :	"keyword"	, "index": true},
                 "bank_record_created" : { "type" :	"date"	, "index": true },
