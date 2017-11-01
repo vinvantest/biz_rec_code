@@ -226,15 +226,17 @@ function handlePOST (req, res, esClient)
                      type : config.index_base_type,
                      body: {
                        query: {
-                         constant_score: {
-                           bool: {
-                             should: [
-                            { term: { [configBank.bank_BSB] : bankBody.bank_BSB } },
-                            { term: { [configBank.bank_bankAccountNumber] : bankBody.bank_bankAccountNumber } }
-                            ]
+                           constant_score: {
+                             filter: {
+                               bool: {
+                                 should: [
+                                { term: { [configBank.bank_BSB] : bankBody.bank_BSB } },
+                                { term: { [configBank.bank_bankAccountNumber] : bankBody.bank_bankAccountNumber } }
+                                ]
+                               }
+                             }
                            }
-                         }
-                      }
+                       }
                     }
                   };
                 console.log('queryBodyBankExists (JSON) is->'+JSON.stringify(queryBodyBankExists));

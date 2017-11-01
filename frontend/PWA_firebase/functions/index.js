@@ -85,7 +85,9 @@ var getTransactionFunction = require('./transactions/getTransaction');
 /***********   USERS FUNCTIONS     *********************/
 var checkUserExistsFunction = require('./users/checkUserExists');
 var createUserFunction = require('./users/createUser');
+var getUserFunction = require('./users/getUser');
 var getUsersFunction = require('./users/getUsers');
+var deleteUserFunction = require('./users/deleteUser');
 
 /***********   DATABASE TRIGGERS FUNCTIONS     *********************/
 var databaseTrigger1Function = require('./database_triggers/databaseTrigger1');
@@ -124,6 +126,12 @@ exports.fooFunction = functions.https.onRequest((req, res) => {
 exports.barFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         barFunction.handler(req, res, database, esClient);
+    });
+});
+
+exports.getUserFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        getUserFunction.handler(req, res, database, esClient);
     });
 });
 
@@ -254,6 +262,12 @@ exports.createBankFunction = functions.https.onRequest((req, res) => {
 exports.deleteTemplateFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         deleteTemplateFunction.handler(req, res, database, esClient);
+    });
+});
+
+exports.deleteUserFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        deleteUserFunction.handler(req, res, database, esClient);
     });
 });
 

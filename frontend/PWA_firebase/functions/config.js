@@ -288,4 +288,12 @@ Body:
      }
 }
 
+---- Get user
+GET
+https://us-central1-bizrec-dev.cloudfunctions.net/getUserFunction?uid=GOOicZrZADQMOhUjqGtzh3UiGIj2
+
+-- DELETE User
+DELETE
+https://us-central1-bizrec-dev.cloudfunctions.net/deleteUserFunction?uid=GOOicZrZADQMOhUjqGtzh3UiGIj2
+
 */

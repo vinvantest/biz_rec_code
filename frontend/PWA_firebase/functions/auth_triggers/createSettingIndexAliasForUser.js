@@ -222,7 +222,7 @@ function handlePOST (user, esClient ) {
        {
         console.log('Index ['+indexName+'] already exists in ElasticSearch. Response is ->'+error);
         resMsg = 'Index ['+indexName+'] already exists in ElasticSearch -'+JSON.stringify(resp);
-        checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken);
+        checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasToken, esClient);
        }//end if
        else{
          //index dosen't exist.
