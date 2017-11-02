@@ -229,7 +229,7 @@ function handlePOST (req, res, esClient)
                            constant_score: {
                              filter: {
                                bool: {
-                                 should: [
+                                 must: [
                                 { term: { [configBank.bank_BSB] : bankBody.bank_BSB } },
                                 { term: { [configBank.bank_bankAccountNumber] : bankBody.bank_bankAccountNumber } }
                                 ]

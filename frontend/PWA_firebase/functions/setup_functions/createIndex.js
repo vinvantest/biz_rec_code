@@ -120,7 +120,7 @@ function handlePOST (req, res, esClient) {
       case "banks":
         console.log('indexName ['+indexName+'] will use Banks Template');
         break;
-      case "coa":
+      case "coas":
           console.log('indexName ['+indexName+'] will use Chart Of Accounts Template');
           break;
       case "customers":
@@ -183,8 +183,8 @@ function handlePOST (req, res, esClient) {
                   console.log('Creating Index - errorCreate value is = ' + errorCreate);
                   console.log('Create Index - responseCreate value is =' + responseCreate);
                   if(errorCreate){
-                    console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + errorCreate);
-      						  resMsg = 'Index ['+indexName+'] Created with standard template mapping. Flag =' + errorCreate;
+                    console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + JSON.stringify(errorCreate));
+      						  resMsg = 'Index ['+indexName+'] Created with standard template mapping. Flag =' + JSON.stringify(errorCreate);
        						  success(res,resMsg);
                   }
                   else{
