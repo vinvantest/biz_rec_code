@@ -1,6 +1,8 @@
 'use strict';
 
 var config  = require('../config.js');
+var configUser  = require('../config/specific/user_template_columns.js');
+var configBank = require('../config/specific/bank_template_columns.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -102,9 +104,9 @@ function handleGET (req, res, esClient)
    else
       fromVal  = page * Number(sizeVal);
 
-   resMsg = 'Data not found in index in ES';
+  console.log('sizeVal = '+sizeVal+' , page ='+page+" , fromVal = "+fromVal);
 
-   esClient.ping({ requestTimeout: 30000 }, function(error)
+  esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
@@ -138,7 +140,7 @@ function handleGET (req, res, esClient)
             body: {
               query: {
                    match: {
-                     [configUser.usr_uid] : userBody.uid
+                     [configUser.usr_uid] : routingUid
                    }
                  }
             }
@@ -166,27 +168,39 @@ function handleGET (req, res, esClient)
                //User Uid exists
                // GET Bank Data fron Banks Index
                var indexAliasName = routingUid+config.banks_alias_token_read;
+               //indexAliasName = 'banks_index_v1';
                console.log('Alias name derived through routing is ->'+indexAliasName);
                var queryBody = {
                  index: indexAliasName,
                  type: config.index_base_type,
-                 [config.banks_routing_column_name] : routingUid,
                  body: {
                    from: fromVal,
                    size: Number(sizeVal),
                    query: {
-                        match_all: {},
-                        sort: {
-                          [config.banks_record_updated_column_name]: 'desc'
-                        }
-                      }
-                 }
+                        term: { [configBank.bank_userIdRoutingAliasId] : routingUid }
+                      },
+                   sort: [
+                        { [config.banks_record_updated_column_name]: { order: 'desc' } }
+                      ]
+                  }
                };
+               queryBody = {
+                 index: indexAliasName,
+                 type: config.index_base_type,
+                 body: {
+                   from: fromVal,
+                   size: Number(sizeVal),
+                   sort: [
+                        { [config.banks_record_updated_column_name]: { order: 'desc' } }
+                      ]
+                  }
+               };
+               console.log('getBank search DSL -> ' + JSON.stringify(queryBody));
                esClient.search(queryBody)
                .then(function (resp) {
                    resMsg = 'Banks Data Retrieved Successfully!' ;
                    console.log(resMsg);
-                   successArray(res,resp.hits.hits);
+                   success(res,resp.hits.hits);
                    },
                      function (error) {
                        resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);

@@ -4,7 +4,7 @@ var notesTemplate = {
   "settings": {
     "index": {
       "number_of_shards" : 15,
-      "number_of_replicas" : 2,
+      "number_of_replicas" : 1,
       "analysis": {
         "analyzer": {
               "analyzer_keyword": {

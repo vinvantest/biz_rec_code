@@ -114,37 +114,37 @@ function handlePOST (req, res, esClient) {
    console.log('loading xxx_template.json file ....');
    switch (templateType) {
      case "banks":
-       templateBody = require('./config/templates/banks_template.js');
+       templateBody = require('../config/templates/banks_template.js');
        break;
-      case "coa":
-         templateBody = require('./config/templates/chartofaccounts_template.js');
+      case "coas":
+         templateBody = require('../config/templates/chartofaccounts_template.js');
          break;
       case "customers":
-         templateBody = require('./config/templates/customers_template.js');
+         templateBody = require('../config/templates/customers_template.js');
          break;
       case "invoices":
-         templateBody = require('./config/templates/invoices_template.js');
+         templateBody = require('../config/templates/invoices_template.js');
          break;
       case "notes":
-         templateBody = require('./config/templates/notes_template.js');
+         templateBody = require('../config/templates/notes_template.js');
          break;
       case "payments":
-         templateBody = require('./config/templates/payments_template.js');
+         templateBody = require('../config/templates/payments_template.js');
          break;
       case "rules":
-         templateBody = require('./config/templates/rules_template.js');
+         templateBody = require('../config/templates/rules_template.js');
          break;
       case "suppliers":
-         templateBody = require('./config/templates/suppliers_template.js');
+         templateBody = require('../config/templates/suppliers_template.js');
          break;
       case "transactions":
-         templateBody = require('./config/templates/transactions_template.js');
+         templateBody = require('../config/templates/transactions_template.js');
          break;
       case "users":
-         templateBody = require('./config/templates/users_template.js');
+         templateBody = require('../config/templates/users_template.js');
          break;
       case "settings":
-            templateBody = require('./config/templates/settings_template.js');
+            templateBody = require('../config/templates/settings_template.js');
             break;
       default:
          resMsg = 'Error: no matching templateType specified';

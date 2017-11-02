@@ -8,7 +8,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
   var aliasBodyWrite = {
       "actions": [{
           "add": {
-                  "filter": {"term": { termValue : routingValue}},
+                  "filter": {"term": { [termValue] : routingValue}},
                   "routing": routingValue
                  }
       }]
@@ -17,7 +17,7 @@ function checkAndCreateAlias(indexName, termValue, routingValue, resMsg, aliasTo
       {
         "actions" : [{
           "add": {
-                "filter": {"term": { termValue : routingValue}},
+                "filter": {"term": { [termValue] : routingValue}},
                 "routing": routingValue
                 }
       }]

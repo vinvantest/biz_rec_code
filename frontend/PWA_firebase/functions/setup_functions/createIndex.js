@@ -164,32 +164,27 @@ function handlePOST (req, res, esClient) {
 
         if(error){
           console.log('Index ['+indexName+'] already exists in ElasticSearch. Response is ->'+resp);
-  				resMsg = 'Index ['+indexName+'] already exists in ElasticSearch'+ resp;
   				//check if mapping exists
   				esClient.indices.getMapping({index: indexName})
   					.then(function (response) {
-  							resMsg = 'Mapping ['+indexName+'] already exists. Start creating documents. ' + response;
-  							//esClient.close(); //close it in lambda only
+  							resMsg = 'Mapping ['+indexName+'] already exists. Start creating documents. ' + JSON.stringify(response);
   							success(res,resMsg);
   					},function (error){//mapping doesn't exists
   						console.log('Mapping ['+indexName+'] Not created. Before use create mapping' + JSON.stringify(error));
   						resMsg = 'Mapping ['+indexName+'] Not created. Before use create mapping'+ error;
-  						//context.succeed(responder.success(JSON.stringify(resMsg)));
-  						//esClient.close(); //close it in lambda only
   						success(res,resMsg);
   				});//end indices.getMapping()
         } // end if
         else {
          //index dosen't exist. Create one.
     			console.log('Index does not Exists! ... Creating ['+indexName+'] now! Error value is ->'+ error);
-    			resMsg = 'Creating ['+indexName+'] now!' + error;
     			esClient.indices.create({index: indexName})
     				.then(function (errorCreate, responseCreate) {
                   console.log('Creating Index - errorCreate value is = ' + errorCreate);
                   console.log('Create Index - responseCreate value is =' + responseCreate);
                   if(errorCreate){
-                    console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + responseCreate);
-      						  resMsg = 'Index ['+indexName+'] Created with standard template mapping.';
+                    console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + errorCreate);
+      						  resMsg = 'Index ['+indexName+'] Created with standard template mapping. Flag =' + errorCreate;
        						  success(res,resMsg);
                   }
                   else{

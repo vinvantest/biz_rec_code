@@ -109,6 +109,13 @@ module.exports = config;
 
 /*
 
+0. sett_record_updated
+https://iad1-10914-0.es.objectrocket.com:20914/_template/coa*
+GET
+https://iad1-10914-0.es.objectrocket.com:20914/_alias/
+
+
+
 ES commands
 
 1. SEND Notifications: POST

@@ -114,7 +114,7 @@ function handleDELETE (req, res, esClient) {
 				//delete the index
 				esClient.indices.deleteTemplate({name : templateName})
 					.then(function (response) {
-							resMsg = 'Delete ['+templateName+'] succesfull' + response;
+							resMsg = 'Delete ['+templateName+'] succesfull' + JSON.stringify(response);
 							success(res,resMsg);
 					},function (error){
             //delete index failure
