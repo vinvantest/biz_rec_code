@@ -1,6 +1,8 @@
 'use strict';
 
 var config  = require('../config.js');
+var configUser  = require('../config/specific/user_template_columns.js');
+var configBank = require('../config/specific/bank_template_columns.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -133,7 +135,7 @@ function handleGET (req, res, esClient)
              body: {
                query: {
                     match: {
-                      [configUser.usr_uid] : userBody.uid
+                      [configUser.usr_uid] : routingUid
                     }
                   }
              }
@@ -162,17 +164,17 @@ function handleGET (req, res, esClient)
                 // GET Bank Data fron Banks Index
                 var indexAliasName = routingUid+config.banks_alias_token_read;
                 console.log('Alias name derived through routing is ->'+indexAliasName);
-                queryBody = {
+                var queryBody = {
                   index: indexAliasName,
                   type: config.index_base_type,
-                  //[config.banks_routing_column_name] : routingUid,
                   id: bankId
                 };
+                console.log('queryBody ->' + JSON.stringify(queryBody));
                 esClient.get(queryBody)
                 .then(function (resp) {
                     resMsg = 'Banks Data Retrieved Successfully!' ;
                     console.log(resMsg);
-                    success(res,resp.hits.hits[0]);
+                    success(res,resp);
                     },
                       function (error) {
                         resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
