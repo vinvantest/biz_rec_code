@@ -54,10 +54,12 @@ var getBanksFunction = require('./banks/getBanks');
 var getBankFunction = require('./banks/getBank');
 
 /***********   COAS FUNCTIONS     *********************/
+var createCoaFunction = require('./coas/creatCoa');
 var getCoasFunction = require('./coas/getCoas');
 var getCoaFunction = require('./coas/getCoa');
 
 /***********   CUSTOMERS FUNCTIONS     *********************/
+var createCustomerFunction = require('./customers/creatCustomer');
 var getCustomersFunction = require('./customers/getCustomers');
 var getCustomerFunction = require('./customers/getCustomer');
 
@@ -67,18 +69,27 @@ var getInvoicesFunction = require('./invoices/getInvoices');
 var getInvoiceFunction = require('./invoices/getInvoice');
 
 /***********   PAYMENTS FUNCTIONS     *********************/
+var createPaymentFunction = require('./payment/creatPayment');
 var getPaymentsFunction = require('./payments/getPayments');
 var getPaymentFunction = require('./payments/getPayment');
 
 /***********   RULES FUNCTIONS     *********************/
+var createRuleFunction = require('./rules/creatRule');
 var getRulesFunction = require('./rules/getRules');
 var getRuleFunction = require('./rules/getRule');
 
 /***********   SUPPLIERS FUNCTIONS     *********************/
+var createSupplierFunction = require('./suppliers/creatSupplier');
 var getSuppliersFunction = require('./suppliers/getSuppliers');
 var getSupplierFunction = require('./suppliers/getSupplier');
 
+/***********   Settings FUNCTIONS     *********************/
+var createSettingFunction = require('./settings/creatSetting');
+var getSettingFunction = require('./settings/getSetting');
+var getSettingsFunction = require('./settings/getSettings');
+
 /***********   TRANSACTIONS FUNCTIONS     *********************/
+var createTransactionFunction = require('./transactions/creatTransaction');
 var getTransactionsFunction = require('./transactions/getTransactions');
 var getTransactionFunction = require('./transactions/getTransaction');
 
@@ -114,7 +125,9 @@ var sendByeEmailFunction = require('./emails/sendByeEmail');
 var testSendMailFunction = require('./test_functions/testSendMail');
 var testAliasCreationFunction = require('./test_functions/testAliasCreation');
 
-/********************************************************/
+
+
+/*********** Dummy Functions ****************/
 
 
 exports.fooFunction = functions.https.onRequest((req, res) => {
@@ -129,6 +142,8 @@ exports.barFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+/************** USER ***********************/
+
 exports.getUserFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         getUserFunction.handler(req, res, database, esClient);
@@ -140,6 +155,20 @@ exports.getUsersFunction = functions.https.onRequest((req, res) => {
         getUsersFunction.handler(req, res, database, esClient);
     });
 });
+
+exports.checkUserExistsFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+           checkUserExistsFunction.handler(req, res, database, esClient);
+         });
+});
+
+exports.createUserFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+           createUserFunction.handler(req, res, database, esClient);
+         });
+});
+
+/************** Setup ***********************/
 
 exports.addTemplateToESFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -159,11 +188,7 @@ exports.createIndexAliasBasedOnRoutingFunction = functions.https.onRequest((req,
     });
 });
 
-exports.createInvoiceFunction = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
-        createInvoiceFunction.handler(req, res, database, esClient);
-    });
-});
+/************** Bank ***********************/
 
 exports.getBanksFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -177,6 +202,14 @@ exports.getBankFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+exports.createBankFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createBankFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** Customer ***********************/
+
 exports.getCustomersFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         getCustomersFunction.handler(req, res, database, esClient);
@@ -188,6 +221,14 @@ exports.getCustomerFunction = functions.https.onRequest((req, res) => {
         getCustomerFunction.handler(req, res, database, esClient);
     });
 });
+
+exports.createCustomerFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createCustomerFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** Invoice ***********************/
 
 exports.getInvoicesFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -201,6 +242,14 @@ exports.getInvoiceFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+exports.createInvoiceFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createInvoiceFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** Paymnent ***********************/
+
 exports.getPaymentsFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         getPaymentsFunction.handler(req, res, database, esClient);
@@ -212,6 +261,14 @@ exports.getPaymentFunction = functions.https.onRequest((req, res) => {
         getPaymentFunction.handler(req, res, database, esClient);
     });
 });
+
+exports.createPaymentFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createPaymentFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** suppliers ***********************/
 
 exports.getSuppliersFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
@@ -225,6 +282,34 @@ exports.getSupplierFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+exports.createSupplierFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createSupplierFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** Settings ***********************/
+
+exports.getSettingFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        getSettingFunction.handler(req, res, database, esClient);
+    });
+});
+
+exports.getSettingsFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        getSettingsFunction.handler(req, res, database, esClient);
+    });
+});
+
+exports.createSettingFunction = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        createSettingFunction.handler(req, res, database, esClient);
+    });
+});
+
+/************** transactions ***********************/
+
 exports.getTransactionsFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
         getTransactionsFunction.handler(req, res, database, esClient);
@@ -237,24 +322,10 @@ exports.getTransactionFunction = functions.https.onRequest((req, res) => {
     });
 });
 
-/************ CREATE FUNCTIONS **************************************/
-
-exports.checkUserExistsFunction = functions.https.onRequest((req, res) => {
+exports.createTransactionFunction = functions.https.onRequest((req, res) => {
     cors(req, res, () => {
-           checkUserExistsFunction.handler(req, res, database, esClient);
-         });
-});
-
-exports.createUserFunction = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
-           createUserFunction.handler(req, res, database, esClient);
-         });
-});
-
-exports.createBankFunction = functions.https.onRequest((req, res) => {
-    cors(req, res, () => {
-           createBankFunction.handler(req, res, database, esClient);
-         });
+        createTransactionFunction.handler(req, res, database, esClient);
+    });
 });
 
 /************ DELETE FUNCTIONS **************************************/
