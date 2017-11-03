@@ -1,9 +1,11 @@
 'use strict';
 
 var config  = require('../config.js');
+var configInv = require('../config/specific/invoice_template_columns.js');
+var configUser = require('../config/specific/user_template_columns.js');
 
-function handleGET (req, res) {
-  // Do something with the PUT request
+function handleGET(req, res) {
+  // Do something with the GET request
   res.status(403).send('Forbidden!');
 }
 
@@ -13,8 +15,16 @@ function handlePUT (req, res) {
 }
 
 function handleDELETE (req, res) {
-  // Do something with the PUT request
+  // Do something with the DELETE request
   res.status(403).send('Forbidden!');
+}
+
+function handleOPTIONS(req, res) {
+  console.log('inside handleOPTIONS()');
+  res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com')
+	   .set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT')
+	   .status(200);
+	   return;
 }
 
 function _respond(res, status, data, httpCode) {
@@ -24,9 +34,9 @@ function _respond(res, status, data, httpCode) {
      };
      //  res.setHeader('Content-type', 'application/json');  - this is restify
      res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
+     res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com');
      res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
+     res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
      res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
      res.set('Access-Control-Max-Age', '1000');
      /*
@@ -76,27 +86,390 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/createInvoiceFunction?uid=HJIOFS#53345DD
-//no body {} -- invoice body
+//https://us-central1-bizrec-dev.cloudfunctions.net/createInvoiceFunction?uid=JSSJS2@222dDD
+// body {} -- coa object body
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
    var resMsg = '';
-   console.log('Inside serer.post(createInvoice)');
-   console.log('req.query.uid = ' + JSON.stringify(req.query.uid));
-   console.log('req.query.inoiceData = ' + JSON.stringify(req.body.invoiceData));
-   var routingUid = req.query.uid;
-   var invoiceData = req.query.invoiceData;
+   console.log('Inside serer.post(createInvoice())');
+   console.log('req.body.user = '+JSON.stringify(req.query.uid));
+   console.log('req.body.user = '+JSON.stringify(req.body.inv));
+   var uid = req.query.uid;
+   var invBody = req.body.inv;
+   if(uid === null || uid === undefined) {
+    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
+    failure(res,resMsg,401);
+   }
+   if(invBody === null || invBody === undefined) {
+    resMsg = "Error: req.body.invBody required to create Index in ES ->" + JSON.stringify(invBody);
+    failure(res,resMsg,401);
+   }
+   var invAliasIndexName = uid + config.invoices_alias_token_read;
+   var invAliasIndexName_write = uid + config.invoices_alias_token_write;
+   console.log('coa Aliases: read [' + invAliasIndexName + ' ] write [' + invAliasIndexName_write + ']');
 
-   if(routingUid === null || routingUid === undefined) {
-    resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
-    failure(res,resMsg,401);
+   var queryBody'use strict';
+
+   var config  = require('../config.js');
+   var configInv = require('../config/specific/coa_template_columns.js');
+   var configUser = require('../config/specific/user_template_columns.js');
+
+   function handleGET(req, res) {
+     // Do something with the GET request
+     res.status(403).send('Forbidden!');
    }
-   if(invoiceData === null || invoiceData === undefined) {
-    resMsg = "Error: req.query.invoiceData required to create Index in ES ->" + invoiceData;
-    failure(res,resMsg,401);
+
+   function handlePUT (req, res) {
+     // Do something with the PUT request
+     res.status(403).send('Forbidden!');
    }
-   resMsg = 'Data not indexed in ES';
+
+   function handleDELETE (req, res) {
+     // Do something with the DELETE request
+     res.status(403).send('Forbidden!');
+   }
+
+   function handleOPTIONS(req, res) {
+     console.log('inside handleOPTIONS()');
+     res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com')
+   	   .set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT')
+   	   .status(200);
+   	   return;
+   }
+
+   function _respond(res, status, data, httpCode) {
+        var response = {
+          'status': status,
+          'data' : data
+        };
+        //  res.setHeader('Content-type', 'application/json');  - this is restify
+        res.set('Content-type', 'application/json');
+        res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com');
+        res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
+        res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+        res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+        res.set('Access-Control-Max-Age', '1000');
+        /*
+        Access-Control-Allow-Credentials,
+        Access-Control-Expose-Headers,
+        Access-Control-Max-Age,
+        Access-Control-Allow-Methods,
+        Access-Control-Allow-Headers
+        */
+        res.status(httpCode).send(response);
+   }
+
+   function _respondArray(res, status, data, httpCode) {
+
+        var response = {
+          'status' : status,
+         'data' : [data]
+        };
+
+        res.set('Content-type', 'application/json');
+        res.set('Content-type', 'application/json');
+        res.set('Access-Control-Allow-Origin', '*');
+        res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
+        res.set('Access-Control-Allow-Methods', '*');
+        res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+        res.set('Access-Control-Max-Age', '1000');
+       /*
+       Access-Control-Allow-Credentials,
+       Access-Control-Expose-Headers,
+       Access-Control-Max-Age,
+       Access-Control-Allow-Methods,
+       Access-Control-Allow-Headers
+       */
+       res.status(httpCode).send(response);
+   }
+
+   function success (res, data) {
+    _respond(res, 'success', data, 200);
+   }
+
+   function successArray (res,data) {
+    _respondArray(res, 'success', data, 200);
+   }
+
+   function failure (res, data, httpCode) {
+    console.log('Error: ' + httpCode + ' ' + data);
+    _respond(res, 'failure', data, httpCode);
+   }
+
+   //https://us-central1-bizrec-dev.cloudfunctions.net/createcoaFunction?uid=JSSJS2@222dDD
+   // body {} -- coa object body
+   function handlePOST (req, res, esClient)
+   {
+     // Do something with the POST request
+      var resMsg = '';
+      console.log('Inside serer.post(createcoa)');
+      console.log('req.body.user = '+JSON.stringify(req.query.uid));
+      console.log('req.body.user = '+JSON.stringify(req.body.inv));
+      var uid = req.query.uid;
+      var invBody = req.body.inv;
+      if(uid === null || uid === undefined) {
+       resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
+       failure(res,resMsg,401);
+      }
+      if(invBody === null || invBody === undefined) {
+       resMsg = "Error: req.body.invBody required to create Index in ES ->" + JSON.stringify(invBody);
+       failure(res,resMsg,401);
+      }
+      var invAliasIndexName = uid + config.invoices_alias_token_read;
+      var invAliasIndexName_write = uid + config.invoices_alias_token_write;
+      console.log('coa Aliases: read [' + invAliasIndexName + ' ] write [' + invAliasIndexName_write + ']');
+
+      var queryBodyInvObject = {
+        [configInv.inv_userId_routingAliasId]	:	invBody.inv_userId_routingAliasId,
+        [configInv.inv_supplierId]	:	invBody.inv_supplierId,
+        [configInv.inv_supplierDisplayName]	:	invBody.inv_supplierDisplayName,
+        [configInv.inv_company_businessName	]:	invBody.inv_company_businessName,
+        [configInv.inv_company_ABN_ACN_LC] :	invBody.inv_company_ABN_ACN_LC,
+        [configInv.inv_company_address_streetNumber]	:	invBody.inv_company_address_streetNumber,
+        [configInv.inv_company_address_streetName]	:	invBody.inv_company_address_streetName,
+        [configInv.inv_company_address_streetType]	:	invBody.inv_company_address_streetType,
+        [configInv.inv_company_address_suburb]	:	invBody.inv_company_address_suburb,
+        [configInv.inv_company_address_state]	:	invBody.inv_company_address_state,
+        [configInv.inv_company_address_postcode]	:	invBody.inv_company_address_postcode,
+        [configInv.inv_company_address_country]	:	invBody.inv_company_address_country,
+        [configInv.inv_company_address_contact]	:	invBody.inv_company_address_contact,
+        [configInv.inv_company_address_email]	:	invBody.inv_company_address_email,
+        [configInv.inv_company_careOf]	:	invBody.inv_company_careOf,
+        [configInv.inv_invoiceDate]	:	invBody.inv_invoiceDate,
+        [configInv.inv_purchaseOrderNumber]	:	invBody.inv_purchaseOrderNumber,
+        [configInv.inv_dateOfService]	:	invBody.inv_dateOfService,
+        [configInv.inv_goodsOrServiceDescription]	:	invBody.inv_goodsOrServiceDescription,
+        [configInv.inv_TAX_Percentage]	:	invBody.inv_TAX_Percentage,
+        [configInv.inv_TAX_amount]	:	invBody.inv_TAX_amount,
+        [configInv.inv_TAX_Exemption]	:	invBody.inv_TAX_Exemption,
+        [configInv.inv_netAmount]	:	invBody.inv_netAmount,
+        [configInv.inv_currency]	:	invBody.inv_currency,
+        [configInv.inv_discount]	:	invBody.inv_discount,
+        [configInv.inv_creditNotes]	:	invBody.inv_creditNotes,
+        [configInv.inv_BankBSB]	:	invBody.inv_BankBSB,
+        [configInv.inv_BankAccount]	:	invBody.inv_BankAccount,
+        [configInv.inv_BankAccountName]	:	invBody.inv_BankAccountName,
+        [configInv.inv_isNew]	:	invBody.inv_isNew,
+        [configInv.inv_isPaid]	:	invBody.inv_isPaid,
+        [configInv.inv_record_created]	:	invBody.inv_record_created,
+        [configInv.inv_is_record_updated]	:	invBody.inv_is_record_updated,
+        [configInv.inv_record_updated]	:	invBody.inv_record_updated
+      };
+      console.log('Invoice Record to be updated/inserted = '+ JSON.stringify(queryBodyInvObject) );
+
+      esClient.ping({ requestTimeout: 30000 }, function(error)
+   		{
+   			if (error) {
+   				console.trace('Error: elasticsearch cluster is down!', error);
+   				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+   			} else {
+   				console.log('Elasticsearch Instance on ObjectRocket Connected!');
+   			}
+   			// on finish
+   			//esClient.close();
+   	});
+   	//check elasticsearch health
+   	esClient.cluster.health({},function(err,resp,status) {
+   		  console.log("-- esClient Health --",resp);
+   	});
+
+   	 console.log('Checking if user index Exists('+ config.user_index_name +')');
+   	 esClient.indices.exists({index: config.user_index_name})
+   		 .then(function (error,resp) {
+          console.log('error value -' + error);
+          console.log('response value - ' + resp);
+          if(error)
+          {
+           console.log('Index ['+config.user_index_name+'] exists in ElasticSearch. Response is ->'+error);
+           //check if UID exists in users index using global_alisas_for_search_users_index
+           var queryBodyCheckUserExists = {
+                index : config.user_index_search_alias_name,
+                type : config.index_base_type,
+                body: {
+                  query: {
+                       match: {
+                         [configUser.usr_uid] : uid
+                       }
+                     }
+                }
+           };
+           console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
+           esClient.search(queryBodyCheckUserExists)
+             .then(function (respUserCheck) {
+               //check hits if there are any user records!
+               console.log('User hits.total =' + respUserCheck.hits.total);
+               if(respUserCheck.hits.total === 0)
+               {
+                 //user doesn't exists
+                 resMsg = 'User does not exists in user index. Cannot insert new coa record!';
+                 console.log(resMsg);
+                 failure(res, resMsg, 404);
+               }
+               else if(respUserCheck.hits.total === 1 )
+               {
+                   //only one record for the user
+                   console.log('User exists in user index. Creating new coa Data now! - '+ JSON.stringify(respUserCheck));
+                   console.log( 'hits object - '+ JSON.stringify(respUserCheck.hits.hits[0]) );
+                   var queryBodyInvExists = {
+                        index : invAliasIndexName,
+                        type : config.index_base_type,
+                        body: {
+                          query: {
+                              constant_score: {
+                                filter: {
+                                  bool: {
+                                    must: [
+                                   { term: { [configInv.inv_supplierId] : invBody.inv_supplierId } },
+                                   { term: { [configInv.inv_purchaseOrderNumber] : invBody.inv_purchaseOrderNumber } }
+                                   ]
+                                  }
+                                }
+                              }
+                          }
+                       }
+                     };
+                   console.log('queryBodyInvExists (JSON) is->'+JSON.stringify(queryBodyInvExists));
+                   esClient.search(queryBodyInvExists)
+                     .then(function (respInvCheck) {
+                       //check hits if there are any user records!
+                       console.log('coas hits.total =' + respInvCheck.hits.total);
+                       if(respInvCheck.hits.total === 0)
+                       {
+                         console.log('Invoice record does not exists. Creating a new one!');
+                         //coa doesn't exists
+                         esClient.index({
+                                           index: invAliasIndexName_write,
+                                           type:  config.index_base_type,
+                                           body:  queryBodyInvObject
+                               })
+                               .then(function (respInsertInv) {
+                                 resMsg = 'User Data existed and Invoice record inserted Successfully!' ;
+                                 console.log(resMsg);
+                                 success(res,resMsg);
+                                 },
+                                 function (errorInsertInv) {
+                                 resMsg = 'Error : New Invoice document insertion ['+invAliasIndexName_write+'] Failed!' + errorInsertInv;
+                                 failure(res,resMsg,500);
+                                 });
+                         }
+                         else if(respInvCheck.hits.total === 1 )
+                         {
+                           console.log('Invoice record with matching BSB and Account number exists! Updating data...');
+                           //update coa record
+                           esClient.update({
+                                             index: invAliasIndexName_write,
+                                             type: config.index_base_type,
+                                             id: respInvCheck.hits.hits[0]._id,
+                                             body: {
+                                               doc: invBody
+                                            }
+                               })
+                                 .then(function (respInsertInv) {
+                                   resMsg = 'Invoice Data existed and now updated Successfully!' ;
+                                   console.log(resMsg);
+                                   //esClient.close(); //use in lambda only
+                                   success(res,resMsg);
+                                   },
+                                   function (errorInsertUser) {
+                                   resMsg = 'Error : Invoice document update ['+invAliasIndexName+'] Failed! But old record exists.' + errorInsertUser;
+                                   console.log(resMsg);
+                                   success(res,resMsg);
+                                   //TODO update this response to failure with correct error code
+                                   });
+                         }
+                         else {
+                           //user has multiple records. Delete rest!
+                           console.log('Error :: Too many copies of the coa record present!');
+                           console.log('*****');
+                           console.log(JSON.stringify(respInvCheck));
+                           console.log('*****');
+                           resMsg = 'Error : New coa document creation ['+invAliasIndexName+'] Failed! Duplicate Invoice records for the user exists. Contact System Adminstrator.' + error;
+                           failure(res,resMsg,500);
+                         }
+                       }, function (error) {
+                               resMsg = 'Error : Invoice record not found in Invoices Index. Inserting new. Error = ' + error;
+                               console.log(resMsg);
+                               esClient.index({
+                                                 index: invAliasIndexName_write,
+                                                 type:  config.index_base_type,
+                                                 body:  queryBodyInvObject
+                                     })
+                                     .then(function (respInsertInv) {
+                                       resMsg = 'User Data existed and New Invoice record inserted Successfully!' ;
+                                       console.log(resMsg);
+                                       success(res,resMsg);
+                                       },
+                                       function (errorInsertInv) {
+                                       resMsg = 'Error : New Invoice document insertion ['+ invAliasIndexName_write +'] Failed!' + errorInsertInv;
+                                       failure(res,resMsg,500);
+                                       });
+                   });//End: check user exists
+               }//end user If === 1
+               else
+               {
+                   //user has multiple records. Delete rest!
+                   console.log('Too many user copies of the user present! Contact System Adminstrator!');
+                   console.log('*****');
+                   console.log(JSON.stringify(respUserCheck));
+                   console.log('*****');
+                   resMsg = 'Error : Invoice document creation/updation ['+invAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
+                   failure(res,resMsg,500);
+               }
+             }, function (error) {
+                     resMsg = 'Error : User not found in user Index. Error = ' + error;
+                     console.log(resMsg);
+                     failure(res,resMsg,404);
+                 });//End: check user exists
+          }//end if user index exists
+          else{
+            //index dosen't exist. Create one.
+       			resMsg = 'User Index does not Exists!. Can not insert Invoice to the index. Error Value = '+ error;
+             console.log(resMsg);
+             failure(res,resMsg,500);
+          }
+        });//end then - indices.exists()
+
+   }//end POST
+
+   exports.handler = function(req, res, database, esClient)
+   {
+     var usersRef = database.ref('users');
+     switch (req.method) {
+     case 'GET':
+       handleGET(req, res);
+       break;
+     case 'PUT':
+       handlePUT(req, res);
+       break;
+     case 'POST':
+         handlePOST(req, res, esClient);
+         break;
+     case 'DELETE':
+          handleDELETE(req, res);
+          break;
+     case 'OPTIONS':
+          handleOPTIONS(req, res)
+          break;
+     default:
+       res.status(500).send({ error: 'Something blew up!' });
+       break;
+     }
+   };
+Object = {
+     [configInv.coa_userId_routingAliasId] : invBody.coa_userId_routingAliasId,
+     [configInv.coa_CoACategoryId] : invBody.coa_CoACategoryId,
+     [configInv.coa_CoACategoryName] : invBody.coa_CoACategoryName,
+     [configInv.coa_invoicesubCategoryId] : invBody.coa_invoicesubCategoryId,
+     [configInv.coa_invoicesubCategoryName] : invBody.coa_invoicesubCategoryName,
+     [configInv.coa_tax] : invBody.coa_tax,
+     [configInv.coa_tax_type] : invBody.coa_tax_type,
+     [configInv.coa_tax_percentage] : invBody.coa_tax_percentage,
+     [configInv.coa_record_created] : invBody.coa_record_created,
+     [configInv.coa_is_record_updated] : invBody.coa_is_record_updated,
+     [configInv.coa_record_updated] : invBody.coa_record_updated
+   };
+   console.log('coa Record to be updated/inserted = '+ JSON.stringify(queryBodyInvObject) );
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
@@ -114,59 +487,166 @@ function handlePOST (req, res, esClient)
 		  console.log("-- esClient Health --",resp);
 	});
 
-	 console.log('Checking if index Exists('+config.invoices_index_name+')');
-	 esClient.indices.exists(config.invoices_index_name)
-		 .then(function (resp) {
-        //index exists
-				console.log('Index ['+config.invoices_index_name+'] already exists in ElasticSearch. Response is ->'+resp);
-				resMsg = 'Index ['+config.invoices_index_name+'] already exists in ElasticSearch'+JSON.stringify(resp);
-				//check if uid exists
+	 console.log('Checking if user index Exists('+ config.user_index_name +')');
+	 esClient.indices.exists({index: config.user_index_name})
+		 .then(function (error,resp) {
+       console.log('error value -' + error);
+       console.log('response value - ' + resp);
+       if(error)
+       {
+        console.log('Index ['+config.user_index_name+'] exists in ElasticSearch. Response is ->'+error);
         //check if UID exists in users index using global_alisas_for_search_users_index
-        var queryBody = {
-                 index : config.user_index_search_alias_name,
-                 type : config.index_base_type,
-                 usr_uid : routingUid
-               };
-        esClient.get(queryBody)
-          .then(function (resp) {
-                //User Uid exists
-                //Insert invoice to the index
-                var indexAliasName = routingUid+config.invoices_alias_token_write;
-                console.log('Alias name derived through routing is ->'+indexAliasName);
-                queryBody = {
-                  index: indexAliasName,
-                  type: config.index_base_type,
-                  body: invoiceData
-                };
-                esClient.index(queryBody)
-                .then(function (resp) {
-                    res_msg = 'Invoice Data Indexed Successfully!' ;
-                    //esClient.close(); //use in lambda only
-                    helper.success(res,next,res_msg);
-                    },
-                      function (error) {
-                        res_msg = 'Error : Invoice document insert ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                        //esClient.close(); //use in lambda only
-                      helper.failure(res,next,res_msg,500);
-                });
-            }, function (error) {
-                res_msg = 'Error : User not found in user Index. Error - ' + JSON.stringify(error);
-                //esClient.close(); //use in lambda only
-                helper.failure(res,next,res_msg,500);
-          });//End: check user exists
-	     }, function (err){
+        var queryBodyCheckUserExists = {
+             index : config.user_index_search_alias_name,
+             type : config.index_base_type,
+             body: {
+               query: {
+                    match: {
+                      [configUser.usr_uid] : uid
+                    }
+                  }
+             }
+        };
+        console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
+        esClient.search(queryBodyCheckUserExists)
+          .then(function (respUserCheck) {
+            //check hits if there are any user records!
+            console.log('User hits.total =' + respUserCheck.hits.total);
+            if(respUserCheck.hits.total === 0)
+            {
+              //user doesn't exists
+              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
+              console.log(resMsg);
+              failure(res, resMsg, 404);
+            }
+            else if(respUserCheck.hits.total === 1 )
+            {
+                //only one record for the user
+                console.log('User exists in user index. Creating new coa Data now! - '+ JSON.stringify(respUserCheck));
+                console.log( 'hits object - '+ JSON.stringify(respUserCheck.hits.hits[0]) );
+                var queryBodyInvExists = {
+                     index : invAliasIndexName,
+                     type : config.index_base_type,
+                     body: {
+                       query: {
+                           constant_score: {
+                             filter: {
+                               bool: {
+                                 must: [
+                                { term: { [configInv.coa_CoACategoryId] : invBody.coa_CoACategoryId } },
+                                { term: { [configInv.coa_CoACategoryName] : invBody.coa_CoACategoryName } }
+                                ]
+                               }
+                             }
+                           }
+                       }
+                    }
+                  };
+                console.log('queryBodyInvExists (JSON) is->'+JSON.stringify(queryBodyInvExists));
+                esClient.search(queryBodyInvExists)
+                  .then(function (respInvCheck) {
+                    //check hits if there are any user records!
+                    console.log('invoices hits.total =' + respInvCheck.hits.total);
+                    if(respInvCheck.hits.total === 0)
+                    {
+                      console.log('coa record does not exists. Creating a new one!');
+                      //coa doesn't exists
+                      esClient.index({
+                                        index: invAliasIndexName_write,
+                                        type:  config.index_base_type,
+                                        body:  queryBodyInvObject
+                            })
+                            .then(function (respInsertInv) {
+                              resMsg = 'User Data existed and Invoice record inserted Successfully!' ;
+                              console.log(resMsg);
+                              success(res,resMsg);
+                              },
+                              function (errorInsertInv) {
+                              resMsg = 'Error : New Invoice document insertion ['+invAliasIndexName_write+'] Failed!' + errorInsertInv;
+                              failure(res,resMsg,500);
+                              });
+                      }
+                      else if(respInvCheck.hits.total === 1 )
+                      {
+                        console.log('Invoice record with matching BSB and Account number exists! Updating data...');
+                        //update coa record
+                        esClient.update({
+                                          index: invAliasIndexName_write,
+                                          type: config.index_base_type,
+                                          id: respInvCheck.hits.hits[0]._id,
+                                          body: {
+                                            doc: invBody
+                                         }
+                            })
+                              .then(function (respInsertInv) {
+                                resMsg = 'Invoice Data existed and now updated Successfully!' ;
+                                console.log(resMsg);
+                                //esClient.close(); //use in lambda only
+                                success(res,resMsg);
+                                },
+                                function (errorInsertUser) {
+                                resMsg = 'Error : Invoice document update ['+invAliasIndexName+'] Failed! But old record exists.' + errorInsertUser;
+                                console.log(resMsg);
+                                success(res,resMsg);
+                                //TODO update this response to failure with correct error code
+                                });
+                      }
+                      else {
+                        //user has multiple records. Delete rest!
+                        console.log('Error :: Too many copies of the coa record present!');
+                        console.log('*****');
+                        console.log(JSON.stringify(respInvCheck));
+                        console.log('*****');
+                        resMsg = 'Error : New coa document creation ['+invAliasIndexName+'] Failed! Duplicate Invoice records for the user exists. Contact System Adminstrator.' + error;
+                        failure(res,resMsg,500);
+                      }
+                    }, function (error) {
+                            resMsg = 'Error : coa record not found in coa Index. Inserting new. Error = ' + error;
+                            console.log(resMsg);
+                            esClient.index({
+                                              index: invAliasIndexName_write,
+                                              type:  config.index_base_type,
+                                              body:  queryBodyInvObject
+                                  })
+                                  .then(function (respInsertInv) {
+                                    resMsg = 'User Data existed and New Invoice record inserted Successfully!' ;
+                                    console.log(resMsg);
+                                    success(res,resMsg);
+                                    },
+                                    function (errorInsertInv) {
+                                    resMsg = 'Error : New Invoice document insertion ['+ invAliasIndexName_write +'] Failed!' + errorInsertInv;
+                                    failure(res,resMsg,500);
+                                    });
+                });//End: check user exists
+            }//end user If === 1
+            else
+            {
+                //user has multiple records. Delete rest!
+                console.log('Too many user copies of the user present! Contact System Adminstrator!');
+                console.log('*****');
+                console.log(JSON.stringify(respUserCheck));
+                console.log('*****');
+                resMsg = 'Error : coa document creation/updation ['+invAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
+                failure(res,resMsg,500);
+            }
+          }, function (error) {
+                  resMsg = 'Error : User not found in user Index. Error = ' + error;
+                  console.log(resMsg);
+                  failure(res,resMsg,404);
+              });//End: check user exists
+       }//end if user index exists
+       else{
          //index dosen't exist. Create one.
-    			console.log('Index does not Exists! Can not insert invoice. Error value is ->'+JSON.stringify(err));
-    			resMsg = 'Index does not Exists!. Error Value = '+JSON.stringify(err);
-          failure(res,resMsg,404);
-	    });//end then - indices.exists()
+    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
+          console.log(resMsg);
+          failure(res,resMsg,500);
+       }
+     });//end then - indices.exists()
 
-}
+}//end POST
 
 exports.handler = function(req, res, database, esClient)
 {
-  //server.get('/getUsers/:indexAliasName', function (req, res, next)
-	//{
   var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
@@ -180,6 +660,9 @@ exports.handler = function(req, res, database, esClient)
       break;
   case 'DELETE':
        handleDELETE(req, res);
+       break;
+  case 'OPTIONS':
+       handleOPTIONS(req, res)
        break;
   default:
     res.status(500).send({ error: 'Something blew up!' });

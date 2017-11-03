@@ -1,10 +1,10 @@
 'use strict';
 
 var config  = require('../config.js');
-var configUser = require('../config/specific/user_template_columns.js');
+var configUser  = require('../config/specific/user_template_columns.js');
 
-function handleDELETE(req, res) {
-  // Do something with the GET request
+function handlePOST (req, res) {
+  // Do something with the PUT request
   res.status(403).send('Forbidden!');
 }
 
@@ -13,17 +13,9 @@ function handlePUT (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-function handlePOST (req, res) {
-  // Do something with the DELETE request
+function handleDELETE (req, res) {
+  // Do something with the PUT request
   res.status(403).send('Forbidden!');
-}
-
-function handleOPTIONS(req, res) {
-  console.log('inside handleOPTIONS()');
-  res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com')
-	   .set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT')
-	   .status(200);
-	   return;
 }
 
 function _respond(res, status, data, httpCode) {
@@ -33,9 +25,9 @@ function _respond(res, status, data, httpCode) {
      };
      //  res.setHeader('Content-type', 'application/json');  - this is restify
      res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com');
+     res.set('Access-Control-Allow-Origin', '*');
      res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+     res.set('Access-Control-Allow-Methods', '*');
      res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
      res.set('Access-Control-Max-Age', '1000');
      /*
@@ -85,21 +77,26 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/deleteUserFunction?uid=HJKDHSK444DF34fF
-// No body {}
-function handleGET(req, res, esClient)
+//https://us-central1-bizrec-dev.cloudfunctions.net/getTransactionFunction?uid=HJIOFS#53345DD&tranId=HLH343HS52
+//no body {} -- transactions body
+function handleGET (req, res, esClient)
 {
-  // Do something with the POST request
+  // Do something with the GET request
    var resMsg = '';
-   console.log('Inside serer.post(deleteUser)');
-   console.log('req.body.user = '+JSON.stringify(req.query.uid));
+   console.log('Inside serer.post(gettransactions())');
+   console.log('req.query.uid = ' + req.query.uid);
+   console.log('req.query.tranId = ' + req.query.tranId);
+   var routingUid = req.query.uid;
+   var tranId = req.query.tranId;
 
-   var uid = req.query.uid;
-   if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.userBody required to create Index in ES ->" + JSON.stringify(uid);
+   if(routingUid === null || routingUid === undefined) {
+    resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
     failure(res,resMsg,401);
    }
-   console.log('config.user_index_name ='+config.user_index_name);
+   if(tranId === null || tranId === undefined) {
+    resMsg = "Error: req.query.tranId required to create Index in ES ->" + tranId;
+    failure(res,resMsg,401);
+   }
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
@@ -117,8 +114,8 @@ function handleGET(req, res, esClient)
 		  console.log("-- esClient Health --",resp);
 	});
 
-	 console.log('Checking if index Exists('+ config.user_index_name +')');
-	 esClient.indices.exists({index: config.user_index_name})
+	 console.log('Checking if index Exists('+config.transactions_index_name+')');
+	 esClient.indices.exists({index: config.transactions_index_name})
 		 .then(function (error,resp) {
        console.log('error value -' + error);
        console.log('response value - ' + resp);
@@ -135,7 +132,7 @@ function handleGET(req, res, esClient)
              body: {
                query: {
                     match: {
-                      [configUser.usr_uid] : uid
+                      [configUser.usr_uid] : routingUid
                     }
                   }
              }
@@ -147,39 +144,41 @@ function handleGET(req, res, esClient)
             console.log('hits.total =' + respUserCheck.hits.total);
             if(respUserCheck.hits.total === 0){
               //user doesn't exists
-              resMsg = 'User does not exists in user index -'+ JSON.stringify(respUserCheck);
-              console.log(resMsg);
-              failure(res,resMsg, 404);
+              console.log('User does not exists in user index - '+ JSON.stringify(respUserCheck));
+              resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
+              failure(res,resMsg,500);
               }
               else if(respUserCheck.hits.total === 1 ){
                 //only one record for the user. Update the user record for the user.uid
-                console.log('User exists in user index. Deleting now! - '+ JSON.stringify(respUserCheck));
+                console.log('User exists in user index- '+ JSON.stringify(respUserCheck));
                 var hits = respUserCheck.hits.hits;
-                console.log( 'hits object - '+ JSON.stringify(hits[0]) );
-                success(res, hits[0]);
-              }
+                console.log('hits object - '+ JSON.stringify(hits[0]));
+                //User Uid exists
+                success(res,hits[0]);
+                }
               else{
                 //user has multiple records. Delete rest!
                 console.log('Too many copies of the user present! Contact System Adminstrator!');
+                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                resMsg = 'Too many copies of the user present! Contact System Adminstrator!';
-                failure(res, resMsg, 401);
+                console.log('*****');
+                resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
+                failure(res,resMsg,500);
               }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index - ' + error;
-                  console.log(resMsg);
-                  failure(res, resMsg, 404);
+                  resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
+                  failure(res,resMsg,500);
               });//End: check user exists
        }//end if
-       else{
+       else {
          //index dosen't exist. Create one.
-    			resMsg = 'Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          failure(res,resMsg,500);
-       }
-     });//end then - indices.exists()
+          console.log('Index does not Exists! Can not get transactions data. Error value is ->'+JSON.stringify(err));
+          resMsg = 'tranId Index does not Exists!. Error Value = '+JSON.stringify(err);
+          failure(res,resMsg,404);
+       } // end else - index doesn't exist
+	  });//end then - indices.exists()
 
-}//end POST
+}
 
 exports.handler = function(req, res, database, esClient)
 {
@@ -196,9 +195,6 @@ exports.handler = function(req, res, database, esClient)
       break;
   case 'DELETE':
        handleDELETE(req, res);
-       break;
-  case 'OPTIONS':
-       handleOPTIONS(req, res)
        break;
   default:
     res.status(500).send({ error: 'Something blew up!' });

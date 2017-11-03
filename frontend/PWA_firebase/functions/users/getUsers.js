@@ -1,6 +1,22 @@
 'use strict';
 
 var config  = require('../config.js');
+var configUser  = require('../config/specific/user_template_columns.js');
+
+function handlePOST (req, res) {
+  // Do something with the PUT request
+  res.status(403).send('Forbidden!');
+}
+
+function handlePUT (req, res) {
+  // Do something with the PUT request
+  res.status(403).send('Forbidden!');
+}
+
+function handleDELETE (req, res) {
+  // Do something with the PUT request
+  res.status(403).send('Forbidden!');
+}
 
 function _respond(res, status, data, httpCode) {
      var response = {
@@ -27,6 +43,7 @@ function _respond(res, status, data, httpCode) {
 function _respondArray(res, status, data, httpCode) {
 
      var response = {
+       'status' : status,
       'data' : [data]
      };
 
@@ -51,7 +68,7 @@ function success (res, data) {
  _respond(res, 'success', data, 200);
 }
 
-function successArray (res,data) {
+function successArray (res, data) {
  _respondArray(res, 'success', data, 200);
 }
 
@@ -60,57 +77,27 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-function handleGET (req, res, esClient) {
+//https://us-central1-bizrec-dev.cloudfunctions.net/getTransactionsFunction?page=0&size=10
+//no body {}
+function handleGET (req, res, esClient)
+{
   // Do something with the GET request
-  var resMsg = '';
-  console.log('Inside serer.get(getUsers)');
+   var resMsg = '';
+   console.log('Inside serer.post(getUsers())');
+   console.log('req.query.page = ' + req.query.page);
+   console.log('req.query.size = ' + req.query.size);
+   var page = req.query.page;
+   var sizeVal = req.query.size;
+   var fromVal = 0;
 
-  var indexAliasName = config.user_index_search_alias_name;
-  if(indexAliasName === null || indexAliasName === undefined) {
-    resMsg = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
-    failure(res,resMsg,500);
-  }
+   if(sizeVal == null || sizeVal === undefined)
+      sizeVal = 10;
+   if(page === null || page === undefined)
+      fromVal = 0;
+   else
+      fromVal  = page * Number(sizeVal);
 
-  //get Query params
-  console.log('queryParams passed is ->'
-        + 'where first param usrIsBox is: ' + JSON.stringify(req.body.usrIsBox)
-        + 'second param is usrIsGoogle is: ' + JSON.stringify(req.body.usrIsGoogle)
-        + 'third param is: ' + JSON.stringify(req.query.third)
-      );
-  //you can loop in the query object
-  for(var field in req.body){
-  console.log('Field['+field+'] = '+req.body[field]);
-  }//for loop end
-
-  resMsg = 'Error - Document Not Indexed in ['+indexAliasName+']';
-  console.log('Checking if ['+indexAliasName+'] Exists');
-
-  var isBox = req.body.usrIsBox;
-  var isGoogle = req.body.usrIsGoogle;
-  console.log('docmentId to be found in index isBox ['+isBox+'] - and isGoogle ['+isGoogle+']');
-
-  var auth = 'vintest:test1234';
-	var port = 20914;
-	var protocol = 'https';
-	var log = 'trace';
-	var hostUrls = [
-				'iad1-10914-0.es.objectrocket.com',
-				'iad1-10914-1.es.objectrocket.com',
-				'iad1-10914-2.es.objectrocket.com',
-				'iad1-10914-3.es.objectrocket.com'
-		  ];
-	var hosts = hostUrls.map(function(host) {
-		return {
-			protocol: protocol,
-			host: host,
-			port: port,
-			auth: auth,
-			log: log
-		};
-	});
-	var esClient = new elasticsearch.Client({
-		hosts: hosts
-	});
+  console.log('sizeVal = '+sizeVal+' , page ='+page+" , fromVal = "+fromVal);
 
   esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
@@ -128,100 +115,52 @@ function handleGET (req, res, esClient) {
 		  console.log("-- esClient Health --",resp);
 	});
 
-  esClient.indices.exists({index: indexAliasName})
-    .then(function (exists)
-           {
-             console.log('inside function indices.exists())');
-             if(exists)
-             { //index exists
-               console.log('Index ['+indexAliasName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists));
-               resMsg = 'Index ['+indexAliasName+'] exists in ElasticSearch. Exists value is ->'+JSON.stringify(exists);
-                //if you want to search ... but best use get() for quicker results
-                var queryBody;
+  console.log('Checking if index Exists('+config.user_index_name+')');
+  esClient.indices.exists({index: config.user_index_name})
+    .then(function (error,resp) {
+      console.log('error value -' + error);
+      console.log('response value - ' + resp);
+      if(error)
+      {
+       console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
+       resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
 
-                if(isBox === 'true')
-                {
-                  console.log('inside isBOX and setting query param for user');
-                  queryBody = {
-                        query : {
-                          match : {
-                               usrIsBox : true,
-                          }
-                        }
-                  };
-                }
-               if(isGoogle === 'true')
-               {
-                 console.log('inside isGoogle and setting query param for user');
-                 queryBody = {
-                       query : {
-                         match : {
-                              usrIsGoogle : true,
-                         }
-                       }
-                 };
-               }
-               //now get the document id by uuid
-               //var queryBody = { index : indexAliasName, type : 'base_type', id : userUUID };
-               //now search for the record
-               //esClient.get(queryBody)
-               esClient.search({index: indexAliasName, type: 'type_name', body: queryBody})
-                 .then(function (resp){
-                   console.log('Index ['+indexAliasName+'] exists in ElasticSearch AND response is = '+JSON.stringify(resp));
-                   //resMsg = 'Index ['+indexAliasName+'] exists in ElasticSearch AND count = '+resp.count;
-                   //esClient.close();
-                   successArray(res,resp.hits.hits);
-                 },function (error) {
-                   console.log('Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error));
-                   resMsg = 'Error: Index ['+indexAliasName+'] exists in ElasticSearch but search() error -'+JSON.stringify(error);
-                   //esClient.close();
-                   failure(res,resMsg,500);
-                 }); //end search()
-             }//end if index Exists
-             else {
-               //index dosen't exist
-               console.log('Index ['+indexAliasName+'] does not exist! Error value is ->'+exists);
-               resMsg = 'Index ['+indexAliasName+'] does not exists!'+exists;
-                //esClient.close();
-                failure(res,resMsg,404);
-             }//end else index exists
-           }); //end then - indices.exists()
+       //check if uid exists
+       //check if UID exists in users index using global_alisas_for_search_users_index
+       var queryBodyCheckUserExists = {
+            index : config.user_index_search_alias_name,
+            type : config.index_base_type,
+            body: {
+              from: fromVal,
+              size: Number(sizeVal),
+              query: {
+                   match_all: {}
+                 }
+            }
+       };
+       console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
+       esClient.search(queryBodyCheckUserExists)
+         .then(function (respUserCheck) {
+           //check hits if there are any user records!
+           console.log('hits.total =' + respUserCheck.hits.total);
+           success(res,resp.hits.hits);
+            }, function (error) {
+                 resMsg = 'Error : User does not exists in database ['+config.user_index_search_alias_name+']. Contact System Adminstrator.' + error;
+                 failure(res,resMsg,500);
+             });//End: check user exists
+      }//end if
+      else {
+        //index dosen't exist. Create one.
+         resMsg = 'User Index does not Exists!. Error Value = '+JSON.stringify(err);
+         console.log(resMsg);
+         failure(res,resMsg,404);
+      } // end else - index doesn't exist
+   });//end then - indices.exists()
 
 }
 
-function handlePUT (req, res) {
-  // Do something with the PUT request
-  res.status(403).send('Forbidden!');
-}
-
-function handlePOST (req, res) {
-  // Do something with the PUT request
-  console.log('Inside serer.get(getUsers)');
-
-  var indexAliasName = req.query.indexAliasName;
-  if(indexAliasName === null || indexAliasName === undefined) {
-    var resMsgErr = "Error: req.params.indexAliasName required to create Index in ES ->" + indexAliasName;
-    failure(res,resMsgErr,500);
-  }
-  console.log('req.params.indexAliasName = ' + JSON.stringify(req.query.indexAliasName));
-
-  //get Query params
-  console.log('queryParams passed is ->'
-        + 'where first param usrIsBox is: ' + JSON.stringify(req.body.usrIsBox)
-        + 'second param is usrIsGoogle is: ' + JSON.stringify(req.body.usrIsGoogle)
-        + 'third param is: ' + JSON.stringify(req.query.third)
-      );
-  //you can loop in the query object
-  for(var field in req.body){
-  console.log('Field['+field+'] = '+req.body[field]);
-  }//for loop end
-
-  res.status(403).send('Forbidden!');
-}
-
-exports.handler = function(req, res, database, esClient) {
-  //server.get('/getUsers/:indexAliasName', function (req, res, next)
-	//{
+exports.handler = function(req, res, database, esClient)
+{
   var usersRef = database.ref('users');
   switch (req.method) {
   case 'GET':
@@ -233,6 +172,9 @@ exports.handler = function(req, res, database, esClient) {
   case 'POST':
       handlePOST(req, res);
       break;
+  case 'DELETE':
+       handleDELETE(req, res);
+       break;
   default:
     res.status(500).send({ error: 'Something blew up!' });
     break;

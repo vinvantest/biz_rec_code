@@ -77,24 +77,24 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/getRuleFunction?uid=HJIOFS#53345DD&ruleId=HLH343HS52
-//no body {} -- rules body
+//https://us-central1-bizrec-dev.cloudfunctions.net/getSettingFunction?uid=HJIOFS#53345DD&settId=HLH343HS52
+//no body {} -- settings body
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
-   console.log('Inside serer.post(getrules())');
+   console.log('Inside serer.post(getSettings())');
    console.log('req.query.uid = ' + req.query.uid);
-   console.log('req.query.ruleId = ' + req.query.ruleId);
+   console.log('req.query.settId = ' + req.query.settId);
    var routingUid = req.query.uid;
-   var ruleId = req.query.ruleId;
+   var settId = req.query.settId;
 
    if(routingUid === null || routingUid === undefined) {
     resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
     failure(res,resMsg,401);
    }
-   if(ruleId === null || ruleId === undefined) {
-    resMsg = "Error: req.query.ruleId required to create Index in ES ->" + ruleId;
+   if(settId === null || settId === undefined) {
+    resMsg = "Error: req.query.settId required to create Index in ES ->" + settId;
     failure(res,resMsg,401);
    }
 
@@ -114,8 +114,8 @@ function handleGET (req, res, esClient)
 		  console.log("-- esClient Health --",resp);
 	});
 
-	 console.log('Checking if index Exists('+config.rules_index_name+')');
-	 esClient.indices.exists({index: config.rules_index_name})
+	 console.log('Checking if index Exists('+config.settings_index_name+')');
+	 esClient.indices.exists({index: config.settings_index_name})
 		 .then(function (error,resp) {
        console.log('error value -' + error);
        console.log('response value - ' + resp);
@@ -138,10 +138,6 @@ function handleGET (req, res, esClient)
              }
         };
         console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
-        //Note esClient.get() require index, type, and id of the documdnt. If id known then no issues. here we are
-        //seaching based on uid parameter of the user object. not its ES id. hence .get() dosen't work
-        //If used, it will create duplicate records.
-        //esClient.get(queryBodyCheckUserExists)
         esClient.search(queryBodyCheckUserExists)
           .then(function (respUserCheck) {
             //check hits if there are any user records!
@@ -158,23 +154,23 @@ function handleGET (req, res, esClient)
                 var hits = respUserCheck.hits.hits;
                 console.log('hits object - '+ JSON.stringify(hits[0]));
                 //User Uid exists
-                // GET rules Data fron rules Index
-                var indexAliasName = routingUid+config.rules_alias_token_read;
+                // GET settings Data fron settings Index
+                var indexAliasName = routingUid+config.settings_alias_token_read;
                 console.log('Alias name derived through routing is ->'+indexAliasName);
                 var queryBody = {
                   index: indexAliasName,
                   type: config.index_base_type,
-                  id: ruleId
+                  id: settId
                 };
                 console.log('queryBody ->' + JSON.stringify(queryBody));
                 esClient.get(queryBody)
                 .then(function (resp) {
-                    resMsg = 'rules Data Retrieved Successfully!' ;
+                    resMsg = 'setting Data Retrieved Successfully!' ;
                     console.log(resMsg);
                     success(res,resp);
                     },
                       function (error) {
-                        resMsg = 'Error : rules document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
+                        resMsg = 'Error : setting document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
                         failure(res,resMsg,500);
                     });
                 }
@@ -194,8 +190,8 @@ function handleGET (req, res, esClient)
        }//end if
        else {
          //index dosen't exist. Create one.
-          console.log('Index does not Exists! Can not get rules data. Error value is ->'+JSON.stringify(err));
-          resMsg = 'ruleId Index does not Exists!. Error Value = '+JSON.stringify(err);
+          console.log('Index does not Exists! Can not get settings data. Error value is ->'+JSON.stringify(err));
+          resMsg = 'settId Index does not Exists!. Error Value = '+JSON.stringify(err);
           failure(res,resMsg,404);
        } // end else - index doesn't exist
 	  });//end then - indices.exists()

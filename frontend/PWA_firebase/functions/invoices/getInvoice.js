@@ -1,6 +1,7 @@
 'use strict';
 
 var config  = require('../config.js');
+var configUser  = require('../config/specific/user_template_columns.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -76,28 +77,26 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/createInvoiceFunction?uid=HJIOFS#53345DD&invoiceId=HSJ#%DFGDS#
-//no body {} -- invoice body
+//https://us-central1-bizrec-dev.cloudfunctions.net/getInvoiceFunction?uid=HJIOFS#53345DD&invId=HLH343HS52
+//no body {} -- invoices body
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
-   console.log('Inside serer.post(getInvoices)');
-   console.log('req.query.uid = ' + JSON.stringify(req.query.uid));
-   console.log('req.query.invoiceId = ' + JSON.stringify(req.query.invoiceId));
+   console.log('Inside serer.post(getinvoices)');
+   console.log('req.query.uid = ' + req.query.uid);
+   console.log('req.query.invId = ' + req.query.invId);
    var routingUid = req.query.uid;
-   var invoiceId = req.query.invoiceId;
+   var invId = req.query.invId;
 
    if(routingUid === null || routingUid === undefined) {
     resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
     failure(res,resMsg,401);
    }
-   if(invoiceId === null || invoiceId === undefined) {
-    resMsg = "Error: req.query.invoiceId required to create Index in ES ->" + invoiceId;
+   if(invId === null || invId === undefined) {
+    resMsg = "Error: req.query.invId required to create Index in ES ->" + invId;
     failure(res,resMsg,401);
    }
-
-   resMsg = 'Data not found in index in ES';
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
@@ -116,55 +115,86 @@ function handleGET (req, res, esClient)
 	});
 
 	 console.log('Checking if index Exists('+config.invoices_index_name+')');
-	 esClient.indices.exists(config.invoices_index_name)
-		 .then(function (resp) {
-        //index exists
-				console.log('Index ['+config.invoices_index_name+'] already exists in ElasticSearch. Response is ->'+resp);
-				resMsg = 'Index ['+config.invoices_index_name+'] already exists in ElasticSearch'+JSON.stringify(resp);
-				//check if uid exists
+	 esClient.indices.exists({index: config.invoices_index_name})
+		 .then(function (error,resp) {
+       console.log('error value -' + error);
+       console.log('response value - ' + resp);
+       if(error)
+       {
+        console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
+        resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
+
+        //check if uid exists
         //check if UID exists in users index using global_alisas_for_search_users_index
-        var queryBody = {
-                 index : config.user_index_search_alias_name,
-                 type : config.index_base_type,
-                 usr_uid : routingUid
-               };
-        esClient.get(queryBody)
-          .then(function (resp) {
+        var queryBodyCheckUserExists = {
+             index : config.user_index_search_alias_name,
+             type : config.index_base_type,
+             body: {
+               query: {
+                    match: {
+                      [configUser.usr_uid] : routingUid
+                    }
+                  }
+             }
+        };
+        console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
+        esClient.search(queryBodyCheckUserExists)
+          .then(function (respUserCheck) {
+            //check hits if there are any user records!
+            console.log('hits.total =' + respUserCheck.hits.total);
+            if(respUserCheck.hits.total === 0){
+              //user doesn't exists
+              console.log('User does not exists in user index - '+ JSON.stringify(respUserCheck));
+              resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
+              failure(res,resMsg,500);
+              }
+              else if(respUserCheck.hits.total === 1 ){
+                //only one record for the user. Update the user record for the user.uid
+                console.log('User exists in user index. Updating now! - '+ JSON.stringify(respUserCheck));
+                var hits = respUserCheck.hits.hits;
+                console.log('hits object - '+ JSON.stringify(hits[0]));
                 //User Uid exists
-                //Insert invoice to the index
+                // GET invoices Data fron invoices Index
                 var indexAliasName = routingUid+config.invoices_alias_token_read;
-                var columnName = config.invoices_routing_column_name;
                 console.log('Alias name derived through routing is ->'+indexAliasName);
-                queryBody = {
+                var queryBody = {
                   index: indexAliasName,
                   type: config.index_base_type,
-                  columnName : routingUid,
-                  id: invoiceId
+                  id: invId
                 };
-                //esClient.search(queryBody)
+                console.log('queryBody ->' + JSON.stringify(queryBody));
                 esClient.get(queryBody)
                 .then(function (resp) {
-                    resMsg = 'Invoice Data Retrieved Successfully!' ;
+                    resMsg = 'invoice Data Retrieved Successfully!' ;
                     console.log(resMsg);
-                    //esClient.close(); //use in lambda only
-                    success(res,resp.hits.hits[0]);
+                    success(res,resp);
                     },
                       function (error) {
-                        resMsg = 'Error : Invoice document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                        //esClient.close(); //use in lambda only
-                      failure(res,resMsg,500);
-                });
-            }, function (error) {
-                resMsg = 'Error : User not found in user Index. Error - ' + JSON.stringify(error);
-                //esClient.close(); //use in lambda only
+                        resMsg = 'Error : invoice document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
+                        failure(res,resMsg,500);
+                    });
+                }
+              else{
+                //user has multiple records. Delete rest!
+                console.log('Too many copies of the user present! Contact System Adminstrator!');
+                console.log('*****');
+                console.log(JSON.stringify(respUserCheck));
+                console.log('*****');
+                resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
                 failure(res,resMsg,500);
-          });//End: check user exists
-	     }, function (err){
+              }
+          }, function (error) {
+                  resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
+                  failure(res,resMsg,500);
+              });//End: check user exists
+       }//end if
+       else {
          //index dosen't exist. Create one.
-    			console.log('Index does not Exists! Can not insert invoice. Error value is ->'+JSON.stringify(err));
-    			resMsg = 'Index does not Exists!. Error Value = '+JSON.stringify(err);
+          console.log('Index does not Exists! Can not get invoices data. Error value is ->'+JSON.stringify(err));
+          resMsg = 'invId Index does not Exists!. Error Value = '+JSON.stringify(err);
           failure(res,resMsg,404);
-	    });//end then - indices.exists()
+       } // end else - index doesn't exist
+	  });//end then - indices.exists()
 
 }
 

@@ -146,10 +146,6 @@ function handleGET (req, res, esClient)
             }
        };
        console.log('queryBodyCheckUserExists (JSON) is->'+JSON.stringify(queryBodyCheckUserExists));
-       //Note esClient.get() require index, type, and id of the documdnt. If id known then no issues. here we are
-       //seaching based on uid parameter of the user object. not its ES id. hence .get() dosen't work
-       //If used, it will create duplicate records.
-       //esClient.get(queryBodyCheckUserExists)
        esClient.search(queryBodyCheckUserExists)
          .then(function (respUserCheck) {
            //check hits if there are any user records!
@@ -171,20 +167,6 @@ function handleGET (req, res, esClient)
                //indexAliasName = 'banks_index_v1';
                console.log('Alias name derived through routing is ->'+indexAliasName);
                var queryBody = {
-                 index: indexAliasName,
-                 type: config.index_base_type,
-                 body: {
-                   from: fromVal,
-                   size: Number(sizeVal),
-                   query: {
-                        term: { [configBank.bank_userIdRoutingAliasId] : routingUid }
-                      },
-                   sort: [
-                        { [config.banks_record_updated_column_name]: { order: 'desc' } }
-                      ]
-                  }
-               };
-               queryBody = {
                  index: indexAliasName,
                  type: config.index_base_type,
                  body: {

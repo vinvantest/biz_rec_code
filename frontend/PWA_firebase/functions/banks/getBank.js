@@ -2,7 +2,6 @@
 
 var config  = require('../config.js');
 var configUser  = require('../config/specific/user_template_columns.js');
-var configBank = require('../config/specific/bank_template_columns.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -157,7 +156,7 @@ function handleGET (req, res, esClient)
               }
               else if(respUserCheck.hits.total === 1 ){
                 //only one record for the user. Update the user record for the user.uid
-                console.log('User exists in user index. Updating now! - '+ JSON.stringify(respUserCheck));
+                console.log('User exists in user index - '+ JSON.stringify(respUserCheck));
                 var hits = respUserCheck.hits.hits;
                 console.log('hits object - '+ JSON.stringify(hits[0]));
                 //User Uid exists

@@ -198,15 +198,15 @@ var invoicesTemplate = {
               "type" : "nested",
               "include_in_parent": true,
               "properties" : {
-                      "inv_company_address.streetNumber"	:	{ "type" :	"text", "index" : false	},
-                      "inv_company_address.streetName"	:	{ "type" :	"text", "index" : true	},
-                      "inv_company_address.streetType"	:	{ "type" :	"text"	, "index" : true},
-                      "inv_company_address.suburb"	:	{ "type" :	"keyword"	, "index" : true},
-                      "inv_company_address.state"	:	{ "type" :	"keyword"	, "index" : true},
-                      "inv_company_address.postcode"	:	{ "type" :	"keyword", "index" : true	},
-                      "inv_company_address.country"	:	{ "type" :	"keyword", "index" : true	},
-                      "inv_company_address.contact"	:	{ "type" :	"keyword", "index" : true	},
-                      "inv_company_address.email"	:	{ "type" :	"keyword", "index" : true	}
+                      "inv_company_address_streetNumber"	:	{ "type" :	"text", "index" : false	},
+                      "inv_company_address_streetName"	:	{ "type" :	"text", "index" : true	},
+                      "inv_company_address_streetType"	:	{ "type" :	"text"	, "index" : true},
+                      "inv_company_address_suburb"	:	{ "type" :	"keyword"	, "index" : true},
+                      "inv_company_address_state"	:	{ "type" :	"keyword"	, "index" : true},
+                      "inv_company_address_postcode"	:	{ "type" :	"keyword", "index" : true	},
+                      "inv_company_address_country"	:	{ "type" :	"keyword", "index" : true	},
+                      "inv_company_address_contact"	:	{ "type" :	"keyword", "index" : true	},
+                      "inv_company_address_email"	:	{ "type" :	"keyword", "index" : true	}
                     }
             },
             "inv_company_careOf"	:	{ "type" :	"text", "index" : false	},

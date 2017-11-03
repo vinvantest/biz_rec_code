@@ -77,13 +77,13 @@ function failure (res, data, httpCode) {
  _respond(res, 'failure', data, httpCode);
 }
 
-//https://us-central1-bizrec-dev.cloudfunctions.net/getSuppliersFunction?uid=HJIOFS#53345DD&page=0&size=10
+//https://us-central1-bizrec-dev.cloudfunctions.net/getSettingsFunction?uid=HJIOFS#53345DD&page=0&size=10
 //no body {}
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
-   console.log('Inside serer.post(getsuppliers())');
+   console.log('Inside serer.post(getSettings())');
    console.log('req.query.uid = ' + req.query.uid);
    console.log('req.query.page = ' + req.query.page);
    console.log('req.query.size = ' + req.query.size);
@@ -121,8 +121,8 @@ function handleGET (req, res, esClient)
 		  console.log("-- esClient Health --",resp);
 	});
 
-  console.log('Checking if index Exists('+config.suppliers_index_name+')');
-  esClient.indices.exists({index: config.suppliers_index_name})
+  console.log('Checking if index Exists('+config.settings_index_name+')');
+  esClient.indices.exists({index: config.settings_index_name})
     .then(function (error,resp) {
       console.log('error value -' + error);
       console.log('response value - ' + resp);
@@ -161,7 +161,7 @@ function handleGET (req, res, esClient)
                var hits = respUserCheck.hits.hits;
                console.log('hits object - '+ JSON.stringify(hits[0]));
                //User Uid exists
-               var indexAliasName = routingUid+config.suppliers_alias_token_read;
+               var indexAliasName = routingUid+config.settings_alias_token_read;
                console.log('Alias name derived through routing is ->'+indexAliasName);
                var queryBody = {
                  index: indexAliasName,
@@ -170,19 +170,19 @@ function handleGET (req, res, esClient)
                    from: fromVal,
                    size: Number(sizeVal),
                    sort: [
-                        { [config.suppliers_record_updated_column_name]: { order: 'desc' } }
+                        { [config.settings_record_updated_column_name]: { order: 'desc' } }
                       ]
                   }
                };
-               console.log('getsuppliers search DSL -> ' + JSON.stringify(queryBody));
+               console.log('getSettings search DSL -> ' + JSON.stringify(queryBody));
                esClient.search(queryBody)
                .then(function (resp) {
-                   resMsg = 'Suppliers Data Retrieved Successfully!' ;
+                   resMsg = 'settings Data Retrieved Successfully!' ;
                    console.log(resMsg);
                    success(res,resp.hits.hits);
                    },
                      function (error) {
-                       resMsg = 'Error : Suppliers document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
+                       resMsg = 'Error : settings document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
                          failure(res,resMsg,500);
                    });
                }
