@@ -39,26 +39,36 @@
 
   </style>
 
-<!--
-  <template is="dom-if" if="[[signedin]]">
-    <div style="float:center; width: 60%">
-      <paper-card style="float:center; width: 60%" class="black">
-         <h4 style="color: white;">Banks</h4>
-      </paper-card>
-      <a href="/banks-page">
-      <paper-icon-button icon="icons:refresh" style="color: black;" on-tap="reloadPage"></paper-icon-button></a>
-    </div>
-  </template>
+  <!-- https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction?uid=Iq63rGKy2MUT4QmCWf0ewJJIxWC3 -->
+  <iron-ajax
+          auto
+          id="getBanks"
+          method="POST"
+          url="https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction"
+          params='{"uid":"[[user.uid]]"}'
+          handle-as="json"
+          headers='{"Access-Control-Allow-Origin": "https://bizrec-dev.firebaseapp.com"}'
+          content-type="application/json"
+          on-response="handleResponseGetBanks"
+          on-error="handleErrorGetBanks"
+          last-response="{{banksData}}"
+          last-error="{{lastError}}">
+  </iron-ajax>
 
-  <template is="dom-if" if="[[!signedin]]">
-    <paper-card style="float:center; width: 60%" class="black">
-         <h4 style="color: white;">Banks</h4>
-    </paper-card>
-  </template>
--->
    <paper-card style="float:center; width: 70%" class="black">
      <h4 style="color: white;">Banks</h4>
    </paper-card>
+
+   <template is="dom-if" if="[[ajaxError]]">
+             <paper-card style="float:center; width: 90%">
+                 <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong></div>
+                 <div>
+                   <p>AjaxError: [[ajaxErrorMsg]]</p>
+                 </div>
+                 <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+                 <p>....</p>
+             </paper-card>
+   </template>
 
   <template is="dom-if" if="[[!signedin]]">
     <div class="card">
@@ -71,18 +81,63 @@
     </div>
   </template>
 
-  <template is="dom-if" if="[[signedin]]">
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>Banks Page</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis,
-        sit elit oportere ea.Lorem ipsum dolor sit amet, sit.</p>
-        <p> User id: [[user.uid]]</p>
-        <p> User Name: [[user.displayName]]</p>
-        <p> Signed in: [[signedin]]</p>
-    </div>
+  <template is="dom-if" if="[[_computeShowBanks(signedin, banksData.successFlag)]]">
+     <template is="dom-repeat" items="{{banksData.data}}" as="bank">
+       <paper-card style="float:center; width: 90%">
+           <div>
+                 <div style="float:center" flex>
+                       <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; [[bank.bank_providerName]]
+                       <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
+                                               id$="bt_readmore" note="[[bank]]"
+                                               on-tap="expandCollapseBankCard"></paper-icon-button>
+                 </div>
+             </div>
+             <div style="float:left; width:100%">
+               <div id="leftThing" style="float:left; width:25%;">
+                     <paper-icon-button disabled slot="top" icon="av:fast-forward" style="color: black;"></paper-icon-button>
+                 </div>
+                 <div id="leftThing" style="float:left; width:25%;">
+                   <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                 </div>
+               <div id="leftThing" style="float:left; width:25%;">
+                   <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+               </div>
+               <div id="leftThing" style="float:right; width:25%;">
+                     <paper-icon-button disabled slot="top" icon="av:fast-rewind" style="color: black;"></paper-icon-button>
+               </div>
+           </div>
+           <div>
+               <!-- any unique key of the data to be assigned to id of ircon collapse to be toggled in javascript -->
+               <iron-collapse id$="collapse{{bank._id}}">
+                     <div>
+                         <p>
+                           <div id="leftThing" slot="top" style="float: center;">
+                             <paper-input label="Account Name" value="[[bank.bank_bankAccountName]]" always-float-label></paper-input>
+                             <paper-input label="Account BSB" value="[[bank.bank_BSB]]" always-float-label disabled></paper-input>
+                             <paper-input label="Account Number" value="[[bank.bank_bankAccountNumber]]" always-float-label></paper-input>
+                          </div>
+                         </p>
+                       </div>
+                       <div>
+                           <div class="horizontal justified">
+                                   <H7>Set Date:</h7>
+                                 <vaadin-date-picker id="vaadinDate" value=[[bank.bank_record_updated]]></vaadin-date-picker>
+                                 <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[bank]]"
+                                                    on-tap="_updateDate" mini></paper-icon-button>
+                                 <div style="text-align: right">
+                                     <h7 style="color: grey">Delete Note</h7>
+                                     <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[bank]]"
+                                                        on-tap="_removeNote"></paper-icon-button>
+                                 </div>
+                           </div>
+                      </div>
+                  </iron-collapse>
+               </div>
+         </paper-card>
+       </template>
   </template>
+
 
   </template>
 
@@ -109,7 +164,19 @@
             notify: true,
             readOnly: false,
             observer: '_statusChanged',
+          },
+          banksData: {
+            type: Object,
+          },
+          ajaxError: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+          ajaxErrorMsg: {
+            type: String,
           }
+
         };
       }
 
@@ -129,6 +196,88 @@
       reloadPage(){
         //console.log('inside reloadPage');
         location.reload(true);
+      }
+
+      _computeShowBanks(signedin, successFlag){
+        //retrun true only when both are True
+        return (!signedin || !successFlag);
+      }
+
+      expandCollapseBankCard(event, detail, sender) {
+            var id = event.model.bank._id;
+            var selector = '#collapse' + id;
+            console.log('selector is ->'+selector);
+            console.log(event.currentTarget.parentElement.parentElement.parentElement);
+            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+      }
+
+      handleResponseGetBanks(data){
+        console.log('inside ***  handleResponseGetBanks(data)');
+        this.active = false;
+        const responseX = data.detail;
+        console.log('status', responseX.status, responseX.statusText);
+        var x = responseX.status;
+        switch(true){
+          case (x === 200):
+              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
+              console.log('last response _'+ this.responseData);
+              console.log('this.user.displayName = '+this.user.displayName);
+              console.log('this.user.uid = '+this.user.uid);
+              document.getElementById('toast').show(this.user.displayName+', Banks data retrieved successfully!');
+              break;
+          case (x >= 400 && x < 500):
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error (400): Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+              if(x === 404 || x === 401)
+              {
+                document.getElementById('toast').show(this.user.displayName+' Synced with server Failed!');
+              }
+              break;
+          case (x >= 500 && x < 600):
+                  this.ajaxError = true;
+                  this.ajaxErrorMsg = 'Error (500): Something went wrong: ';
+                  console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+                  break;
+          default:
+              this.ajaxError = true;
+              this.ajaxErrorMsg = 'Error: Something went wrong: ';
+              console.log('Error: Something went wrong: ' + JSON.stringify(data.detail.response));
+        }
+      }
+
+      handleErrorGetBanks(event){
+        console.log('inside ***  handleErrorGetBanks(event)');
+        var error = event.detail.request.xhr.response;
+        console.log('error -->'+error);
+        // I think one of those two would be what you're looking for.
+        const req = event.detail.request;
+        console.log('event', event);
+        console.log('status code', req.status);
+        console.log('status text', req.statusText);
+        if( req.status === 500 )
+        {
+          console.log('AJAX call failed');
+          document.getElementById('toast').show('Something went wrong - internal servier error!');
+          if(this.user != null || this.user != undefined)
+          {
+            console.log('User not logged in');
+            console.log('user object is ->'+this.user);
+            this.ajaxError = false;
+          }
+        }
+        if( req.status === 404 || req.status === 401 )
+        {
+          document.getElementById('toast').show(this.user.displayName+', User not found in server!');
+        }
+        else {
+          this.ajaxError = true;
+        }
+        this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
+      }
+
+      dissmisErrorDialog(){
+        this.ajaxError = false;
       }
 
     }

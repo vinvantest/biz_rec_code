@@ -38,4 +38,4 @@ tran_record_updated	:	'tran_record_updated',
 
 };
 
-module.exports = configSettTemplate;
+module.exports = configTranTemplate;

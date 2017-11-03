@@ -54,12 +54,12 @@ var getBanksFunction = require('./banks/getBanks');
 var getBankFunction = require('./banks/getBank');
 
 /***********   COAS FUNCTIONS     *********************/
-var createCoaFunction = require('./coas/creatCoa');
+var createCoaFunction = require('./coas/createCoa');
 var getCoasFunction = require('./coas/getCoas');
 var getCoaFunction = require('./coas/getCoa');
 
 /***********   CUSTOMERS FUNCTIONS     *********************/
-var createCustomerFunction = require('./customers/creatCustomer');
+var createCustomerFunction = require('./customers/createCustomer');
 var getCustomersFunction = require('./customers/getCustomers');
 var getCustomerFunction = require('./customers/getCustomer');
 
@@ -69,27 +69,27 @@ var getInvoicesFunction = require('./invoices/getInvoices');
 var getInvoiceFunction = require('./invoices/getInvoice');
 
 /***********   PAYMENTS FUNCTIONS     *********************/
-var createPaymentFunction = require('./payment/creatPayment');
+var createPaymentFunction = require('./payments/createPayment');
 var getPaymentsFunction = require('./payments/getPayments');
 var getPaymentFunction = require('./payments/getPayment');
 
 /***********   RULES FUNCTIONS     *********************/
-var createRuleFunction = require('./rules/creatRule');
+var createRuleFunction = require('./rules/createRule');
 var getRulesFunction = require('./rules/getRules');
 var getRuleFunction = require('./rules/getRule');
 
 /***********   SUPPLIERS FUNCTIONS     *********************/
-var createSupplierFunction = require('./suppliers/creatSupplier');
+var createSupplierFunction = require('./suppliers/createSupplier');
 var getSuppliersFunction = require('./suppliers/getSuppliers');
 var getSupplierFunction = require('./suppliers/getSupplier');
 
 /***********   Settings FUNCTIONS     *********************/
-var createSettingFunction = require('./settings/creatSetting');
+var createSettingFunction = require('./settings/createSetting');
 var getSettingFunction = require('./settings/getSetting');
 var getSettingsFunction = require('./settings/getSettings');
 
 /***********   TRANSACTIONS FUNCTIONS     *********************/
-var createTransactionFunction = require('./transactions/creatTransaction');
+var createTransactionFunction = require('./transactions/createTransaction');
 var getTransactionsFunction = require('./transactions/getTransactions');
 var getTransactionFunction = require('./transactions/getTransaction');
 

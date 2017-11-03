@@ -27,16 +27,17 @@ function handleOPTIONS(req, res) {
 	   return;
 }
 
-function _respond(res, status, data, httpCode) {
+function _respondSuccess(res, status, data, httpCode) {
      var response = {
        'status': status,
+       'successFlag' : true,
        'data' : data
      };
      //  res.setHeader('Content-type', 'application/json');  - this is restify
      res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', 'https://bizrec-dev.firebaseapp.com');
+     res.set('Access-Control-Allow-Origin', '*');
      res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+     res.set('Access-Control-Allow-Methods', '*');
      res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
      res.set('Access-Control-Max-Age', '1000');
      /*
@@ -49,11 +50,12 @@ function _respond(res, status, data, httpCode) {
      res.status(httpCode).send(response);
 }
 
-function _respondArray(res, status, data, httpCode) {
+function _respondArraySuccess(res, status, data, httpCode) {
 
      var response = {
        'status' : status,
-      'data' : [data]
+       'successFlag' : true,
+       'data' : [data]
      };
 
      res.set('Content-type', 'application/json');
@@ -73,17 +75,40 @@ function _respondArray(res, status, data, httpCode) {
     res.status(httpCode).send(response);
 }
 
-function success (res, data) {
- _respond(res, 'success', data, 200);
+function _respondFailure(res, status, data, httpCode) {
+     var response = {
+       'status': status,
+       'successFlag' : false,
+       'data' : data
+     };
+     //  res.setHeader('Content-type', 'application/json');  - this is restify
+     res.set('Content-type', 'application/json');
+     res.set('Access-Control-Allow-Origin', '*');
+     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
+     res.set('Access-Control-Allow-Methods', '*');
+     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+     res.set('Access-Control-Max-Age', '1000');
+     /*
+     Access-Control-Allow-Credentials,
+     Access-Control-Expose-Headers,
+     Access-Control-Max-Age,
+     Access-Control-Allow-Methods,
+     Access-Control-Allow-Headers
+     */
+     res.status(httpCode).send(response);
 }
 
-function successArray (res,data) {
- _respondArray(res, 'success', data, 200);
+function success (res, data) {
+ _respondSuccess(res, 'success', data, 200);
+}
+
+function successArray (res, data) {
+ _respondArraySuccess(res, 'success', data, 200);
 }
 
 function failure (res, data, httpCode) {
  console.log('Error: ' + httpCode + ' ' + data);
- _respond(res, 'failure', data, httpCode);
+ _respondFailure(res, 'failure', data, httpCode);
 }
 
 //https://us-central1-bizrec-dev.cloudfunctions.net/createRuleFunction?uid=JSSJS2@222dDD
