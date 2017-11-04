@@ -3,6 +3,7 @@
 var config  = require('../config.js');
 var configRule = require('../config/specific/rule_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
+var helper = require('../config/helpers/helper.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -27,90 +28,6 @@ function handleOPTIONS(req, res) {
 	   return;
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 //https://us-central1-bizrec-dev.cloudfunctions.net/createRuleFunction?uid=JSSJS2@222dDD
 // body {} -- coa object body
 function handlePOST (req, res, esClient)
@@ -124,11 +41,11 @@ function handlePOST (req, res, esClient)
    var ruleBody = req.body.rule;
    if(uid === null || uid === undefined) {
     resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(ruleBody === null || ruleBody === undefined) {
     resMsg = "Error: req.body.ruleBody required to create Index in ES ->" + JSON.stringify(ruleBody);
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    var ruleAliasIndexName = uid + config.rules_alias_token_read;
    var ruleAliasIndexName_write = uid + config.rules_alias_token_write;
@@ -154,7 +71,7 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -196,7 +113,7 @@ function handlePOST (req, res, esClient)
               //user doesn't exists
               resMsg = 'User does not exists in user index. Cannot insert new coa record!';
               console.log(resMsg);
-              failure(res, resMsg, 404);
+              helper.failure(res, resMsg, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -239,11 +156,11 @@ function handlePOST (req, res, esClient)
                             .then(function (respInsertRule) {
                               resMsg = 'User Data existed and rules record inserted Successfully!' ;
                               console.log(resMsg);
-                              success(res,resMsg);
+                              helper.success(res,resMsg);
                               },
                               function (errorInsertRule) {
                               resMsg = 'Error : New rules document insertion ['+ruleAliasIndexName_write+'] Failed!' + errorInsertRule;
-                              failure(res,resMsg,500);
+                              helper.failure(res,resMsg,500);
                               });
                       }
                       else if(respRuleCheck.hits.total === 1 )
@@ -262,12 +179,12 @@ function handlePOST (req, res, esClient)
                                 resMsg = 'Rule Data existed and now updated Successfully!' ;
                                 console.log(resMsg);
                                 //esClient.close(); //use in lambda only
-                                success(res,resMsg);
+                                helper.success(res,resMsg);
                                 },
                                 function (errorInsertRule) {
                                 resMsg = 'Error : Rule document update ['+ruleAliasIndexName+'] Failed! But old record exists.' + errorInsertRule;
                                 console.log(resMsg);
-                                success(res,resMsg);
+                                helper.success(res,resMsg);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
@@ -278,7 +195,7 @@ function handlePOST (req, res, esClient)
                         console.log(JSON.stringify(respRuleCheck));
                         console.log('*****');
                         resMsg = 'Error : New Rule document creation ['+ruleAliasIndexName+'] Failed! Duplicate rules records for the user exists. Contact System Adminstrator.' + error;
-                        failure(res,resMsg,500);
+                        helper.failure(res,resMsg,500);
                       }
                     }, function (error) {
                             resMsg = 'Error : Rule record not found in coa Index. Inserting new. Error = ' + error;
@@ -291,11 +208,11 @@ function handlePOST (req, res, esClient)
                                   .then(function (respInsertRule) {
                                     resMsg = 'User Data existed and New Rule record inserted Successfully!' ;
                                     console.log(resMsg);
-                                    success(res,resMsg);
+                                    helper.success(res,resMsg);
                                     },
                                     function (errorInsertRule) {
                                     resMsg = 'Error : New rules document insertion ['+ ruleAliasIndexName_write +'] Failed!' + errorInsertRule;
-                                    failure(res,resMsg,500);
+                                    helper.failure(res,resMsg,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
@@ -307,19 +224,19 @@ function handlePOST (req, res, esClient)
                 console.log(JSON.stringify(respUserCheck));
                 console.log('*****');
                 resMsg = 'Error : Rule document creation/updation ['+ruleAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                failure(res,resMsg,500);
+                helper.failure(res,resMsg,500);
             }
           }, function (error) {
                   resMsg = 'Error : User not found in user Index. Error = ' + error;
                   console.log(resMsg);
-                  failure(res,resMsg,404);
+                  helper.failure(res,resMsg,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
     			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
           console.log(resMsg);
-          failure(res,resMsg,500);
+          helper.failure(res,resMsg,500);
        }
      });//end then - indices.exists()
 

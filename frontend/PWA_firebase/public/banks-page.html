@@ -36,16 +36,17 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
-
+    paper-button.green {
+      background-color: var(--paper-green-500);
+      color: white;
+    }
   </style>
 
   <!-- https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction?uid=Iq63rGKy2MUT4QmCWf0ewJJIxWC3 -->
   <iron-ajax
-          auto
           id="getBanks"
-          method="POST"
-          url="https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction"
-          params='{"uid":"[[user.uid]]"}'
+          method="GET"
+          url="{{url}}"
           handle-as="json"
           headers='{"Access-Control-Allow-Origin": "https://bizrec-dev.firebaseapp.com"}'
           content-type="application/json"
@@ -58,6 +59,18 @@
    <paper-card style="float:center; width: 70%" class="black">
      <h4 style="color: white;">Banks</h4>
    </paper-card>
+
+   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+     <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
+       <div hidden$="[[!busyDialogLoadFlag]]">
+             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+             <paper-spinner active class="multi"></paper-spinner>
+             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
+      </div>
+      <div hidden$="[[busyDialogLoadFlag]]">
+        <paper-button raised on-tap="dismissDialogBusy" class="green">Ok</paper-button>
+      </div>
+   </paper-dialog>
 
    <template is="dom-if" if="[[ajaxError]]">
              <paper-card style="float:center; width: 90%">
@@ -81,7 +94,46 @@
     </div>
   </template>
 
-  <template is="dom-if" if="[[_computeShowBanks(signedin, banksData.successFlag)]]">
+<template is="dom-if" if="[[signedin]]">
+    <paper-card id="paperCardBanksSetup" style="float:center; width:80%">
+        <div style="float:left; width:100%">
+          <div id="leftThing00" style="float:left; width:25%;">
+                <paper-icon-button id="dashboard-icon-button00" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+            <div id="leftThing11" style="float:left; width:25%;">
+              <paper-icon-button id="transactions-icon-button11" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+          <div id="leftThing22" style="float:left; width:25%;">
+              <paper-icon-button id="payments-icon-button22" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+          <div id="leftThing33" style="float:right; width:25%;">
+                <paper-icon-button id="reports-icon-button33" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+        </div>
+        <div><b><h4 style="color: black;">Get Banks data from Server</h4></b></div>
+        <div>
+            <paper-button raised on-tap="sendGetBanks" class="green">Start</paper-button>
+        </div>
+        <div><span> &nbsp; </span></div>
+        <div style="float:left; width:100%">
+          <div id="leftThing0" style="float:left; width:25%;" >
+                <paper-icon-button id="dashboard-icon-button0" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+            <div id="leftThing1" style="float:left; width:25%;">
+              <paper-icon-button id="transactions-icon-button1" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+            </div>
+          <div id="leftThing2" style="float:left; width:25%;">
+              <paper-icon-button id="payments-icon-button2" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+          <div id="leftThing3" style="float:right; width:25%;">
+                <paper-icon-button id="reports-icon-button3" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+          </div>
+        </div>
+      </paper-card>
+      <div><span>&nbsp;</span></div>
+</template>
+
+  <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}">
      <template is="dom-repeat" items="{{banksData.data}}" as="bank">
        <paper-card style="float:center; width: 90%">
            <div>
@@ -167,6 +219,7 @@
           },
           banksData: {
             type: Object,
+            notify: true
           },
           ajaxError: {
             type: Boolean,
@@ -175,6 +228,20 @@
           },
           ajaxErrorMsg: {
             type: String,
+          },
+          busyDialogLoadMsg: {
+            type: String,
+            value: 'Loading Information From Server',
+            notify: true
+          },
+          active: {
+            type: Boolean,
+            value: false,
+          },
+          busyDialogLoadFlag: {
+            type: Boolean,
+            value: true,
+            notify: true
           }
 
         };
@@ -199,8 +266,17 @@
       }
 
       _computeShowBanks(signedin, successFlag){
+        console.log('signedin ='+signedin+' , successFlag='+successFlag);
+        var temp = !signedin || !successFlag;
+        console.log('value returned ='+temp);
         //retrun true only when both are True
         return (!signedin || !successFlag);
+      }
+
+      dismissDialogBusy(){
+        this.$.dialogBusy.toggle();
+        this.busyDialogLoadFlag = true;
+        this.busyDialogLoadMsg = 'Loading Information From Server';
       }
 
       expandCollapseBankCard(event, detail, sender) {
@@ -209,6 +285,53 @@
             console.log('selector is ->'+selector);
             console.log(event.currentTarget.parentElement.parentElement.parentElement);
             event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+      }
+
+      _getBanksParams(uid)
+      {
+        return { "uid" : uid };
+      }
+
+      sendGetBanks(){
+        console.log('###### inside sendGetBanks() ######');
+        if(this.user!=null || this.user!=undefined)
+        {
+          this.$.dialogBusy.toggle();
+          this.active = true;
+          var ajaxObject = this.$.getBanks;
+          console.log('user ->'+JSON.stringify(this.user));
+          ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
+          ajaxObject.params = {
+                    uid: this.user.uid ,
+                    page: 0,
+                    size: 20
+                  };
+          //ajaxObject.body = {
+          //          user: this.user
+          //      };
+          console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+          let request = ajaxObject.generateRequest();
+          request.completes.then( function(req) {
+              // succesful request, argument is iron-request element
+              console.log('iron request element is->'+req);
+              return;
+            }, function(rejected) {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              console.log('API Call - User Insertion - rejected');
+              console.log('req=', req, '    error=', error);
+              this.$.dialogBusy.toggle();
+              this.ajaxError = true;
+              this.ajaxErrorMsg = error;
+              return;
+            });
+        }
+        else {
+            console.log('user is null or undefined -'+ this.user);
+            document.getElementById('toast').show('Login to the app to complete Sync!');
+        }
+
       }
 
       handleResponseGetBanks(data){
@@ -220,7 +343,7 @@
         switch(true){
           case (x === 200):
               console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
-              console.log('last response _'+ this.responseData);
+              console.log('last response _'+ this.banksData);
               console.log('this.user.displayName = '+this.user.displayName);
               console.log('this.user.uid = '+this.user.uid);
               document.getElementById('toast').show(this.user.displayName+', Banks data retrieved successfully!');
@@ -274,6 +397,7 @@
           this.ajaxError = true;
         }
         this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
+        console.log('this.ajaxErrorMsg =' + this.ajaxErrorMsg);
       }
 
       dissmisErrorDialog(){

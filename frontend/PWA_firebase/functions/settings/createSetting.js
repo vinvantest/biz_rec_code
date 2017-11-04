@@ -3,6 +3,7 @@
 var config  = require('../config.js');
 var configSett = require('../config/specific/setting_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
+var helper = require('../config/helpers/helper.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -27,90 +28,6 @@ function handleOPTIONS(req, res) {
 	   return;
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 //https://us-central1-bizrec-dev.cloudfunctions.net/createSettingFunction?uid=JSSJS2@222dDD
 // body {} -- coa object body
 function handlePOST (req, res, esClient)
@@ -124,11 +41,11 @@ function handlePOST (req, res, esClient)
    var settBody = req.body.sett;
    if(uid === null || uid === undefined) {
     resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(settBody === null || settBody === undefined) {
     resMsg = "Error: req.body.settBody required to create Index in ES ->" + JSON.stringify(settBody);
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    var settAliasIndexName = uid + config.settings_alias_token_read;
    var settAliasIndexName_write = uid + config.settings_alias_token_write;
@@ -172,7 +89,7 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -214,7 +131,7 @@ function handlePOST (req, res, esClient)
               //user doesn't exists
               resMsg = 'User does not exists in user index. Cannot insert new coa record!';
               console.log(resMsg);
-              failure(res, resMsg, 404);
+              helper.failure(res, resMsg, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -255,11 +172,11 @@ function handlePOST (req, res, esClient)
                             .then(function (respInsertSett) {
                               resMsg = 'User Data existed and settings record inserted Successfully!' ;
                               console.log(resMsg);
-                              success(res,resMsg);
+                              helper.success(res,resMsg);
                               },
                               function (errorInsertSett) {
                               resMsg = 'Error : New settings document insertion ['+settAliasIndexName_write+'] Failed!' + errorInsertSett;
-                              failure(res,resMsg,500);
+                              helper.failure(res,resMsg,500);
                               });
                       }
                       else if(respSettCheck.hits.total === 1 )
@@ -278,12 +195,12 @@ function handlePOST (req, res, esClient)
                                 resMsg = 'Settings Data existed and now updated Successfully!' ;
                                 console.log(resMsg);
                                 //esClient.close(); //use in lambda only
-                                success(res,resMsg);
+                                helper.success(res,resMsg);
                                 },
                                 function (errorInsertSett) {
                                 resMsg = 'Error : Settings document update ['+settAliasIndexName+'] Failed! But old record exists.' + errorInsertSett;
                                 console.log(resMsg);
-                                success(res,resMsg);
+                                helper.success(res,resMsg);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
@@ -294,7 +211,7 @@ function handlePOST (req, res, esClient)
                         console.log(JSON.stringify(respSettCheck));
                         console.log('*****');
                         resMsg = 'Error : New Settings document creation ['+settAliasIndexName+'] Failed! Duplicate settings records for the user exists. Contact System Adminstrator.' + error;
-                        failure(res,resMsg,500);
+                        helper.failure(res,resMsg,500);
                       }
                     }, function (error) {
                             resMsg = 'Error : Settings record not found in coa Index. Inserting new. Error = ' + error;
@@ -307,11 +224,11 @@ function handlePOST (req, res, esClient)
                                   .then(function (respInsertSett) {
                                     resMsg = 'User Data existed and New Settings record inserted Successfully!' ;
                                     console.log(resMsg);
-                                    success(res,resMsg);
+                                    helper.success(res,resMsg);
                                     },
                                     function (errorInsertSett) {
                                     resMsg = 'Error : New settings document insertion ['+ settAliasIndexName_write +'] Failed!' + errorInsertSett;
-                                    failure(res,resMsg,500);
+                                    helper.failure(res,resMsg,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
@@ -323,19 +240,19 @@ function handlePOST (req, res, esClient)
                 console.log(JSON.stringify(respUserCheck));
                 console.log('*****');
                 resMsg = 'Error : Settings document creation/updation ['+settAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                failure(res,resMsg,500);
+                helper.failure(res,resMsg,500);
             }
           }, function (error) {
                   resMsg = 'Error : User not found in user Index. Error = ' + error;
                   console.log(resMsg);
-                  failure(res,resMsg,404);
+                  helper.failure(res,resMsg,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
     			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
           console.log(resMsg);
-          failure(res,resMsg,500);
+          helper.failure(res,resMsg,500);
        }
      });//end then - indices.exists()
 

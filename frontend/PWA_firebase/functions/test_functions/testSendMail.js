@@ -2,6 +2,7 @@
 
 var esClient = require('../config/elasticsearch/elasticConfig.js');
 var config  = require('../config.js');
+var helper = require('../config/helpers/helper.js');
 
 const sendgrid = require('sendgrid');
 const APP_NAME = config.email_app_name;
@@ -19,90 +20,6 @@ function handlePUT (req, res) {
 function handleDELETE (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
-}
-
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
 }
 
 function parseBody(email, displayName, templateId) {
@@ -204,7 +121,7 @@ function handleGET (req, res, functions)
     clientSendGrid.API(request, function (error, response) {
       if (error) {
          console.log('Error response received -' + error);
-         failure(res, error, 500);
+         helper.failure(res, error, 500);
        }
        else {
          console.log('Sendgrid :: response.statusCode = '+ response.statusCode);
@@ -212,7 +129,7 @@ function handleGET (req, res, functions)
          console.log('SendGrid :: response = '+JSON.stringify(response));
          console.log('respnose.body = '+ response.body);
          console.log('response.headers' + response.headers);
-         success(res, 'Successfully sent email');
+         helper.success(res, 'Successfully sent email');
        }
     });
 

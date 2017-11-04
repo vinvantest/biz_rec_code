@@ -1,5 +1,7 @@
 'use strict';
 
+var helper = require('../config/helpers/helper.js');
+
 function handleGET (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
@@ -15,90 +17,6 @@ function handleDELETE (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 function handlePOST (req, res, esClient) {
   // Do something with the POST request
   //https://us-central1-bizrec-dev.cloudfunctions.net/addTemplateToESFunction?templateName=users_template_v1&templateType=users
@@ -112,18 +30,18 @@ function handlePOST (req, res, esClient) {
 
    if(templateName === null || templateName === undefined) {
     resMsg = "Error: req.query.templateName required to create Index in ES ->" + templateName;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(templateType === null || templateType === undefined) {
     resMsg = "Error: req.query.templateType required to create Index in ES ->" + templateType;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -173,7 +91,7 @@ function handlePOST (req, res, esClient) {
             break;
       default:
          resMsg = 'Error: no matching templateType specified';
-         failure(res,resMsg,404);
+         helper.failure(res,resMsg,404);
    }
    console.log('template.json file Loaded !');
 
@@ -190,12 +108,12 @@ function handlePOST (req, res, esClient) {
       					  console.log('template ['+templateName+'] Updated! '+ JSON.stringify(response));
       						resMsg = 'Template ['+templateName+'] Updated!';
       						//esClient.close(); //close it in lambda for local host don't close it
-      						success(res,resMsg);
+      						helper.success(res,resMsg);
       					}, function (error) {
       						console.log('Error: Updating template ['+templateName+'] -> '+JSON.stringify(error));
       						resMsg = 'Error:  Updating template ['+templateName+']'+JSON.stringify(error);
       						//esClient.close(); //close it in lambda for local host don't close it
-      						failure(res,resMsg + ' - ' + error,500);
+      						helper.failure(res,resMsg + ' - ' + error,500);
       					});
      }, function (err){ //template dosen't exist. Create one.
 			console.log('Creating ['+templateName+'] now! Error value is ->'+JSON.stringify(err));
@@ -205,12 +123,12 @@ function handlePOST (req, res, esClient) {
 					  console.log('template ['+templateName+'] Created! '+ JSON.stringify(response));
 						resMsg = 'Template ['+templateName+'] Created!';
 						//esClient.close(); //close it in lambda for local host don't close it
-						success(res,resMsg);
+						helper.success(res,resMsg);
 					}, function (error) {
 						console.log('Error: putting template ['+templateName+'] -> ' +JSON.stringify(err));
 						resMsg = 'Error:  putting template ['+templateName+']'+JSON.stringify(err);
 						//esClient.close(); //close it in lambda for local host don't close it
-						failure(res,resMsg + ' - ' + error,500);
+						helper.failure(res,resMsg + ' - ' + error,500);
 					});
 	    });//end then - indices.getTemplate()
 

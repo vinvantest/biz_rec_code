@@ -1,5 +1,7 @@
 'use strict';
 
+var helper = require('../config/helpers/helper.js');
+
 var config  = require('../config.js');
 
 function handleGET (req, res) {
@@ -15,90 +17,6 @@ function handlePUT (req, res) {
 function handleDELETE (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
-}
-
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
 }
 
 function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue, resMsg, esClient)
@@ -136,7 +54,7 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
                   console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read and Write already EXISTS '+respWriteExists);
                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Both Alias ['+routingValue + aliasToken + 'read'+'] and ['+routingValue + aliasToken + 'write'+'] Read and Write already EXISTS = '+respWriteExists;
                    //esClient.close();
-                  success(res,resMsg);
+                  helper.success(res,resMsg);
                 }
                 else {
                   console.log('Index ['+indexName+'] exists in ElasticSearch Alias for read exists ['+routingValue + aliasToken + 'read'+'] AND Alias write DOES NOT EXISTS. Creating now! response value ='+respWriteExists);
@@ -146,12 +64,12 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
                         console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp);
                         resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias ['+routingValue + aliasToken + 'write'+'] write created as read already existed = '+resp;
                          //esClient.close();
-                        success(res,resMsg);
+                        helper.success(res,resMsg);
                       }, function (error) {
                         console.log('Error: Index ['+indexName+'] exists in ElasticSearch but Alias write not created by read exists -'+JSON.stringify(error));
                         resMsg = 'Error: Index ['+indexName+'] exists in ElasticSearch but Alias write not created by read exists -'+JSON.stringify(error);
                          //esClient.close();
-                        failure(res,resMsg,500);
+                        helper.failure(res,resMsg,500);
                       }); //end putAlias(write)
                 }
               });
@@ -171,7 +89,7 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
                             console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read newly created and write already exits '+respWriteEx);
                             resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Both Alias read newly created and write already exits = '+respWriteEx;
                              //esClient.close();
-                            success(res,resMsg);
+                            helper.success(res,resMsg);
                           }
                           else {
                             console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias read newly created but write DOES NOT EXISTS '+respWriteEx);
@@ -181,12 +99,12 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
                                   console.log('Index ['+indexName+'] exists in ElasticSearch AND Alias Both read and write newly created = '+resp);
                                   resMsg = 'Index ['+indexName+'] exists in ElasticSearch AND Alias Both read and write newly created = '+resp;
                                    //esClient.close();
-                                  success(res,resMsg);
+                                  helper.success(res,resMsg);
                                 }, function (error) {
                                   console.log('Error: Index ['+indexName+'] exists in ElasticSearch but Alias write not created but read newly created -'+JSON.stringify(error));
                                   resMsg = 'Error: Index ['+indexName+'] exists in ElasticSearch but Alias write not created but read newly created -'+JSON.stringify(error);
                                    //esClient.close();
-                                  failure(res,resMsg,500);
+                                  helper.failure(res,resMsg,500);
                                 }); //end putAlias(write)
                           }
                         });
@@ -194,7 +112,7 @@ function checkAndCreateAlias(req, res, resp, indexName, termValue, routingValue,
                   console.log('Error: Index ['+indexName+'] exists in ElasticSearch but Alias read not created so did not check write-'+JSON.stringify(error));
                   resMsg = 'Error: Index ['+indexName+'] exists in ElasticSearch but Alias read created so did not check write-'+JSON.stringify(error);
                    //esClient.close();
-                  failure(res,resMsg,500);
+                  helper.failure(res,resMsg,500);
                 }); //end put read alias
               }
           }); //end existsAlias(read)
@@ -218,15 +136,15 @@ function handlePOST (req, res, esClient) {
 
    if(routingValue === null || routingValue === undefined) {
     resMsg = "Error: req.query.routingValue required to create Index in ES ->" + routingValue;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(indexType === null || indexType === undefined) {
     resMsg = "Error: req.query.routingValue required to create Index in ES ->" + routingValue;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(usersBody === null || usersBody === undefined) {
     resMsg = "Error: req.body.usersBody required to create Alias if UID is not in users index in ES ->" + routingValue;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    //indexName = indexName.replace(/[^a-zA-Z0-9_-]/g,'_').replace(/_{2,}/g,'_').toLowerCase().trim();
    routingValue = routingValue.trim().toLowerCase();
@@ -238,7 +156,7 @@ function handlePOST (req, res, esClient) {
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -307,11 +225,11 @@ function handlePOST (req, res, esClient) {
      {
      //esClient.close();
      console.log('ERROR - indexType does not contain valid term');
-     failure(res,'indexType does not contain valid term',401);
+     helper.failure(res,'indexType does not contain valid term',401);
     }
     if(indexName === null || indexName === undefined) {
      resMsg = "Error: indexName required to create Index in ES ->" + indexName;
-     failure(res,resMsg,401);
+     helper.failure(res,resMsg,401);
     }
 
  console.log('AliasToken considered ['+aliasToken+'] and termValue considered ['+termValue+']');
@@ -357,7 +275,7 @@ function handlePOST (req, res, esClient) {
                                     function (error) {
                                       resMsg = 'Error : User was not in Index. Document insert ['+indexAliasName+'] Failed!' + JSON.stringify(error);
                                       //esClient.close(); //use in lambda only
-                                      helper.failure(res,next,resMsg,500);
+                                      helper.helper.failure(res,next,resMsg,500);
                               });
                          }); //end search()
                  }//end if index Exists -- to be deleted
@@ -366,7 +284,7 @@ function handlePOST (req, res, esClient) {
                    console.log('Index ['+indexName+'] does not exist! Error value is ->'+JSON.stringify(exists));
                    resMsg = 'Index ['+indexName+'] does not exists!'+JSON.stringify(exists);
                     //esClient.close();
-                    failure(res,resMsg,404);
+                    helper.failure(res,resMsg,404);
                  }//end else index exists
     }); //end then - indices.exists()
 

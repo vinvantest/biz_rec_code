@@ -1,5 +1,7 @@
 'use strict';
 
+var helper = require('../config/helpers/helper.js');
+
 function handleGET (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
@@ -13,90 +15,6 @@ function handlePUT (req, res) {
 function handleDELETE (req, res) {
   // Do something with the PUT request
   res.status(403).send('Forbidden!');
-}
-
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
 }
 
 function handlePOST (req, res, esClient) {
@@ -113,11 +31,11 @@ function handlePOST (req, res, esClient) {
 
    if(indexName === null || indexName === undefined) {
     resMsg = "Error: req.query.indexName required to create Index in ES ->" + indexName;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(templateType === null || templateType === undefined) {
     resMsg = "Error: req.query.templateType required to create Index in ES ->" + templateType;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    indexName = indexName.replace(/[^a-zA-Z0-9_-]/g,'_').replace(/_{2,}/g,'_').toLowerCase().trim();
    templateType = templateType.trim().toLowerCase();
@@ -128,7 +46,7 @@ function handlePOST (req, res, esClient) {
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -177,7 +95,7 @@ function handlePOST (req, res, esClient) {
             break;
       default:
             console.log('Error: no matching templateType specified for the indexName ['+indexName+']');
-            failure(res,'Error: no matching templateType specified for the indexName ['+indexName+']',404);
+            helper.failure(res,'Error: no matching templateType specified for the indexName ['+indexName+']',404);
     }//end switch
 
 	 console.log('Checking if index Exists('+indexName+')');
@@ -193,11 +111,11 @@ function handlePOST (req, res, esClient) {
   				esClient.indices.getMapping({index: indexName})
   					.then(function (response) {
   							resMsg = 'Mapping ['+indexName+'] already exists. Start creating documents. ' + JSON.stringify(response);
-  							success(res,resMsg);
+  							helper.success(res,resMsg);
   					},function (error){//mapping doesn't exists
   						console.log('Mapping ['+indexName+'] Not created. Before use create mapping' + JSON.stringify(error));
   						resMsg = 'Mapping ['+indexName+'] Not created. Before use create mapping'+ error;
-  						success(res,resMsg);
+  						helper.success(res,resMsg);
   				});//end indices.getMapping()
         } // end if
         else {
@@ -210,12 +128,12 @@ function handlePOST (req, res, esClient) {
                   if(errorCreate){
                     console.log('Index ['+indexName+'] Created! Before use create mapping -> ' + JSON.stringify(errorCreate));
       						  resMsg = 'Index ['+indexName+'] Created with standard template mapping. Flag =' + JSON.stringify(errorCreate);
-       						  success(res,resMsg);
+       						  helper.success(res,resMsg);
                   }
                   else{
                     console.log('Error: creating index ['+indexName+'] -> ' + errorCreate);
         						resMsg = 'Error: creating index ['+indexName+']' + errorCreate;
-        						failure(res,resMsg,500);
+        						helper.failure(res,resMsg,500);
                   }
     					});//end then - create()
              } //end else

@@ -2,6 +2,7 @@
 
 var config  = require('../config.js');
 var configUser = require('../config/specific/user_template_columns.js');
+var helper = require('../config/helpers/helper.js');
 
 function handleGET (req, res) {
   // Do something with the GET request
@@ -26,90 +27,6 @@ function handleOPTIONS(req, res) {
 	   return;
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 // https://us-central1-bizrec-dev.cloudfunctions.net/createUserFunction
 // body {user} -- user object body
 function handlePOST (req, res, esClient)
@@ -123,7 +40,7 @@ function handlePOST (req, res, esClient)
 
    if(userBody === null || userBody === undefined) {
     resMsg = "Error: req.query.userBody required to create Index in ES. It's null or undefined ->"+userBody;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    else {
      console.log('user object passed from client ->'+ JSON.stringify(userBody));
@@ -253,7 +170,7 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -295,25 +212,25 @@ function handlePOST (req, res, esClient)
                             resMsg = 'User Data existed and now updated Successfully!' ;
                             console.log(resMsg);
                             //esClient.close(); //use in lambda only
-                            success(res,resMsg);
+                            helper.success(res,resMsg);
                             },
                               function (errorInsertUser) {
                                 console.log('Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser);
                                 resMsg = 'Error : User document update ['+config.user_index_write_alias_name+'] Failed!' + errorInsertUser;
                                 //esClient.close(); //use in lambda only
-                                success(res,resMsg);
+                                helper.success(res,resMsg);
                             });
                     }, function (error) {
                             resMsg = 'Error : User not found in user Index -' + error;
                             console.log(resMsg);
-                            failure(res, resMsg, 404);
+                            helper.failure(res, resMsg, 404);
                       });//End: check user exists
        }//end if
        else{
          //index dosen't exist. Create one.
     			console.log('Index does not Exists! Can not insert user to the index. Error value is ->' + error);
     			resMsg = 'Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          failure(res,resMsg,500);
+          helper.failure(res,resMsg,500);
        }
      });//end then - indices.exists()
 

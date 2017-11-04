@@ -18,90 +18,6 @@ function handleDELETE (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 //https://us-central1-bizrec-dev.cloudfunctions.net/getTransactionFunction?uid=HJIOFS#53345DD&tranId=HLH343HS52
 //no body {} -- transactions body
 function handleGET (req, res, esClient)
@@ -116,18 +32,18 @@ function handleGET (req, res, esClient)
 
    if(routingUid === null || routingUid === undefined) {
     resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
    if(tranId === null || tranId === undefined) {
     resMsg = "Error: req.query.tranId required to create Index in ES ->" + tranId;
-    failure(res,resMsg,401);
+    helper.failure(res,resMsg,401);
    }
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -171,7 +87,7 @@ function handleGET (req, res, esClient)
               //user doesn't exists
               console.log('User does not exists in user index - '+ JSON.stringify(respUserCheck));
               resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-              failure(res,resMsg,500);
+              helper.failure(res,resMsg,500);
               }
               else if(respUserCheck.hits.total === 1 ){
                 //only one record for the user. Update the user record for the user.uid
@@ -179,7 +95,7 @@ function handleGET (req, res, esClient)
                 var hits = respUserCheck.hits.hits;
                 console.log('hits object - '+ JSON.stringify(hits[0]));
                 //User Uid exists
-                success(res,hits[0]);
+                helper.success(res,hits[0]);
                 }
               else{
                 //user has multiple records. Delete rest!
@@ -188,18 +104,18 @@ function handleGET (req, res, esClient)
                 console.log(JSON.stringify(respUserCheck));
                 console.log('*****');
                 resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
-                failure(res,resMsg,500);
+                helper.failure(res,resMsg,500);
               }
           }, function (error) {
                   resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-                  failure(res,resMsg,500);
+                  helper.failure(res,resMsg,500);
               });//End: check user exists
        }//end if
        else {
          //index dosen't exist. Create one.
           console.log('Index does not Exists! Can not get transactions data. Error value is ->'+JSON.stringify(err));
           resMsg = 'tranId Index does not Exists!. Error Value = '+JSON.stringify(err);
-          failure(res,resMsg,404);
+          helper.failure(res,resMsg,404);
        } // end else - index doesn't exist
 	  });//end then - indices.exists()
 

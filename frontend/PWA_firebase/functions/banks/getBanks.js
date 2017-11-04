@@ -3,6 +3,7 @@
 var config  = require('../config.js');
 var configUser  = require('../config/specific/user_template_columns.js');
 var configBank = require('../config/specific/bank_template_columns.js');
+var helper = require('../config/helpers/helper.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -19,97 +20,13 @@ function handleDELETE (req, res) {
   res.status(403).send('Forbidden!');
 }
 
-function _respondSuccess(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : true,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function _respondArraySuccess(res, status, data, httpCode) {
-
-     var response = {
-       'status' : status,
-       'successFlag' : true,
-       'data' : [data]
-     };
-
-     res.set('Content-type', 'application/json');
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-    /*
-    Access-Control-Allow-Credentials,
-    Access-Control-Expose-Headers,
-    Access-Control-Max-Age,
-    Access-Control-Allow-Methods,
-    Access-Control-Allow-Headers
-    */
-    res.status(httpCode).send(response);
-}
-
-function _respondFailure(res, status, data, httpCode) {
-     var response = {
-       'status': status,
-       'successFlag' : false,
-       'data' : data
-     };
-     //  res.setHeader('Content-type', 'application/json');  - this is restify
-     res.set('Content-type', 'application/json');
-     res.set('Access-Control-Allow-Origin', '*');
-     res.set('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token');
-     res.set('Access-Control-Allow-Methods', '*');
-     res.set('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-     res.set('Access-Control-Max-Age', '1000');
-     /*
-     Access-Control-Allow-Credentials,
-     Access-Control-Expose-Headers,
-     Access-Control-Max-Age,
-     Access-Control-Allow-Methods,
-     Access-Control-Allow-Headers
-     */
-     res.status(httpCode).send(response);
-}
-
-function success (res, data) {
- _respondSuccess(res, 'success', data, 200);
-}
-
-function successArray (res, data) {
- _respondArraySuccess(res, 'success', data, 200);
-}
-
-function failure (res, data, httpCode) {
- console.log('Error: ' + httpCode + ' ' + data);
- _respondFailure(res, 'failure', data, httpCode);
-}
-
 //https://us-central1-bizrec-dev.cloudfunctions.net/getbanksFunction?uid=HJIOFS#53345DD&page=0&size=10
 //no body {}
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
    var resMsg = '';
-   console.log('Inside serer.post(getbanks)');
+   console.log('Inside serer.get(getbanks)');
    console.log('req.query.uid = ' + req.query.uid);
    console.log('req.query.page = ' + req.query.page);
    console.log('req.query.size = ' + req.query.size);
@@ -119,8 +36,8 @@ function handleGET (req, res, esClient)
    var fromVal = 0;
 
    if(routingUid === null || routingUid === undefined) {
-    resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
-    failure(res,resMsg,401);
+    resMsg = "Error: req.query.routingUid required to retrieve Index in ES ->" + routingUid;
+    helper.failure(res,resMsg,401);
    }
    if(sizeVal == null || sizeVal === undefined)
       sizeVal = 10;
@@ -179,7 +96,7 @@ function handleGET (req, res, esClient)
              //user doesn't exists
              console.log('User does not exists in user index. Creating now! - '+ JSON.stringify(respUserCheck));
              resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-             failure(res,resMsg,500);
+             helper.failure(res,resMsg,500);
              }
              else if(respUserCheck.hits.total === 1 ){
                //only one record for the user. Update the user record for the user.uid
@@ -207,11 +124,11 @@ function handleGET (req, res, esClient)
                .then(function (resp) {
                    resMsg = 'Banks Data Retrieved Successfully!' ;
                    console.log(resMsg);
-                   success(res,resp.hits.hits);
+                   helper.success(res,resp.hits.hits);
                    },
                      function (error) {
                        resMsg = 'Error : banks document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                         failure(res,resMsg,500);
+                         helper.failure(res,resMsg,500);
                    });
                }
              else{
@@ -221,18 +138,18 @@ function handleGET (req, res, esClient)
                console.log(JSON.stringify(respUserCheck));
                console.log('*****');
                resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
-               failure(res,resMsg,500);
+               helper.failure(res,resMsg,500);
              }
          }, function (error) {
                  resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-                 failure(res,resMsg,500);
+                 helper.failure(res,resMsg,500);
              });//End: check user exists
       }//end if
       else {
         //index dosen't exist. Create one.
          console.log('Index does not Exists! Can not get banks data. Error value is ->'+JSON.stringify(err));
          resMsg = 'Bank Index does not Exists!. Error Value = '+JSON.stringify(err);
-         failure(res,resMsg,404);
+         helper.failure(res,resMsg,404);
       } // end else - index doesn't exist
    });//end then - indices.exists()
 
@@ -283,4 +200,175 @@ function converToLocalTime(serverDate) {
 Convert Date to ISO Date string
 var dt = new Date("30 July 2010 15:05 UTC");
 document.write(dt.toISOString());
+
+--- Sample Data
+{
+	"status": "success",
+	"successFlag": true,
+	"data": [
+    {
+		"_index": "banks_index_v1",
+		"_type": "base_type",
+		"_id": "AV965LeFiZHTo3raAYJn",
+		"_score": null,
+		"_routing": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+		"_source": {
+			"bank_userId_routingAliasId": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+			"bank_providerName": "bankBody.bank_providerName",
+			"bank_providerAccountId": "bankBody.bank_providerAccountId",
+			"bank_providerIdentifier": "bankBody.bank_providerIdentifier",
+			"bank_isBankAccountActive": "bankBody.bank_isBankAccountActive",
+			"bank_isBankAccountVerified": "bankBody.bank_isBankAccountVerified",
+			"bank_additonalBankNotes": "bankBody.bank_additonalBankNotes",
+			"bank_refreshInfo": "bankBody.bank_refreshInfo",
+			"bank_refreshInfo_statusCode": "bankBody.bank_refreshInfoStatusCode",
+			"bank_refreshInfo_statusMessage": "bankBody.bank_refreshInfoStatusMessage",
+			"bank_refreshInfo_status": "bankBody.bank_refreshInfo_status",
+			"bank_isManual": true,
+			"bank_createdDate": "2017-11-01T00:43:47.072Z",
+			"bank_lastUpdated": false,
+			"bank_isAutoRefreshEnabled": false,
+			"bank_numberOfTransactionDays": "bankBody.bank_numberOfTransactionDays",
+			"bank_bankAccountName": "bankBody.bank_bankAccountName",
+			"bank_bankAccountNumber": 3456789,
+			"bank_BSB": 444444444,
+			"bank_Branch": "bankBody.bank_Branch",
+			"bank_BranchNumber": 12345678910,
+			"bank_amountDue": 4.4,
+			"bank_availableBalance": 3.3,
+			"bank_availableCash": 2.2,
+			"bank_availableCredit": 1.1,
+			"bank_nickname": "bankBody.bank_nickname",
+			"bank_status": "bankBody.bank_status",
+			"bank_record_created": "2017-11-01T00:43:47.072Z",
+			"bank_is_record_updated": true,
+			"bank_record_updated": "2017-12-01T00:43:47.072Z"
+		},
+		"sort": [1512089027072]
+	}, {
+		"_index": "banks_index_v1",
+		"_type": "base_type",
+		"_id": "AV96yKgD_z-xNZFzHxhC",
+		"_score": null,
+		"_routing": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+		"_source": {
+			"bank_userId_routingAliasId": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+			"bank_providerName": "bankBody.bank_providerName",
+			"bank_providerAccountId": "bankBody.bank_providerAccountId",
+			"bank_providerIdentifier": "bankBody.bank_providerIdentifier",
+			"bank_isBankAccountActive": "bankBody.bank_isBankAccountActive",
+			"bank_isBankAccountVerified": "bankBody.bank_isBankAccountVerified",
+			"bank_additonalBankNotes": "bankBody.bank_additonalBankNotes",
+			"bank_refreshInfo": "bankBody.bank_refreshInfo",
+			"bank_refreshInfo_statusCode": "bankBody.bank_refreshInfoStatusCode",
+			"bank_refreshInfo_statusMessage": "bankBody.bank_refreshInfoStatusMessage",
+			"bank_refreshInfo_status": "bankBody.bank_refreshInfo_status",
+			"bank_isManual": true,
+			"bank_createdDate": "2017-11-01T00:43:47.072Z",
+			"bank_lastUpdated": false,
+			"bank_isAutoRefreshEnabled": false,
+			"bank_numberOfTransactionDays": "bankBody.bank_numberOfTransactionDays",
+			"bank_bankAccountName": "bankBody.bank_bankAccountName",
+			"bank_bankAccountNumber": 3456789,
+			"bank_BSB": 222222,
+			"bank_Branch": "bankBody.bank_Branch",
+			"bank_BranchNumber": 12345678910,
+			"bank_amountDue": 4.4,
+			"bank_availableBalance": 3.3,
+			"bank_availableCash": 2.2,
+			"bank_availableCredit": 1.1,
+			"bank_nickname": "bankBody.bank_nickname",
+			"bank_status": "bankBody.bank_status",
+			"bank_record_created": "2017-11-01T00:43:47.072Z",
+			"bank_is_record_updated": false,
+			"bank_record_updated": "2017-11-01T00:43:47.072Z",
+			"bank_recordCreated": "2017-11-01T00:43:47.072Z",
+			"bank_refreshInfoStatusCode": "bankBody.bank_refreshInfoStatusCode",
+			"bank_isRecordUpdated": true,
+			"bank_recordUpdated": "2017-10-01T00:43:47.072Z",
+			"bank_refreshInfoStatusMessage": "bankBody.bank_refreshInfoStatusMessage",
+			"bank_userIdRoutingAliasId": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3"
+		},
+		"sort": [1509497027072]
+	}, {
+		"_index": "banks_index_v1",
+		"_type": "base_type",
+		"_id": "AV96419r_z-xNZFzHxhD",
+		"_score": null,
+		"_routing": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+		"_source": {
+			"bank_userId_routingAliasId": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+			"bank_providerName": "bankBody.bank_providerName",
+			"bank_providerAccountId": "bankBody.bank_providerAccountId",
+			"bank_providerIdentifier": "bankBody.bank_providerIdentifier",
+			"bank_isBankAccountActive": "bankBody.bank_isBankAccountActive",
+			"bank_isBankAccountVerified": "bankBody.bank_isBankAccountVerified",
+			"bank_additonalBankNotes": "bankBody.bank_additonalBankNotes",
+			"bank_refreshInfo": "bankBody.bank_refreshInfo",
+			"bank_refreshInfo_statusCode": "bankBody.bank_refreshInfoStatusCode",
+			"bank_refreshInfo_statusMessage": "bankBody.bank_refreshInfoStatusMessage",
+			"bank_refreshInfo_status": "bankBody.bank_refreshInfo_status",
+			"bank_isManual": true,
+			"bank_createdDate": "2017-11-01T00:43:47.072Z",
+			"bank_lastUpdated": false,
+			"bank_isAutoRefreshEnabled": false,
+			"bank_numberOfTransactionDays": "bankBody.bank_numberOfTransactionDays",
+			"bank_bankAccountName": "bankBody.bank_bankAccountName",
+			"bank_bankAccountNumber": 3456789,
+			"bank_BSB": 1111111,
+			"bank_Branch": "bankBody.bank_Branch",
+			"bank_BranchNumber": 12345678910,
+			"bank_amountDue": 4.4,
+			"bank_availableBalance": 3.3,
+			"bank_availableCash": 2.2,
+			"bank_availableCredit": 1.1,
+			"bank_nickname": "bankBody.bank_nickname",
+			"bank_status": "bankBody.bank_status",
+			"bank_record_created": "2017-11-01T00:43:47.072Z",
+			"bank_is_record_updated": true,
+			"bank_record_updated": "2017-10-01T00:43:47.072Z"
+		},
+		"sort": [1506818627072]
+	}, {
+		"_index": "banks_index_v1",
+		"_type": "base_type",
+		"_id": "AV9644fZiZHTo3raAYJm",
+		"_score": null,
+		"_routing": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+		"_source": {
+			"bank_userId_routingAliasId": "Iq63rGKy2MUT4QmCWf0ewJJIxWC3",
+			"bank_providerName": "bankBody.bank_providerName",
+			"bank_providerAccountId": "bankBody.bank_providerAccountId",
+			"bank_providerIdentifier": "bankBody.bank_providerIdentifier",
+			"bank_isBankAccountActive": "bankBody.bank_isBankAccountActive",
+			"bank_isBankAccountVerified": "bankBody.bank_isBankAccountVerified",
+			"bank_additonalBankNotes": "bankBody.bank_additonalBankNotes",
+			"bank_refreshInfo": "bankBody.bank_refreshInfo",
+			"bank_refreshInfo_statusCode": "bankBody.bank_refreshInfoStatusCode",
+			"bank_refreshInfo_statusMessage": "bankBody.bank_refreshInfoStatusMessage",
+			"bank_refreshInfo_status": "bankBody.bank_refreshInfo_status",
+			"bank_isManual": true,
+			"bank_createdDate": "2017-11-01T00:43:47.072Z",
+			"bank_lastUpdated": false,
+			"bank_isAutoRefreshEnabled": false,
+			"bank_numberOfTransactionDays": "bankBody.bank_numberOfTransactionDays",
+			"bank_bankAccountName": "bankBody.bank_bankAccountName",
+			"bank_bankAccountNumber": 3456789,
+			"bank_BSB": 3333333,
+			"bank_Branch": "bankBody.bank_Branch",
+			"bank_BranchNumber": 12345678910,
+			"bank_amountDue": 4.4,
+			"bank_availableBalance": 3.3,
+			"bank_availableCash": 2.2,
+			"bank_availableCredit": 1.1,
+			"bank_nickname": "bankBody.bank_nickname",
+			"bank_status": "bankBody.bank_status",
+			"bank_record_created": "2017-11-01T00:43:47.072Z",
+			"bank_is_record_updated": true,
+			"bank_record_updated": "2017-10-01T00:43:47.072Z"
+		},
+		"sort": [1506818627072]
+	}
+]
+}
 */
