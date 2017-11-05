@@ -36,6 +36,11 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+    paper-card {
+      --paper-card-background-color: #ffffff;
+      box-sizing: border-box;
+      margin: 5px 5px 5px 5px;
+    }
     paper-button.green {
       background-color: var(--paper-green-500);
       color: white;
@@ -60,15 +65,12 @@
      <h4 style="color: white;">Banks</h4>
    </paper-card>
 
-   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom" hidden$="[[!busyDialogLoadFlag]]">
      <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
        <div hidden$="[[!busyDialogLoadFlag]]">
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
              <paper-spinner active class="multi"></paper-spinner>
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-      </div>
-      <div hidden$="[[busyDialogLoadFlag]]">
-        <paper-button raised on-tap="dismissDialogBusy" class="green">Ok</paper-button>
       </div>
    </paper-dialog>
 
@@ -133,13 +135,15 @@
       <div><span>&nbsp;</span></div>
 </template>
 
-  <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}">
+<!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
+<template is="dom-if" if="[[signedin]]">
+  <template is="dom-if" if="[[banksData.successFlag]]">
      <template is="dom-repeat" items="{{banksData.data}}" as="bank">
        <paper-card style="float:center; width: 90%">
            <div>
                  <div style="float:center" flex>
                        <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
-                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; [[bank.bank_providerName]]
+                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; [[bank._source.bank_providerName]]
                        <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
                                                id$="bt_readmore" note="[[bank]]"
                                                on-tap="expandCollapseBankCard"></paper-icon-button>
@@ -165,16 +169,25 @@
                      <div>
                          <p>
                            <div id="leftThing" slot="top" style="float: center;">
-                             <paper-input label="Account Name" value="[[bank.bank_bankAccountName]]" always-float-label></paper-input>
-                             <paper-input label="Account BSB" value="[[bank.bank_BSB]]" always-float-label disabled></paper-input>
-                             <paper-input label="Account Number" value="[[bank.bank_bankAccountNumber]]" always-float-label></paper-input>
+                               <div>
+                                 <h5>Account Name: </h5>
+                                 <paper-input value="[[bank._source.bank_bankAccountName]]" disabled></paper-input>
+                               </div>
+                               <div>
+                                 <h5>Account BSB: </h5>
+                                 <paper-input value="[[bank._source.bank_BSB]]" disabled></paper-input>
+                              </div>
+                              <div>
+                                <h5>Account Number: </h5>
+                                <paper-input value="[[bank._source.bank_bankAccountNumber]]" disabled></paper-input>
+                              </div>
                           </div>
                          </p>
                        </div>
                        <div>
                            <div class="horizontal justified">
-                                   <H7>Set Date:</h7>
-                                 <vaadin-date-picker id="vaadinDate" value=[[bank.bank_record_updated]]></vaadin-date-picker>
+                                   <H7>Record Date:</h7>
+                                 <vaadin-date-picker id="vaadinDate" value=[[bank._source.bank_record_updated]]></vaadin-date-picker>
                                  <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[bank]]"
                                                     on-tap="_updateDate" mini></paper-icon-button>
                                  <div style="text-align: right">
@@ -188,6 +201,7 @@
                </div>
          </paper-card>
        </template>
+     </template>
   </template>
 
 
@@ -346,6 +360,7 @@
               console.log('last response _'+ this.banksData);
               console.log('this.user.displayName = '+this.user.displayName);
               console.log('this.user.uid = '+this.user.uid);
+              this.busyDialogLoadFlag = false;
               document.getElementById('toast').show(this.user.displayName+', Banks data retrieved successfully!');
               break;
           case (x >= 400 && x < 500):
