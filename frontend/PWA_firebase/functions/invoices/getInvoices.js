@@ -123,7 +123,7 @@ function handleGET (req, res, esClient)
                .then(function (resp) {
                    resMsg = 'invoices Data Retrieved Successfully!' ;
                    console.log(resMsg);
-                   helper.success(res,resp.hits.hits);
+                   helper.success(res,resp.hits);
                    },
                      function (error) {
                        resMsg = 'Error : invoices document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);

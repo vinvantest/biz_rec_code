@@ -28,6 +28,22 @@ self.addEventListener('install', e => {
         'bower_components/webcomponentsjs/webcomponents-loader.js',
         `/`,
         `/index.html?timestamp=${timeStamp}`,
+        'manifest.json=${timeStamp}'
+      ])
+      .then(() => self.skipWaiting());
+    })
+  )
+});
+
+/* Function with lots to cache
+self.addEventListener('install', e => {
+  let timeStamp = Date.now();
+  e.waitUntil(
+    caches.open('bizrecv1').then(cache => {
+      return cache.addAll([
+        'bower_components/webcomponentsjs/webcomponents-loader.js',
+        `/`,
+        `/index.html?timestamp=${timeStamp}`,
         `/ice.html?timestamp=${timeStamp}`,
         `/images/*?timestamp=${timeStamp}`,
         'manifest.json=${timeStamp}'
@@ -36,6 +52,7 @@ self.addEventListener('install', e => {
     })
   )
 });
+*/
 
 self.addEventListener('activate',  event => {
   event.waitUntil(self.clients.claim());

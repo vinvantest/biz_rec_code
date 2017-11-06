@@ -36,6 +36,11 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+    paper-card.grey {
+      --paper-card-background-color: #e8eaed;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
     paper-card {
       --paper-card-background-color: #ffffff;
       box-sizing: border-box;
@@ -65,9 +70,9 @@
      <h4 style="color: white;">Banks</h4>
    </paper-card>
 
-   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom" hidden$="[[!busyDialogLoadFlag]]">
+   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
      <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
-       <div hidden$="[[!busyDialogLoadFlag]]">
+       <div>
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
              <paper-spinner active class="multi"></paper-spinner>
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
@@ -97,49 +102,39 @@
   </template>
 
 <template is="dom-if" if="[[signedin]]">
-    <paper-card id="paperCardBanksSetup" style="float:center; width:80%">
-        <div style="float:left; width:100%">
-          <div id="leftThing00" style="float:left; width:25%;">
-                <paper-icon-button id="dashboard-icon-button00" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-            </div>
-            <div id="leftThing11" style="float:left; width:25%;">
-              <paper-icon-button id="transactions-icon-button11" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-            </div>
-          <div id="leftThing22" style="float:left; width:25%;">
-              <paper-icon-button id="payments-icon-button22" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-          </div>
-          <div id="leftThing33" style="float:right; width:25%;">
-                <paper-icon-button id="reports-icon-button33" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-          </div>
-        </div>
-        <div><b><h4 style="color: black;">Get Banks data from Server</h4></b></div>
-        <div>
-            <paper-button raised on-tap="sendGetBanks" class="green">Start</paper-button>
-        </div>
-        <div><span> &nbsp; </span></div>
-        <div style="float:left; width:100%">
-          <div id="leftThing0" style="float:left; width:25%;" >
-                <paper-icon-button id="dashboard-icon-button0" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-            </div>
-            <div id="leftThing1" style="float:left; width:25%;">
-              <paper-icon-button id="transactions-icon-button1" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-            </div>
-          <div id="leftThing2" style="float:left; width:25%;">
-              <paper-icon-button id="payments-icon-button2" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-          </div>
-          <div id="leftThing3" style="float:right; width:25%;">
-                <paper-icon-button id="reports-icon-button3" icon="hardware:power-input" style="color: black;"></paper-icon-button>
-          </div>
-        </div>
-      </paper-card>
-      <div><span>&nbsp;</span></div>
+  <div style="float:center">
+    <div>
+        <paper-icon-button id="download-icon-button" icon="icons:cloud-download" style="color: #e02871;" on-tap="sendGetBanks"></paper-icon-button>
+    </div>
+    <h7>Get Data</h7>
+</div>
 </template>
 
 <!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
+<!-- "image:filter-9-plus"   "image:filter-9" "image:filter" "av:skip-next" "av:play-arrow" "av:skip-previous" "av:fast-forward" "av:fast-rewind"-->
 <template is="dom-if" if="[[signedin]]">
   <template is="dom-if" if="[[banksData.successFlag]]">
-     <template is="dom-repeat" items="{{banksData.data}}" as="bank">
+      <paper-card style="float:center; width: 90%" class="black">
+            <div style="float:left; width:100%">
+              <div id="leftThing0" style="float:left; width:25%;" >
+                    <paper-icon-button id="PageTitle-icon-button0" icon="" style="color: white;"></paper-icon-button>
+                </div>
+                <div id="leftThing1" style="float:left; width:25%;">
+                  <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
+                </div>
+              <div id="leftThing2" style="float:left; width:25%;">
+                  <h9 style="color: white;">Pages</h9>
+                  <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: white;"></paper-icon-button>
+              </div>
+              <div id="leftThing3" style="float:right; width:25%;">
+                    <h9 style="color: white;">Next</h9>
+                    <paper-icon-button id="PageTitle-icon-button3" icon="av:play-arrow" on-tap="sendGetBanks" style="color: white;"></paper-icon-button>
+              </div>
+            </div>
+      </paper-card>
+     <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
        <paper-card style="float:center; width: 90%">
+         <div>
            <div>
                  <div style="float:center" flex>
                        <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
@@ -151,54 +146,48 @@
              </div>
              <div style="float:left; width:100%">
                <div id="leftThing" style="float:left; width:25%;">
-                     <paper-icon-button disabled slot="top" icon="av:fast-forward" style="color: black;"></paper-icon-button>
+                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
                  </div>
                  <div id="leftThing" style="float:left; width:25%;">
-                   <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
                  </div>
                <div id="leftThing" style="float:left; width:25%;">
-                   <paper-icon-button disabled slot="top" icon="hardware:power-input" style="color: black;"></paper-icon-button>
+                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
                </div>
                <div id="leftThing" style="float:right; width:25%;">
-                     <paper-icon-button disabled slot="top" icon="av:fast-rewind" style="color: black;"></paper-icon-button>
+                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
                </div>
            </div>
            <div>
-               <!-- any unique key of the data to be assigned to id of ircon collapse to be toggled in javascript -->
                <iron-collapse id$="collapse{{bank._id}}">
-                     <div>
-                         <p>
-                           <div id="leftThing" slot="top" style="float: center;">
-                               <div>
-                                 <h5>Account Name: </h5>
-                                 <paper-input value="[[bank._source.bank_bankAccountName]]" disabled></paper-input>
-                               </div>
-                               <div>
-                                 <h5>Account BSB: </h5>
-                                 <paper-input value="[[bank._source.bank_BSB]]" disabled></paper-input>
-                              </div>
-                              <div>
-                                <h5>Account Number: </h5>
-                                <paper-input value="[[bank._source.bank_bankAccountNumber]]" disabled></paper-input>
-                              </div>
-                          </div>
-                         </p>
-                       </div>
-                       <div>
-                           <div class="horizontal justified">
+                   <div>
+                      <div class="horizontal justified">
+                            <iron-icon icon="av:stop"></iron-icon>
+                            <b>Account Name: </b> [[bank._source.bank_bankAccountName]]
+                      </div>
+                      <div class="horizontal justified" style="float:left;">
+                        <iron-icon icon="av:stop"></iron-icon>
+                             <b>Account BSB: </b> [[bank._source.bank_BSB]]
+                      </div>
+                      <div class="horizontal justified" style="float:left;">
+                        <iron-icon icon="av:stop"></iron-icon>
+                            <b>Account Number: </b> [[bank._source.bank_bankAccountNumber]]
+                      </div>
+                    </div>
+                     <div class="horizontal justified">
                                    <H7>Record Date:</h7>
-                                 <vaadin-date-picker id="vaadinDate" value=[[bank._source.bank_record_updated]]></vaadin-date-picker>
-                                 <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[bank]]"
+                                 <vaadin-date-picker id="vaadinDate" readonly value={{_computeDate(bank._source.bank_record_updated)}}></vaadin-date-picker>
+                                 <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" bank="[[bank]]"
                                                     on-tap="_updateDate" mini></paper-icon-button>
                                  <div style="text-align: right">
-                                     <h7 style="color: grey">Delete Note</h7>
-                                     <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[bank]]"
-                                                        on-tap="_removeNote"></paper-icon-button>
+                                     <h7 style="color: grey">More...</h7>
+                                     <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBanks" bank="[[bank]]"
+                                                        on-tap="_showMoreBanks"></paper-icon-button>
                                  </div>
-                           </div>
-                      </div>
+                       </div>
                   </iron-collapse>
                </div>
+           </div>
          </paper-card>
        </template>
      </template>
@@ -252,10 +241,10 @@
             type: Boolean,
             value: false,
           },
-          busyDialogLoadFlag: {
-            type: Boolean,
-            value: true,
-            notify: true
+          currentPage: {
+            type: Number,
+            notify: true,
+            value: -1
           }
 
         };
@@ -279,6 +268,13 @@
         location.reload(true);
       }
 
+      _computeDate(date){
+        console.log('inside _computeDate ->'+date);
+        var tempDate = new Date(date);
+        //return tempDate;
+        return tempDate.toString('YYYY-MM-DD');
+      }
+
       _computeShowBanks(signedin, successFlag){
         console.log('signedin ='+signedin+' , successFlag='+successFlag);
         var temp = !signedin || !successFlag;
@@ -287,10 +283,58 @@
         return (!signedin || !successFlag);
       }
 
-      dismissDialogBusy(){
-        this.$.dialogBusy.toggle();
-        this.busyDialogLoadFlag = true;
-        this.busyDialogLoadMsg = 'Loading Information From Server';
+      _computePages(totalRecords){
+        console.log('totalRecords = '+totalRecords);
+        var pageIcon = "image:filter";
+        if(Number(totalRecords) === 0){
+          console.log('totalRecords = 0 so in if');
+          pageIcon = "image:filter";
+        }
+        else if(Number(totalRecords) <= 10 ){
+          console.log('totalRecords <= 10 so in else if');
+          pageIcon = "image:filter-1";
+        }
+        else if(Number(totalRecords) > 10){
+          var pageCount = Math.round(Number(totalRecords) / 10);
+          console.log('pageCount = '+pageCount)
+          switch (pageCount) {
+            case 0:
+              pageIcon = "image:filter-1";
+              break;
+            case 1:
+              pageIcon = "image:filter-1";
+              break;
+            case 2:
+              pageIcon = "image:filter-2";
+              break;
+            case 3:
+              pageIcon = "image:filter-3";
+              break;
+            case 4:
+              pageIcon = "image:filter-4";
+              break;
+            case 5:
+              pageIcon = "image:filter-5";
+              break;
+            case 6:
+              pageIcon = "image:filter-6";
+              break;
+            case 7:
+              pageIcon = "image:filter-7";
+              break;
+            case 8:
+              pageIcon = "image:filter-8";
+              break;
+            case 9:
+             pageIcon = "image:filter-9";
+             break;
+            default:
+             pageIcon = "image:filter-9-plus";
+            break;
+          }
+        }
+        console.log('pageIcon ='+ pageIcon);
+        return pageIcon;
       }
 
       expandCollapseBankCard(event, detail, sender) {
@@ -312,18 +356,20 @@
         {
           this.$.dialogBusy.toggle();
           this.active = true;
+          this.currentPage = this.currentPage + 1;
           var ajaxObject = this.$.getBanks;
           console.log('user ->'+JSON.stringify(this.user));
           ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
           ajaxObject.params = {
                     uid: this.user.uid ,
-                    page: 0,
-                    size: 20
+                    page: this.currentPage,
+                    size: 10
                   };
           //ajaxObject.body = {
           //          user: this.user
           //      };
           console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+          console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
           let request = ajaxObject.generateRequest();
           request.completes.then( function(req) {
               // succesful request, argument is iron-request element
@@ -345,7 +391,6 @@
             console.log('user is null or undefined -'+ this.user);
             document.getElementById('toast').show('Login to the app to complete Sync!');
         }
-
       }
 
       handleResponseGetBanks(data){
@@ -360,6 +405,7 @@
               console.log('last response _'+ this.banksData);
               console.log('this.user.displayName = '+this.user.displayName);
               console.log('this.user.uid = '+this.user.uid);
+              this.$.dialogBusy.toggle();
               this.busyDialogLoadFlag = false;
               document.getElementById('toast').show(this.user.displayName+', Banks data retrieved successfully!');
               break;
