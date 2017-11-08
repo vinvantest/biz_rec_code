@@ -28,6 +28,8 @@ self.addEventListener('install', e => {
         'bower_components/webcomponentsjs/webcomponents-loader.js',
         `/`,
         `/index.html?timestamp=${timeStamp}`,
+        `/ice.html?timestamp=${timeStamp}`,
+        `/images/*?timestamp=${timeStamp}`,
         'manifest.json=${timeStamp}'
       ])
       .then(() => self.skipWaiting());

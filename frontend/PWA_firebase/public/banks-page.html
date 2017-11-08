@@ -265,18 +265,14 @@
      <h4 style="color: white;">Banks</h4>
 </paper-card>
 
-
-  <template is="dom-if" if="[[!signedin]]">
-    <div class="circle">
-      <paper-icon-button icon="places:ac-unit" style="color: #e02871;"></paper-icon-button>
-    </div>
-    <div><paper-icon-button icon=""></paper-icon-button></div>
-  </template>
-
   <template is="dom-if" if="[[signedin]]">
-    <div class="circle">
-      <paper-icon-button id="download-icon-button" icon="icons:cloud-download" style="color: #e02871;" on-tap="sendGetBanks"></paper-icon-button>
-    </div>
+    <template is="dom-if" if="[[firstTimeLoad]]">
+          <paper-icon-button icon=""></paper-icon-button>
+          <paper-icon-button icon=""></paper-icon-button>
+          <paper-icon-button icon=""></paper-icon-button>
+          <iron-image style="width:200px; height:200px;"
+  sizing="cover" preload fade src="../images/landing/LogoTransperent.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
+    </template>
   </template>
 
    <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
@@ -497,6 +493,11 @@
             type: String,
             value: 'Loading Information From Server',
             notify: true
+          },
+          firstTimeLoad: {
+            type: Boolean,
+            notify: true,
+            value: true
           },
           active: {
             type: Boolean,
@@ -908,6 +909,7 @@
               }
               console.log('pageIcon ='+ pageIcon);
               this.currentPageIcon = pageIcon;
+              this.firstTimeLoad = false;
               break;
           case (x >= 400 && x < 500):
               this.ajaxError = true;
