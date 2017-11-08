@@ -50,6 +50,201 @@
       background-color: var(--paper-green-500);
       color: white;
     }
+
+    /*
+        *{
+          margin: 0;
+          padding: 0;
+          -webkit-box-sizing: border-box;
+                  box-sizing: border-box;
+        }
+    */
+
+    h1{
+      font-size: 1.5rem;
+      font-family: 'sans-serif';
+      font-weight: normal;
+      color: #444;
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    .wrapper{
+      width: 90%;
+      margin: 0 auto;
+      max-width: 80rem;
+    }
+
+    .cols{
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+      -webkit-box-pack: center;
+          -ms-flex-pack: center;
+              justify-content: center;
+    }
+
+    .col{
+      width: calc(25% - 2rem);
+      margin: 1rem;
+      cursor: pointer;
+    }
+
+    .container{
+      -webkit-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+        -webkit-perspective: 1000px;
+                perspective: 1000px;
+    }
+
+    .front,
+    .back{
+      background-size: cover;
+        background-position: center;
+        -webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        -o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+        text-align: center;
+        min-height: 280px;
+        height: auto;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    .back{
+      background: #cedce7;
+      background: -webkit-linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
+      background: -o-linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
+      background: linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
+    }
+
+    .front:after{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        content: '';
+        display: block;
+        opacity: .6;
+        background-color: #000;
+        -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+        border-radius: 10px;
+    }
+    .container:hover .front,
+    .container:hover .back{
+        -webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        -o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .back{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .inner{
+        -webkit-transform: translateY(-50%) translateZ(60px) scale(0.94);
+                transform: translateY(-50%) translateZ(60px) scale(0.94);
+        top: 50%;
+        position: absolute;
+        left: 0;
+        width: 100%;
+        padding: 2rem;
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+        outline: 1px solid transparent;
+        -webkit-perspective: inherit;
+                perspective: inherit;
+        z-index: 2;
+    }
+
+    .container .back{
+        -webkit-transform: rotateY(180deg);
+                transform: rotateY(180deg);
+        -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+    }
+
+    .container .front{
+        -webkit-transform: rotateY(0deg);
+                transform: rotateY(0deg);
+        -webkit-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+    }
+
+    .container:hover .back{
+      -webkit-transform: rotateY(0deg);
+              transform: rotateY(0deg);
+      -webkit-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+    }
+
+    .container:hover .front{
+      -webkit-transform: rotateY(-180deg);
+              transform: rotateY(-180deg);
+      -webkit-transform-style: preserve-3d;
+              transform-style: preserve-3d;
+    }
+
+    .front .inner p{
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .front .inner p:after{
+      content: '';
+      width: 4rem;
+      height: 2px;
+      position: absolute;
+      background: #8e9091;
+      display: block;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      bottom: -.75rem;
+    }
+
+    .front .inner span{
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      font-family: 'sans-serif';
+      font-weight: 300;
+    }
+
+    @media screen and (max-width: 64rem){
+      .col{
+        width: calc(33.333333% - 2rem);
+      }
+    }
+
+    @media screen and (max-width: 48rem){
+      .col{
+        width: calc(50% - 2rem);
+      }
+    }
+
+    @media screen and (max-width: 32rem){
+      .col{
+        width: 100%;
+        margin: 0 0 2rem 0;
+      }
+    }
+
   </style>
 
   <!-- https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction?uid=Iq63rGKy2MUT4QmCWf0ewJJIxWC3 -->
@@ -66,9 +261,23 @@
           last-error="{{lastError}}">
   </iron-ajax>
 
-   <paper-card style="float:center; width: 70%" class="black">
+<paper-card style="float:center; width: 70%" class="black">
      <h4 style="color: white;">Banks</h4>
-   </paper-card>
+</paper-card>
+
+
+  <template is="dom-if" if="[[!signedin]]">
+    <div class="circle">
+      <paper-icon-button icon="places:ac-unit" style="color: #e02871;"></paper-icon-button>
+    </div>
+    <div><paper-icon-button icon=""></paper-icon-button></div>
+  </template>
+
+  <template is="dom-if" if="[[signedin]]">
+    <div class="circle">
+      <paper-icon-button id="download-icon-button" icon="icons:cloud-download" style="color: #e02871;" on-tap="sendGetBanks"></paper-icon-button>
+    </div>
+  </template>
 
    <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
      <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
@@ -101,38 +310,86 @@
     </div>
   </template>
 
-<template is="dom-if" if="[[signedin]]">
-  <div style="float:center">
-    <div>
-        <paper-icon-button id="download-icon-button" icon="icons:cloud-download" style="color: #e02871;" on-tap="sendGetBanks"></paper-icon-button>
-    </div>
-    <h7>Get Data</h7>
-</div>
-</template>
-
 <!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
 <!-- "image:filter-9-plus"   "image:filter-9" "image:filter" "av:skip-next" "av:play-arrow" "av:skip-previous" "av:fast-forward" "av:fast-rewind"-->
 <template is="dom-if" if="[[signedin]]">
   <template is="dom-if" if="[[banksData.successFlag]]">
-      <paper-card style="float:center; width: 90%" class="black">
-            <div style="float:left; width:100%">
-              <div id="leftThing0" style="float:left; width:25%;" >
-                    <paper-icon-button id="PageTitle-icon-button0" icon="" style="color: white;"></paper-icon-button>
-                </div>
-                <div id="leftThing1" style="float:left; width:25%;">
-                  <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
-                </div>
-              <div id="leftThing2" style="float:left; width:25%;">
-                  <h9 style="color: white;">Pages</h9>
-                  <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: white;"></paper-icon-button>
-              </div>
-              <div id="leftThing3" style="float:right; width:25%;">
-                    <h9 style="color: white;">Next</h9>
-                    <paper-icon-button id="PageTitle-icon-button3" icon="av:play-arrow" on-tap="sendGetBanks" style="color: white;"></paper-icon-button>
-              </div>
+
+    <div style="float:left; width:90%">
+      <div id="leftThing2" style="float:left; width:25%;">
+        <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: black;"></paper-icon-button>
+        <h7>Pages</h7>
+      </div>
+        <div id="leftThing1" style="float:left; width:15%;">
+          <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
+        </div>
+        <div id="leftThing0" style="float:left; width:35%;" >
+            <paper-icon-button id="PageTitle-icon-button0" icon="[[currentPageIcon]]" style="color: green;"></paper-icon-button>
+            <h7>&nbsp;</h7>
+        </div>
+        <template is="dom-if" if="{{_enableNextPage(banksData.data.total)}}">
+            <div id="leftThing3" style="float:right; width:25%;">
+              <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-previous" on-tap="sendPrevGetBanks" style="color: black;"></paper-icon-button>
+              <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-next" on-tap="sendNextGetBanks" style="color: black;"></paper-icon-button>
             </div>
-      </paper-card>
-     <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
+        </template>
+    </div>
+    <template is="dom-if" if="[[_checkZeroRecords(banksData.data.total)]]">
+        <div>
+          <paper-card style="float:center; width: 70%" class="black">
+               <h4 style="color: white;">No Records Found</h4>
+          </paper-card>
+        </div>
+    </template>
+    <div class="wrapper">
+        <div class="cols">
+            <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
+                   <div class="col" ontouchstart="this.classList.toggle('hover');">
+                       <div class="container">
+                           <div class="front" style="{{_computeCardColor()}}">
+                               <div class="inner">
+                                 <div>
+                                       <paper-icon-button icon="my-icons:blur-on" style="color: white;"></paper-icon-button>
+                                       <p>[[bank._source.bank_providerName]]</p>
+                                 </div>
+                               </div>
+                           </div>
+                           <div class="back">
+                               <div class="inner">
+                                 <div class="circle">
+                                   <paper-icon-button icon="places:ac-unit" style="color: #e02871;"></paper-icon-button>
+                                 </div>
+                                 <div>
+                                    <paper-icon-button icon=""></paper-icon-button>
+                                 </div>
+                                 <div>
+                                    <div class="horizontal justified" style="float:left;">
+                                      <iron-icon icon="av:stop"></iron-icon>
+                                           <b>BSB: </b> [[bank._source.bank_BSB]]
+                                    </div>
+                                    <div class="horizontal justified" style="float:left;">
+                                      <iron-icon icon="av:stop"></iron-icon>
+                                          <b>Number: </b> [[bank._source.bank_bankAccountNumber]]
+                                    </div>
+                                  </div>
+                                   <div class="horizontal justified" style="float: left;">
+                                     <iron-icon icon="av:stop"></iron-icon>
+                                     <H7>Record Date:</h7>
+                                      <vaadin-date-picker id="vaadinDate" readonly value={{_computeDate(bank._source.bank_record_updated)}}></vaadin-date-picker>
+                                      <paper-icon-button icon="my-icons:highlight-off" style="color: black;" id="deleteDate" bank="[[bank]]"
+                                                                  on-tap="_updateDate" mini></paper-icon-button>
+                                      <div style="text-align: right">
+                                          <h9 style="color: grey">More...</h9>
+                                          <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBanks" bank="[[bank]]"
+                                                                      on-tap="_showMoreBanks"></paper-icon-button>
+                                      </div>
+                                  </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+
+        <!--
        <paper-card style="float:center; width: 90%">
          <div>
            <div>
@@ -189,7 +446,11 @@
                </div>
            </div>
          </paper-card>
-       </template>
+
+       -->
+          </template>
+        </div>
+     </div>
      </template>
   </template>
 
@@ -245,6 +506,21 @@
             type: Number,
             notify: true,
             value: -1
+          },
+          currentPageIcon: {
+            type: String,
+            notify: true,
+            value : 'image:filter-1'
+          },
+          counterCardColor: {
+            type: Number,
+            notify: true,
+            value: 0
+          },
+          recordsRetrieved: {
+            type: Number,
+            notify: true,
+            value: 0
           }
 
         };
@@ -269,64 +545,154 @@
       }
 
       _computeDate(date){
-        console.log('inside _computeDate ->'+date);
+        //console.log('inside _computeDate ->'+date);
         var tempDate = new Date(date);
         //return tempDate;
         return tempDate.toString('YYYY-MM-DD');
       }
 
       _computeShowBanks(signedin, successFlag){
-        console.log('signedin ='+signedin+' , successFlag='+successFlag);
+        //console.log('signedin ='+signedin+' , successFlag='+successFlag);
         var temp = !signedin || !successFlag;
-        console.log('value returned ='+temp);
+        //console.log('value returned ='+temp);
         //retrun true only when both are True
         return (!signedin || !successFlag);
       }
 
+      _checkZeroRecords(records){
+        if(records === 0){
+          this.recordsRetrieved = 0;
+         return true;
+       }
+        else {
+          this.recordsRetrieved = Number(records);
+          return false;
+        }
+      }
+
+      _enableNextPage(totalRecs){
+        console.log('totalRecs -> '+totalRecs)
+        if(Number(totalRecs) > 10) return true;
+        else return false;
+      }
+
+      _computeCardColor(){
+        var returnString;
+        this.counterCardColor = this.counterCardColor + 1;
+        if(this.counterCardColor === 10) this.counterCardColor = 0;
+        //console.log('this.counterCardColor = ' + this.counterCardColor);
+        /* ODD Even logic
+        // Must be a number
+        if (isNaN(this.counterCardColor)) {
+          compareVal = false;
+        }
+        // Number must not be a float
+        if ((this.counterCardColor % 1) !== 0) {
+          compareVal = false;
+        }
+        // Integer must not be equal to zero
+        if (this.counterCardColor === 0) {
+          compareVal= false;
+        }
+        // Integer must be odd
+        if ((this.counterCardColor % 2) !== 0) {
+          compareVal = true;
+        }
+        switch (compareVal) {
+          case true:
+            returnString = 'background-image: url(../images/landing/white.jpg)';
+            break;
+          case false:
+            returnString = 'background-image: url(../images/landing/seagreen.jpg)';
+            break;
+          default:
+            returnString = 'background-image: url(../images/landing/white.jpg)';
+            break;
+          }
+          */
+          switch (this.counterCardColor) {
+            case 0:
+              returnString = 'background-image: url(../images/landing/white.jpg)';
+              break;
+            case 1:
+              returnString = 'background-image: url(../images/landing/red.jpg)';
+              break;
+            case 2:
+              returnString = 'background-image: url(../images/landing/green.jpg)';
+              break;
+            case 3:
+              returnString = 'background-image: url(../images/landing/blue.jpg)';
+              break;
+            case 4:
+              returnString = 'background-image: url(../images/landing/purple.jpg)';
+              break;
+            case 5:
+              returnString = 'background-image: url(../images/landing/seagreen.jpg)';
+              break;
+            case 6:
+              returnString = 'background-image: url(../images/landing/teal.jpg)';
+              break;
+            case 7:
+              returnString = 'background-image: url(../images/landing/saffaron.jpg)';
+              break;
+            case 8:
+              returnString = 'background-image: url(../images/landing/marron.jpg)';
+              break;
+            case 9:
+             returnString = 'background-image: url(../images/landing/magenta.jpg)';
+             break;
+            default:
+             returnString = 'background-image: url(../images/landing/scarletred.jpg)';
+            break;
+          }
+          return returnString;
+      }
+
       _computePages(totalRecords){
-        console.log('totalRecords = '+totalRecords);
+        //console.log('totalRecords = '+totalRecords);
         var pageIcon = "image:filter";
         if(Number(totalRecords) === 0){
-          console.log('totalRecords = 0 so in if');
+          //console.log('totalRecords = 0 so in if');
           pageIcon = "image:filter";
         }
         else if(Number(totalRecords) <= 10 ){
-          console.log('totalRecords <= 10 so in else if');
+          //console.log('totalRecords <= 10 so in else if');
+          console.log('pageCount <= 10 : '+pageCount);
           pageIcon = "image:filter-1";
         }
-        else if(Number(totalRecords) > 10){
+        else{
           var pageCount = Math.round(Number(totalRecords) / 10);
-          console.log('pageCount = '+pageCount)
+          console.log('pageCount = '+pageCount);
           switch (pageCount) {
             case 0:
               pageIcon = "image:filter-1";
               break;
             case 1:
-              pageIcon = "image:filter-1";
-              break;
-            case 2:
               pageIcon = "image:filter-2";
               break;
-            case 3:
+            case 2:
               pageIcon = "image:filter-3";
               break;
-            case 4:
+            case 3:
               pageIcon = "image:filter-4";
               break;
-            case 5:
+            case 4:
               pageIcon = "image:filter-5";
               break;
-            case 6:
+            case 5:
               pageIcon = "image:filter-6";
               break;
-            case 7:
+            case 6:
               pageIcon = "image:filter-7";
               break;
-            case 8:
+            case 7:
               pageIcon = "image:filter-8";
               break;
+            case 8:
+              pageIcon = "image:filter-9";
+              break;
             case 9:
-             pageIcon = "image:filter-9";
+             pageIcon = "image:filter-9-plus";
              break;
             default:
              pageIcon = "image:filter-9-plus";
@@ -350,6 +716,102 @@
         return { "uid" : uid };
       }
 
+      sendPrevGetBanks(){
+        console.log('###### inside sendPrevGetBanks() ######');
+        if(this.user!=null || this.user!=undefined)
+        {
+          this.$.dialogBusy.toggle();
+          this.active = true;
+          this.currentPage = this.currentPage - 1;
+          if(this.currentPage === -1) this.currentPage = 0;
+          var ajaxObject = this.$.getBanks;
+          //console.log('user ->'+JSON.stringify(this.user));
+          ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
+          ajaxObject.params = {
+                    uid: this.user.uid ,
+                    page: this.currentPage,
+                    size: 10
+                  };
+          //ajaxObject.body = {
+          //          user: this.user
+          //      };
+          console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+          console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
+          let request = ajaxObject.generateRequest();
+          request.completes.then( function(req) {
+              // succesful request, argument is iron-request element
+              console.log('iron request element is->'+req);
+              return;
+            }, function(rejected) {
+              // failed request, argument is an object
+              let req = rejected.request;
+              let error = rejected.error;
+              console.log('API Call - User Insertion - rejected');
+              console.log('req=', req, '    error=', error);
+              this.$.dialogBusy.toggle();
+              this.ajaxError = true;
+              this.ajaxErrorMsg = error;
+              return;
+            });
+        }
+        else {
+            console.log('user is null or undefined -'+ this.user);
+            document.getElementById('toast').show('Login to the app to complete Sync!');
+        }
+      }
+
+      sendNextGetBanks(){
+        console.log('###### inside sendNextGetBanks() ######');
+        if(this.user!=null || this.user!=undefined)
+        {
+          console.log('this.recordsRetrieved ='+this.recordsRetrieved);
+          console.log('this.currentPage ='+ this.currentPage);
+          var tempVar = this.currentPage + 1;
+          var recCount = this.recordsRetrieved - tempVar * 10;
+          console.log('recCount = '+ recCount);
+          if(recCount > 0 )
+          {
+            this.$.dialogBusy.toggle();
+            this.active = true;
+            this.currentPage = this.currentPage + 1;
+            var ajaxObject = this.$.getBanks;
+            //console.log('user ->'+JSON.stringify(this.user));
+            ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
+            ajaxObject.params = {
+                      uid: this.user.uid ,
+                      page: this.currentPage,
+                      size: 10
+                    };
+            //ajaxObject.body = {
+            //          user: this.user
+            //      };
+            console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+            console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
+            let request = ajaxObject.generateRequest();
+            request.completes.then( function(req) {
+                // succesful request, argument is iron-request element
+                console.log('iron request element is->'+req);
+                return;
+              }, function(rejected) {
+                // failed request, argument is an object
+                let req = rejected.request;
+                let error = rejected.error;
+                console.log('API Call - User Insertion - rejected');
+                console.log('req=', req, '    error=', error);
+                this.$.dialogBusy.toggle();
+                this.ajaxError = true;
+                this.ajaxErrorMsg = error;
+                return;
+              });
+          }
+        }
+        else {
+            console.log('user is null or undefined -'+ this.user);
+            document.getElementById('toast').show('Login to the app to complete Sync!');
+          }
+
+      }
+
       sendGetBanks(){
         console.log('###### inside sendGetBanks() ######');
         if(this.user!=null || this.user!=undefined)
@@ -358,7 +820,7 @@
           this.active = true;
           this.currentPage = this.currentPage + 1;
           var ajaxObject = this.$.getBanks;
-          console.log('user ->'+JSON.stringify(this.user));
+          //console.log('user ->'+JSON.stringify(this.user));
           ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
           ajaxObject.params = {
                     uid: this.user.uid ,
@@ -401,13 +863,51 @@
         var x = responseX.status;
         switch(true){
           case (x === 200):
-              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response));
-              console.log('last response _'+ this.banksData);
+              console.log('Data Returned by Ajax call-->' + JSON.stringify(data.detail.response.data.total));
+              //console.log('last response _'+ this.banksData);
               console.log('this.user.displayName = '+this.user.displayName);
               console.log('this.user.uid = '+this.user.uid);
               this.$.dialogBusy.toggle();
               this.busyDialogLoadFlag = false;
               document.getElementById('toast').show(this.user.displayName+', Banks data retrieved successfully!');
+              var pageIcon = "image:filter";
+                switch (this.currentPage) {
+                  case 0:
+                    pageIcon = "image:filter-1";
+                    break;
+                  case 1:
+                    pageIcon = "image:filter-2";
+                    break;
+                  case 2:
+                    pageIcon = "image:filter-3";
+                    break;
+                  case 3:
+                    pageIcon = "image:filter-4";
+                    break;
+                  case 4:
+                    pageIcon = "image:filter-5";
+                    break;
+                  case 5:
+                    pageIcon = "image:filter-6";
+                    break;
+                  case 6:
+                    pageIcon = "image:filter-7";
+                    break;
+                  case 7:
+                    pageIcon = "image:filter-8";
+                    break;
+                  case 8:
+                    pageIcon = "image:filter-9";
+                    break;
+                  case 9:
+                   pageIcon = "image:filter-9-plus";
+                   break;
+                  default:
+                   pageIcon = "image:filter-9-plus";
+                  break;
+              }
+              console.log('pageIcon ='+ pageIcon);
+              this.currentPageIcon = pageIcon;
               break;
           case (x >= 400 && x < 500):
               this.ajaxError = true;
