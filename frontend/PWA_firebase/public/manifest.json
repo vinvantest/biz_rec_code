@@ -2,7 +2,7 @@
     "name": "BizRec",
     "short_name": "BizRec",
     "description": "BizRec App - for business",
-    "start_url": "https://biz-rec.com/?utm_source=web_app_manifest",
+    "start_url": "https://bizrec-dev.firebaseapp.com/?utm_source=web_app_manifest",
     "scope": "./",
     "display": "standalone",
     "theme_color": "#fff",

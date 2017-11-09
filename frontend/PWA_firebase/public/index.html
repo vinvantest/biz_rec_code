@@ -37,7 +37,7 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/images/ece2893b-2863-9dfc-afe6-9c2a2961e540.webPlatform.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/images/27ab6cb7-8da3-a597-b536-2edff24c3ac6.webPlatform.png">
 
-    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <!-- Tile icon for Windows 8 (144x144  tile color) -->
     <meta name="msapplication-TileImage" content="/images/ece2893b-2863-9dfc-afe6-9c2a2961e540.webPlatform.png">
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
@@ -58,21 +58,7 @@
       * and trailing slashes (e.g., `/my-app/`).
       */
       window.Polymer = {rootPath: '/'};
-
-      /*
       // Load and register pre-caching Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./service-worker.js', {
-            scope: Polymer.rootPath,
-          }).then(function (reg){
-            console.log('Service Worker Registered for scope! - '+reg.scope);
-          }).catch(function (err){
-            console.log('There was some problem in Service Worker Registeration! - ' + err);
-          });
-        });
-      }
-      */
       if('serviceWorker' in navigator) {
        navigator.serviceWorker.register('/sw.js', { scope: '/' })
          .then(function(registration) {
@@ -83,8 +69,6 @@
        });
      }
     </script>
-
-
     <script>
         if (!window.HTMLImports) {
             HTMLImports={};
@@ -114,24 +98,8 @@
     </style>
   </head>
   <body>
-
     <paper-toast id="toast" text="Hi, welcome to BizRec!"></paper-toast>
-    <!--
-    <paper-toast id="caching-complete" duration="6000" text="Caching Complete! this app will work offline."></paper-toast>
-    <platinum-sw-register
-          auto-register
-          clients-claim
-          skip-waiting
-          on-service-worker-installed="displayInstalledToast" >
-              <platinum-sw-cache  default-cache-strategy="networkFirst"
-                                  precache='["images/favicon.ico"]'
-                                  precache-file="precache.json" >
-              </platinum-sw-cache>
-    </platinum-sw-register>
-  -->
-
     <my-app></my-app>
-
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>

@@ -372,13 +372,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _userChanged(user){
-        //console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
         this.user = user;
-        //console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
       }
 
       _signedinChanged(signedin){
         this.signedin = signedin;
+        /*
+        if(signedin === true)
+        {
+          if(deferredPrompt !== undefined) {
+            console.log('deferredprompt is not null or undefined');
+            // The user has had a positive interaction with our app and Chrome
+            // has tried to prompt previously, so let's show the prompt.
+            this.deferredprompt.prompt();
+            // Follow what the user has done with the prompt.
+            this.deferredprompt.userChoice.then(function(choiceResult) {
+            console.log(choiceResult.outcome);
+            if(choiceResult.outcome == 'dismissed') {
+                console.log('User cancelled home screen install');
+              }
+            else {
+                console.log('User added to home screen');
+                alert('Thanks for adding app to the home screen!');
+              }
+              // We no longer need the prompt.  Clear it up.
+            this.deferredprompt = null;
+            });
+          }
+        }
+        else {
+          console.log('defferedprompt is == undefined ->'+this.defferedprompt)
+        }*/
       }
 
       _statusChanged(statusKnown){

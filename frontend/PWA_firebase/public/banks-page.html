@@ -271,7 +271,7 @@
           <paper-icon-button icon=""></paper-icon-button>
           <paper-icon-button icon=""></paper-icon-button>
           <iron-image style="width:200px; height:200px;"
-  sizing="cover" preload fade src="../images/landing/LogoTransperent.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
+  sizing="cover" preload fade src="../images/landing/LogoTransperentLoadData.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
     </template>
   </template>
 
@@ -370,8 +370,7 @@
                                   </div>
                                    <div class="horizontal justified" style="float: left;">
                                      <iron-icon icon="av:stop"></iron-icon>
-                                     <H7>Record Date:</h7>
-                                      <vaadin-date-picker id="vaadinDate" readonly value={{_computeDate(bank._source.bank_record_updated)}}></vaadin-date-picker>
+                                     <H7>Record Date:</h7> bank._source.bank_record_updated
                                       <paper-icon-button icon="my-icons:highlight-off" style="color: black;" id="deleteDate" bank="[[bank]]"
                                                                   on-tap="_updateDate" mini></paper-icon-button>
                                       <div style="text-align: right">

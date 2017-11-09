@@ -19,12 +19,18 @@
 
 // Version 0.57
 let version = '0.57';
+let cacheName = 'bizrec-v-1';
 
 self.addEventListener('install', e => {
+  console.log('[ServiceWorker] Install');
   let timeStamp = Date.now();
   e.waitUntil(
-    caches.open('bizrecv1').then(cache => {
+    caches.open(cacheName).then(cache => {
       return cache.addAll([
+        '.',
+        'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+        'https://fonts.gstatic.com/s/roboto/v18/I3S1wsgSg9YCurV6PUkTOYX0hVgzZQUfRDuZrPvH3D8.woff2',
+        'https://fonts.googleapis.com/css?family=Oxygen:700|Open+Sans',
         'bower_components/webcomponentsjs/webcomponents-loader.js',
         `/`,
         `/index.html?timestamp=${timeStamp}`,
@@ -37,27 +43,19 @@ self.addEventListener('install', e => {
   )
 });
 
-/* Function with lots to cache
-self.addEventListener('install', e => {
-  let timeStamp = Date.now();
+self.addEventListener('activate', e => {
+  console.log('[ServiceWorker] Activate');
   e.waitUntil(
-    caches.open('bizrecv1').then(cache => {
-      return cache.addAll([
-        'bower_components/webcomponentsjs/webcomponents-loader.js',
-        `/`,
-        `/index.html?timestamp=${timeStamp}`,
-        `/ice.html?timestamp=${timeStamp}`,
-        `/images/*?timestamp=${timeStamp}`,
-        'manifest.json=${timeStamp}'
-      ])
-      .then(() => self.skipWaiting());
+    caches.keys().then(function(keyList) {
+      return Promise.all(keyList.map(function(key) {
+        if (key !== cacheName) {
+          console.log('[ServiceWorker] Removing old cache', key);
+          return caches.delete(key);
+        }
+      }));
     })
-  )
-});
-*/
-
-self.addEventListener('activate',  event => {
-  event.waitUntil(self.clients.claim());
+  );
+  return self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
@@ -66,4 +64,19 @@ self.addEventListener('fetch', event => {
       return response || fetch(event.request);
     })
   );
+});
+
+self.addEventListener('beforeinstallprompt', e => {
+  // beforeinstallprompt Event fired
+  // e.userChoice will return a Promise.
+  e.userChoice.then( function(choiceResult) {
+    console.log(choiceResult.outcome);
+    if(choiceResult.outcome == 'dismissed') {
+      console.log('User cancelled home screen install');
+      alert('You will not be prompted again to install the app to home screen. If you wish to do so in future you will have to clear browser cache and revisit the website app https://biz-rec.com');
+    }
+    else {
+      console.log('User added to home screen');
+    }
+  });
 });
