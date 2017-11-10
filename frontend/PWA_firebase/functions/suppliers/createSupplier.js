@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configSupp = require('../config/specific/supplier_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,23 +34,22 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
    console.log('Inside serer.post(createRule())');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.supp));
    var uid = req.query.uid;
    var suppBody = req.body.supp;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.suppliers_invalid_uid + msgConfig.support_contact,401);
    }
    if(suppBody === null || suppBody === undefined) {
-    resMsg = "Error: req.body.suppBody required to create Index in ES ->" + JSON.stringify(suppBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.suppBody required to create Index in ES ->" + JSON.stringify(suppBody));
+    helper.failure(res,msgConfig.suppliers_invalid_supplier_body + msgConfig.support_contact,401);
    }
    var suppAliasIndexName = uid + config.suppliers_alias_token_read;
    var suppAliasIndexName_write = uid + config.suppliers_alias_token_write;
-   console.log('coa Aliases: read [' + suppAliasIndexName + ' ] write [' + suppAliasIndexName_write + ']');
+   console.log('Supplier Aliases: read [' + suppAliasIndexName + ' ] write [' + suppAliasIndexName_write + ']');
 
    var queryBodySuppObject = {
      [configSupp.supp_nuserId_routingAliasId]	:	suppBody.supp_nuserId_routingAliasId,
@@ -83,12 +83,10 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
-			// on finish
-			//esClient.close();
 	});
 	//check elasticsearch health
 	esClient.cluster.health({},function(err,resp,status) {
@@ -123,9 +121,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new coa record!');
+              helper.failure(res, msgConfig.suppliers_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -166,13 +163,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodySuppObject
                             })
                             .then(function (respInsertSupp) {
-                              resMsg = 'User Data existed and suppliers record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('User Data existed and suppliers record inserted Successfully!');
+                              helper.success(res,msgConfig.suppliers_record_insert_success);
                               },
                               function (errorInsertSupp) {
-                              resMsg = 'Error : New suppliers document insertion ['+suppAliasIndexName_write+'] Failed!' + errorInsertSupp;
-                              helper.failure(res,resMsg,500);
+                              console.log('Error : New suppliers document insertion ['+suppAliasIndexName_write+'] Failed!' + errorInsertSupp);
+                              helper.failure(res,msgConfig.suppliers_record_insert_failed,500);
                               });
                       }
                       else if(respSuppCheck.hits.total === 1 )
@@ -188,67 +184,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertSupp) {
-                                resMsg = 'Suplier Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Suplier Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.suppliers_record_update_success);
                                 },
                                 function (errorInsertSupp) {
-                                resMsg = 'Error : Suppllier document update ['+suppAliasIndexName+'] Failed! But old record exists.' + errorInsertSupp;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : Suppllier document update ['+suppAliasIndexName+'] Failed! But old record exists.' + errorInsertSupp);
+                                helper.success(res,msgConfig.suppliers_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the coa record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respSuppCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Supplier document creation ['+suppAliasIndexName+'] Failed! Duplicate suppliers records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Supplier document creation ['+suppAliasIndexName+'] Failed! Duplicate suppliers records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.suppliers_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Supplier record not found in coa Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Supplier record not found in coa Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: suppAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodySuppObject
                                   })
                                   .then(function (respInsertSupp) {
-                                    resMsg = 'User Data existed and New Rule record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('User Data existed and New Rule record inserted Successfully!');
+                                    helper.success(res,msgConfig.suppliers_record_insert_success);
                                     },
                                     function (errorInsertSupp) {
-                                    resMsg = 'Error : New suppliers document insertion ['+ suppAliasIndexName_write +'] Failed!' + errorInsertSupp;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New suppliers document insertion ['+ suppAliasIndexName_write +'] Failed!' + errorInsertSupp);
+                                    helper.failure(res,msgConfig.suppliers_record_insert_failed,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : Supplier document creation/updation ['+suppAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : Supplier document creation/updation ['+suppAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.suppliers_duplicate_user_found + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.suppliers_user_not_found + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.suppliers_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

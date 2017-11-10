@@ -261,9 +261,20 @@
           last-error="{{lastError}}">
   </iron-ajax>
 
-<paper-card style="float:center; width: 70%" class="black">
-     <h4 style="color: white;">Banks</h4>
-</paper-card>
+  <paper-card style="float:center; width: 70%" class="black">
+       <h4 style="color: white;">Banks</h4>
+  </paper-card>
+
+  <template is="dom-if" if="[[ajaxError]]">
+            <paper-card style="float:center; width: 90%">
+                <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong></div>
+                <div>
+                  <p>[[ajaxErrorMsg]]</p>
+                </div>
+                <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+                <p>....</p>
+            </paper-card>
+  </template>
 
   <template is="dom-if" if="[[signedin]]">
     <template is="dom-if" if="[[firstTimeLoad]]">
@@ -284,18 +295,7 @@
       </div>
    </paper-dialog>
 
-   <template is="dom-if" if="[[ajaxError]]">
-             <paper-card style="float:center; width: 90%">
-                 <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong></div>
-                 <div>
-                   <p>AjaxError: [[ajaxErrorMsg]]</p>
-                 </div>
-                 <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
-                 <p>....</p>
-             </paper-card>
-   </template>
-
-  <template is="dom-if" if="[[!signedin]]">
+   <template is="dom-if" if="[[!signedin]]">
     <div class="card">
       <div class="circle">
           <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
@@ -732,9 +732,6 @@
                     page: this.currentPage,
                     size: 10
                   };
-          //ajaxObject.body = {
-          //          user: this.user
-          //      };
           console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
           console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
           let request = ajaxObject.generateRequest();
@@ -744,13 +741,8 @@
               return;
             }, function(rejected) {
               // failed request, argument is an object
-              let req = rejected.request;
-              let error = rejected.error;
               console.log('API Call - User Insertion - rejected');
-              console.log('req=', req, '    error=', error);
-              this.$.dialogBusy.toggle();
-              this.ajaxError = true;
-              this.ajaxErrorMsg = error;
+              console.log('req=', rejected.request, '    error=', rejected.error);
               return;
             });
         }
@@ -794,13 +786,8 @@
                 return;
               }, function(rejected) {
                 // failed request, argument is an object
-                let req = rejected.request;
-                let error = rejected.error;
                 console.log('API Call - User Insertion - rejected');
-                console.log('req=', req, '    error=', error);
-                this.$.dialogBusy.toggle();
-                this.ajaxError = true;
-                this.ajaxErrorMsg = error;
+                console.log('req=', rejected.request, '    error=', rejected.error);
                 return;
               });
           }
@@ -839,13 +826,8 @@
               return;
             }, function(rejected) {
               // failed request, argument is an object
-              let req = rejected.request;
-              let error = rejected.error;
               console.log('API Call - User Insertion - rejected');
-              console.log('req=', req, '    error=', error);
-              this.$.dialogBusy.toggle();
-              this.ajaxError = true;
-              this.ajaxErrorMsg = error;
+              console.log('req=', rejected.request, '    error=', rejected.error);
               return;
             });
         }
@@ -938,12 +920,14 @@
         // I think one of those two would be what you're looking for.
         const req = event.detail.request;
         console.log('event', event);
-        console.log('status code', req.status);
-        console.log('status text', req.statusText);
+        const res = event.detail.request.response;
+        console.log('res.status | code = ', res.status);
+        console.log('res.data | text = ', res.data);
+        console.log('res.successFlag | Boolean = ', res.successFlag);
         if( req.status === 500 )
         {
           console.log('AJAX call failed');
-          document.getElementById('toast').show('Something went wrong - internal servier error!');
+          document.getElementById('toast').show('Something went wrong - internal server error!');
           if(this.user != null || this.user != undefined)
           {
             console.log('User not logged in');
@@ -958,7 +942,8 @@
         else {
           this.ajaxError = true;
         }
-        this.ajaxErrorMsg = ''+ req.status + ' : ' + req.statusText;
+        this.ajaxErrorMsg = res.data;
+        this.$.dialogBusy.toggle();
         console.log('this.ajaxErrorMsg =' + this.ajaxErrorMsg);
       }
 

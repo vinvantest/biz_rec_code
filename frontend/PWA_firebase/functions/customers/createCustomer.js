@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configCust = require('../config/specific/customer_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,19 +34,19 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
+
    console.log('Inside serer.post(createCust)');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.cust));
    var uid = req.query.uid;
    var custBody = req.body.cust;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.customers_invalid_uid + msgConfig.support_contact,401);
    }
    if(custBody === null || custBody === undefined) {
-    resMsg = "Error: req.body.custBody required to create Index in ES ->" + JSON.stringify(custBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.custBody required to create Index in ES ->" + JSON.stringify(custBody));
+    helper.failure(res,msgConfig.customers_invalid_customer_body + msgConfig.support_contact,401);
    }
    var custAliasIndexName = uid + config.customers_alias_token_read;
    var custAliasIndexName_write = uid + config.customers_alias_token_write;
@@ -77,13 +78,13 @@ function handlePOST (req, res, esClient)
      [configCust.cust_is_record_updated] :	custBody.cust_is_record_updated,
      [configCust.cust_record_updated] :	custBody.cust_record_updated
    };
-   console.log('cust Record to be updated/inserted = '+ JSON.stringify(queryBodycustObject) );
+   console.log('cust Record to be updated/inserted = '+ JSON.stringify(queryBodycustObject));
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -123,9 +124,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new cust record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new cust record!');
+              helper.failure(res, msgConfig.customers_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -164,13 +164,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodycustObject
                             })
                             .then(function (respInsertCust) {
-                              resMsg = 'User Data existed and customer record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('Customer record inserted Successfully!');
+                              helper.success(res,msgConfig.customers_record_insert_success);
                               },
                               function (errorInsertCust) {
-                              resMsg = 'Error : New customer document insertion ['+custAliasIndexName_write+'] Failed!' + errorInsertCust;
-                              helper.failure(res,resMsg,500);
+                              console.log('Error : New customer document insertion ['+custAliasIndexName_write+'] Failed!' + errorInsertCust);
+                              helper.failure(res,msgConfig.customers_record_insert_failed,500);
                               });
                       }
                       else if(respCustCheck.hits.total === 1 )
@@ -186,67 +185,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertCust) {
-                                resMsg = 'customer Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Customer Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.customers_record_update_success);
                                 },
                                 function (errorInsertCust) {
-                                resMsg = 'Error : customer document update ['+custAliasIndexName+'] Failed! But old record exists.' + errorInsertCust;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : customer document update ['+custAliasIndexName+'] Failed! But old record exists.' + errorInsertCust);
+                                helper.success(res,msgConfig.customers_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the cust record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respCustCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Customer document creation ['+custAliasIndexName+'] Failed! Duplicate customer records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Customer document creation ['+custAliasIndexName+'] Failed! Duplicate customer records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.customers_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Customer record not found in cust Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Customer record not found in cust Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: custAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodycustObject
                                   })
                                   .then(function (respInsertCust) {
-                                    resMsg = 'User Data existed and New customer record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('User Data existed and New customer record inserted Successfully!');
+                                    helper.success(res,msgConfig.customers_record_insert_success);
                                     },
                                     function (errorInsertCust) {
-                                    resMsg = 'Error : New customer document insertion ['+ custAliasIndexName_write +'] Failed!' + errorInsertCust;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New customer document insertion ['+ custAliasIndexName_write +'] Failed!' + errorInsertCust);
+                                    helper.failure(res,msgConfig.customers_record_insert_failed,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : cust document creation/updation ['+custAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : cust document creation/updation ['+custAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.customers_duplicate_user_found + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.customers_user_index_not_exists + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.customers_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

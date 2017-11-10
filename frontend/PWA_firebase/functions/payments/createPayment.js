@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configPymt = require('../config/specific/payment_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,23 +34,22 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
    console.log('Inside serer.post(createPayment())');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.pymt));
    var uid = req.query.uid;
    var pymtBody = req.body.pymt;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.payments_invalid_uid + msgConfig.support_contact,401);
    }
    if(pymtBody === null || pymtBody === undefined) {
-    resMsg = "Error: req.body.pymtBody required to create Index in ES ->" + JSON.stringify(pymtBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.pymtBody required to create Index in ES ->" + JSON.stringify(pymtBody));
+    helper.failure(res,msgConfig.payments_invalid_payment_body + msgConfig.support_contact,401);
    }
    var pymtAliasIndexName = uid + config.payments_alias_token_read;
    var pymtAliasIndexName_write = uid + config.payments_alias_token_write;
-   console.log('coa Aliases: read [' + pymtAliasIndexName + ' ] write [' + pymtAliasIndexName_write + ']');
+   console.log('Payments Aliases: read [' + pymtAliasIndexName + ' ] write [' + pymtAliasIndexName_write + ']');
 
    var queryBodycoaObject = {
      [configPymt.pymt_displayName]	:	pymtBody.pymt_displayName,
@@ -80,7 +80,7 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -120,9 +120,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new coa record!');
+              helper.failure(res, msgConfig.payments_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -162,13 +161,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodycoaObject
                             })
                             .then(function (respInsertPymt) {
-                              resMsg = 'User Data existed and Payments record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('User Data existed and Payments record inserted Successfully!');
+                              helper.success(res,msgConfig.payments_record_insert_success);
                               },
                               function (errorInsertPymt) {
-                              resMsg = 'Error : New Payments document insertion ['+pymtAliasIndexName_write+'] Failed!' + errorInsertPymt;
-                              helper.failure(res,resMsg,500);
+                              console.log('Error : New Payments document insertion ['+pymtAliasIndexName_write+'] Failed!' + errorInsertPymt);
+                              helper.failure(res,msgConfig.payments_record_insert_failed,500);
                               });
                       }
                       else if(respInvCheck.hits.total === 1 )
@@ -184,67 +182,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertPymt) {
-                                resMsg = 'Payment Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Payment Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.payments_record_update_success);
                                 },
                                 function (errorInsertPymt) {
-                                resMsg = 'Error : Payment document update ['+pymtAliasIndexName+'] Failed! But old record exists.' + errorInsertPymt;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : Payment document update ['+pymtAliasIndexName+'] Failed! But old record exists.' + errorInsertPymt);
+                                helper.success(res,msgConfig.payments_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the coa record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respInvCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Payment document creation ['+pymtAliasIndexName+'] Failed! Duplicate Payments records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Payment document creation ['+pymtAliasIndexName+'] Failed! Duplicate Payments records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.payments_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Payment record not found in coa Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Payment record not found in Payment Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: pymtAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodycoaObject
                                   })
                                   .then(function (respInsertPymt) {
-                                    resMsg = 'User Data existed and New Payment record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('User Data existed and New Payment record inserted Successfully!');
+                                    helper.success(res,msgConfig.payments_record_insert_success);
                                     },
                                     function (errorInsertPymt) {
-                                    resMsg = 'Error : New Payments document insertion ['+ pymtAliasIndexName_write +'] Failed!' + errorInsertPymt;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New Payments document insertion ['+ pymtAliasIndexName_write +'] Failed!' + errorInsertPymt);
+                                    helper.failure(res,msgConfig.payments_record_insert_failed,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : coa document creation/updation ['+pymtAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : coa document creation/updation ['+pymtAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.payments_duplicate_records + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.payments_user_not_found + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.payments_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

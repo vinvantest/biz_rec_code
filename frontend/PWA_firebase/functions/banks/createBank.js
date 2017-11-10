@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configBank = require('../config/specific/bank_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,19 +34,19 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
+
    console.log('Inside serer.post(createBank)');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.bank));
    var uid = req.query.uid;
    var bankBody = req.body.bank;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.banks_invalid_uid + msgConfig.support_contact,401);
    }
    if(bankBody === null || bankBody === undefined) {
-    resMsg = "Error: req.body.bankBody required to create Index in ES ->" + JSON.stringify(bankBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.bankBody required to create Index in ES ->" + JSON.stringify(bankBody));
+    helper.failure(res,msgConfig.banks_invalid_bank_body + msgConfig.support_contact,401);
    }
    var bankAliasIndexName = uid + config.banks_alias_token_read;
    var bankAliasIndexName_write = uid + config.banks_alias_token_write;
@@ -89,12 +90,10 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
-			// on finish
-			//esClient.close();
 	});
 	//check elasticsearch health
 	esClient.cluster.health({},function(err,resp,status) {
@@ -129,9 +128,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new Bank record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new Bank record!');
+              helper.failure(res, msgConfig.banks_user_not_exists, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -196,13 +194,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodyBankObject
                             })
                             .then(function (respInsertBank) {
-                              resMsg = 'User Data existed and Banking record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('Banking record inserted Successfully!' + respInsertBank) ;
+                              helper.success(res,msgConfig.banks_record_insert_success);
                               },
                               function (errorInsertBank) {
-                              resMsg = 'Error : New Banking document insertion ['+bankAliasIndexName_write+'] Failed!' + errorInsertBank;
-                              helper.failure(res,resMsg,500);
+                              console.log('New Banking document insertion ['+bankAliasIndexName_write+'] Failed!' + errorInsertBank);
+                              helper.failure(res,msgConfig.banks_record_insert_failed,500);
                               });
                       }
                       else if(respBankCheck.hits.total === 1 )
@@ -218,67 +215,53 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertUser) {
-                                resMsg = 'Banking Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Banking Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.banks_record_update_success);
                                 },
                                 function (errorInsertUser) {
-                                resMsg = 'Error : Banking document update ['+bankAliasIndexName+'] Failed! But old record exists.' + errorInsertUser;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
-                                //TODO update this response to failure with correct error code
+                                console.log('Error : Banking document update ['+bankAliasIndexName+'] Failed! But old record exists.' + errorInsertUser);
+                                helper.success(res,msgConfig.banks_record_update_failed);
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the Bank record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respBankCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Bank document creation ['+bankAliasIndexName+'] Failed! Duplicate banking records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Bank document creation ['+bankAliasIndexName+'] Failed! Duplicate banking records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.banks_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Bank record not found in bank Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Bank record not found in bank Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: bankAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodyBankObject
                                   })
                                   .then(function (respInsertBank) {
-                                    resMsg = 'User Data existed and New Banking record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('New Banking record inserted Successfully!');
+                                    helper.success(res,msgConfig.banks_record_insert_success);
                                     },
                                     function (errorInsertBank) {
-                                    resMsg = 'Error : New Banking document insertion ['+ bankAliasIndexName_write +'] Failed!' + errorInsertBank;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New Banking document insertion ['+ bankAliasIndexName_write +'] Failed!' + errorInsertBank);
+                                    helper.failure(res,msgConfig.banks_record_insert_failed + msgConfig.support_contact,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : Bank document creation/updation ['+bankAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : Bank document creation/updation ['+bankAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.banks_duplicate_records + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.banks_user_not_found + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.banks_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

@@ -20,24 +20,24 @@
 // Version 0.57
 let version = '0.57';
 let cacheName = 'bizrec-v-1';
+var filesToCache = [
+                    '.',
+                    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+                    'https://fonts.gstatic.com/s/roboto/v18/I3S1wsgSg9YCurV6PUkTOYX0hVgzZQUfRDuZrPvH3D8.woff2',
+                    'https://fonts.googleapis.com/css?family=Oxygen:700|Open+Sans',
+                    'bower_components/webcomponentsjs/webcomponents-loader.js',
+                    `/`,
+                    `/index.html`,
+                    `/ice.html`,
+                    `/images/*`,
+                    'manifest.json'
+                  ];
 
 self.addEventListener('install', e => {
   console.log('[ServiceWorker] Install');
-  let timeStamp = Date.now();
   e.waitUntil(
     caches.open(cacheName).then(cache => {
-      return cache.addAll([
-        '.',
-        'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
-        'https://fonts.gstatic.com/s/roboto/v18/I3S1wsgSg9YCurV6PUkTOYX0hVgzZQUfRDuZrPvH3D8.woff2',
-        'https://fonts.googleapis.com/css?family=Oxygen:700|Open+Sans',
-        'bower_components/webcomponentsjs/webcomponents-loader.js',
-        `/`,
-        `/index.html?timestamp=${timeStamp}`,
-        `/ice.html?timestamp=${timeStamp}`,
-        `/images/*?timestamp=${timeStamp}`,
-        'manifest.json=${timeStamp}'
-      ])
+      return cache.addAll(filesToCache)
       .then(() => self.skipWaiting());
     })
   )
@@ -67,16 +67,16 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('beforeinstallprompt', e => {
-  // beforeinstallprompt Event fired
   // e.userChoice will return a Promise.
   e.userChoice.then( function(choiceResult) {
+    alert('event - '+choiceResult.outcome);//remove me
     console.log(choiceResult.outcome);
     if(choiceResult.outcome == 'dismissed') {
       console.log('User cancelled home screen install');
       alert('You will not be prompted again to install the app to home screen. If you wish to do so in future you will have to clear browser cache and revisit the website app https://biz-rec.com');
     }
     else {
-      console.log('User added to home screen');
+      console.log('App added to home screen');
     }
   });
 });

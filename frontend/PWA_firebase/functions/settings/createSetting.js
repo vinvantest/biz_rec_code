@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configSett = require('../config/specific/setting_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,19 +34,18 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
    console.log('Inside serer.post(createSetting())');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.sett));
    var uid = req.query.uid;
    var settBody = req.body.sett;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.settings_invalid_uid + msgConfig.support_contact,401);
    }
    if(settBody === null || settBody === undefined) {
-    resMsg = "Error: req.body.settBody required to create Index in ES ->" + JSON.stringify(settBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.settBody required to create Index in ES ->" + JSON.stringify(settBody));
+    helper.failure(res,msgConfig.settings_invalid_setting_body + msgConfig.support_contact,401);
    }
    var settAliasIndexName = uid + config.settings_alias_token_read;
    var settAliasIndexName_write = uid + config.settings_alias_token_write;
@@ -89,12 +89,10 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
-			// on finish
-			//esClient.close();
 	});
 	//check elasticsearch health
 	esClient.cluster.health({},function(err,resp,status) {
@@ -129,9 +127,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new coa record!');
+              helper.failure(res, msgConfig.settings_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -170,13 +167,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodySettObject
                             })
                             .then(function (respInsertSett) {
-                              resMsg = 'User Data existed and settings record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('User Data existed and settings record inserted Successfully!');
+                              helper.success(res,msgConfig.settings_record_insert_success);
                               },
                               function (errorInsertSett) {
-                              resMsg = 'Error : New settings document insertion ['+settAliasIndexName_write+'] Failed!' + errorInsertSett;
-                              helper.failure(res,resMsg,500);
+                              console.log('Error : New settings document insertion ['+settAliasIndexName_write+'] Failed!' + errorInsertSett);
+                              helper.failure(res,msgConfig.settings_record_insert_failed,500);
                               });
                       }
                       else if(respSettCheck.hits.total === 1 )
@@ -192,67 +188,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertSett) {
-                                resMsg = 'Settings Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Settings Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.settings_record_update_success);
                                 },
                                 function (errorInsertSett) {
-                                resMsg = 'Error : Settings document update ['+settAliasIndexName+'] Failed! But old record exists.' + errorInsertSett;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : Settings document update ['+settAliasIndexName+'] Failed! But old record exists.' + errorInsertSett);
+                                helper.success(res,msgConfig.settings_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the coa record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respSettCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Settings document creation ['+settAliasIndexName+'] Failed! Duplicate settings records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Settings document creation ['+settAliasIndexName+'] Failed! Duplicate settings records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.settings_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Settings record not found in coa Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Settings record not found in coa Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: settAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodySettObject
                                   })
                                   .then(function (respInsertSett) {
-                                    resMsg = 'User Data existed and New Settings record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('User Data existed and New Settings record inserted Successfully!');
+                                    helper.success(res,msgConfig.settings_record_insert_success);
                                     },
                                     function (errorInsertSett) {
-                                    resMsg = 'Error : New settings document insertion ['+ settAliasIndexName_write +'] Failed!' + errorInsertSett;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New settings document insertion ['+ settAliasIndexName_write +'] Failed!' + errorInsertSett);
+                                    helper.failure(res,msgConfig.settings_record_insert_failed,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : Settings document creation/updation ['+settAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : Settings document creation/updation ['+settAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.settings_duplicate_user_found + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.settings_user_not_exists + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.settings_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

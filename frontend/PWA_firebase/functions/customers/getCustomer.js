@@ -3,6 +3,7 @@
 var config  = require('../config.js');
 var configUser  = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -24,7 +25,6 @@ function handleDELETE (req, res) {
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
-   var resMsg = '';
    console.log('Inside serer.post(getCustomers)');
    console.log('req.query.uid = ' + req.query.uid);
    console.log('req.query.custId = ' + req.query.custId);
@@ -32,26 +32,22 @@ function handleGET (req, res, esClient)
    var custId = req.query.custId;
 
    if(routingUid === null || routingUid === undefined) {
-    resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.routingUid required to create Index in ES ->" + routingUid);
+    helper.failure(res,msgConfig.customers_invalid_uid+msgConfig.support_contact,401);
    }
    if(custId === null || custId === undefined) {
-    resMsg = "Error: req.query.custId required to create Index in ES ->" + custId;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.custId required to create Index in ES ->" + custId);
+    helper.failure(res,msgConfig.customers_invalid_customer_body+msgConfig.support_contact,401);
    }
-
-   resMsg = 'Data not found in index in ES';
 
    esClient.ping({ requestTimeout: 30000 }, function(error)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
-			// on finish
-			//esClient.close();
 	});
 	//check elasticsearch health
 	esClient.cluster.health({},function(err,resp,status) {
@@ -66,8 +62,6 @@ function handleGET (req, res, esClient)
        if(error)
        {
         console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
-        resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
-
         //check if uid exists
         //check if UID exists in users index using global_alisas_for_search_users_index
         var queryBodyCheckUserExists = {
@@ -93,8 +87,8 @@ function handleGET (req, res, esClient)
             if(respUserCheck.hits.total === 0){
               //user doesn't exists
               console.log('User does not exists in user index - '+ JSON.stringify(respUserCheck));
-              resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-              helper.failure(res,resMsg,500);
+              console.log('Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error);
+              helper.failure(res,msgConfig.customers_user_not_found + msgConfig.support_contact,500);
               }
               else if(respUserCheck.hits.total === 1 ){
                 //only one record for the user. Update the user record for the user.uid
@@ -112,35 +106,30 @@ function handleGET (req, res, esClient)
                 };
                 console.log('queryBody ->' + JSON.stringify(queryBody));
                 esClient.get(queryBody)
-                .then(function (resp) {
-                    resMsg = 'Customers Data Retrieved Successfully!' ;
-                    console.log(resMsg);
-                    helper.success(res,resp);
+                .then(function (customerData) {
+                    console.log('Customers Data Retrieved Successfully!');
+                    helper.success(res,customerData);
                     },
                       function (error) {
-                        resMsg = 'Error : Customers document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : Customers document read ['+indexAliasName+'] Failed!' + JSON.stringify(error));
+                        helper.failure(res,msgConfig.customers_record_retrieve_failed,500);
                     });
                 }
               else{
                 //user has multiple records. Delete rest!
-                console.log('Too many copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.customers_duplicate_records + msgConfig.support_contact,500);
               }
           }, function (error) {
-                  resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-                  helper.failure(res,resMsg,500);
+                  console.log('Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error);
+                  helper.failure(res,msgConfig.customers_user_not_exists + msgConfig.support_contact,500);
               });//End: check user exists
        }//end if
        else {
          //index dosen't exist. Create one.
-          console.log('Index does not Exists! Can not get Customers data. Error value is ->'+JSON.stringify(err));
-          resMsg = 'custId Index does not Exists!. Error Value = '+JSON.stringify(err);
-          helper.failure(res,resMsg,404);
+          console.log('Customer Index does not Exists! Can not get Customers data. Error value is ->'+JSON.stringify(err));
+          helper.failure(res,msgConfig.customers_user_index_not_exists + msgConfig.support_contact,404);
        } // end else - index doesn't exist
 	  });//end then - indices.exists()
 

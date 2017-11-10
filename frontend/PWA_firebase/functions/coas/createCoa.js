@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configCoa = require('../config/specific/coa_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,19 +34,18 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
    console.log('Inside serer.post(createcoa)');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.coa));
    var uid = req.query.uid;
    var coaBody = req.body.coa;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.coas_invalid_uid + msgConfig.support_contact,401);
    }
    if(coaBody === null || coaBody === undefined) {
-    resMsg = "Error: req.body.coaBody required to create Index in ES ->" + JSON.stringify(coaBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.coaBody required to create Index in ES ->" + JSON.stringify(coaBody));
+    helper.failure(res,msgConfig.coas_invalid_coa_body + msgConfig.support_contact,401);
    }
    var coaAliasIndexName = uid + config.coas_alias_token_read;
    var coaAliasIndexName_write = uid + config.coas_alias_token_write;
@@ -70,7 +70,7 @@ function handlePOST (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -110,9 +110,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new coa record!');
+              helper.failure(res, msgConfig.coas_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -152,13 +151,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodycoaObject
                             })
                             .then(function (respInsertcoa) {
-                              resMsg = 'User Data existed and coaing record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('Coaing record inserted Successfully!');
+                              helper.success(res,msgConfig.coas_record_insert_success);
                               },
                               function (errorInsertcoa) {
-                              resMsg = 'Error : New coaing document insertion ['+coaAliasIndexName_write+'] Failed!' + errorInsertcoa;
-                              helper.failure(res,resMsg,500);
+                              console.log('Error : New coaing document insertion ['+coaAliasIndexName_write+'] Failed!' + errorInsertcoa);
+                              helper.failure(res,msgConfig.coas_record_insert_failed,500);
                               });
                       }
                       else if(respcoaCheck.hits.total === 1 )
@@ -174,67 +172,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInsertUser) {
-                                resMsg = 'coaing Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('coaing Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.coas_record_update_success);
                                 },
                                 function (errorInsertUser) {
-                                resMsg = 'Error : coaing document update ['+coaAliasIndexName+'] Failed! But old record exists.' + errorInsertUser;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : coaing document update ['+coaAliasIndexName+'] Failed! But old record exists.' + errorInsertUser);
+                                helper.success(res,msgConfig.coas_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the coa record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(respcoaCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New coa document creation ['+coaAliasIndexName+'] Failed! Duplicate coaing records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New coa document creation ['+coaAliasIndexName+'] Failed! Duplicate coaing records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.coas_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : coa record not found in coa Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : coa record not found in coa Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: coaAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodycoaObject
                                   })
                                   .then(function (respInsertcoa) {
-                                    resMsg = 'User Data existed and New coaing record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                    console.log('User Data existed and New coaing record inserted Successfully!');
+                                    helper.success(res,msgConfig.coas_record_insert_success);
                                     },
                                     function (errorInsertcoa) {
-                                    resMsg = 'Error : New coaing document insertion ['+ coaAliasIndexName_write +'] Failed!' + errorInsertcoa;
-                                    helper.failure(res,resMsg,500);
+                                    console.log('Error : New coaing document insertion ['+ coaAliasIndexName_write +'] Failed!' + errorInsertcoa);
+                                    helper.failure(res,msgConfig.coas_record_insert_failed + msgConfig.support_contact,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : coa document creation/updation ['+coaAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : coa document creation/updation ['+coaAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.coas_duplicate_user_found + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.coas_user_not_found + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.coas_user_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

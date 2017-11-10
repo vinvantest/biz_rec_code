@@ -4,6 +4,7 @@ var config  = require('../config.js');
 var configTran = require('../config/specific/transaction_template_columns.js');
 var configUser = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handleGET(req, res) {
   // Do something with the GET request
@@ -33,19 +34,18 @@ function handleOPTIONS(req, res) {
 function handlePOST (req, res, esClient)
 {
   // Do something with the POST request
-   var resMsg = '';
    console.log('Inside serer.post(createRule())');
    console.log('req.body.user = '+JSON.stringify(req.query.uid));
    console.log('req.body.user = '+JSON.stringify(req.body.tran));
    var uid = req.query.uid;
    var tranBody = req.body.tran;
    if(uid === null || uid === undefined) {
-    resMsg = "Error: req.query.uid required to create Index in ES ->" + uid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.uid required to create Index in ES ->" + uid);
+    helper.failure(res,msgConfig.transactions_invalid_uid + msgConfig.support_contact,401);
    }
    if(tranBody === null || tranBody === undefined) {
-    resMsg = "Error: req.body.tranBody required to create Index in ES ->" + JSON.stringify(tranBody);
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.body.tranBody required to create Index in ES ->" + JSON.stringify(tranBody));
+    helper.failure(res,msgConfig.transactions_invalid_transaction_body + msgConfig.support_contact,401);
    }
    var tranAliasIndexName = uid + config.Transactions_alias_token_read;
    var tranAliasIndexName_write = uid + config.Transactions_alias_token_write;
@@ -135,9 +135,8 @@ function handlePOST (req, res, esClient)
             if(respUserCheck.hits.total === 0)
             {
               //user doesn't exists
-              resMsg = 'User does not exists in user index. Cannot insert new coa record!';
-              console.log(resMsg);
-              helper.failure(res, resMsg, 404);
+              console.log('User does not exists in user index. Cannot insert new coa record!');
+              helper.failure(res, msgConfig.transactions_user_not_found + msgConfig.support_contact, 404);
             }
             else if(respUserCheck.hits.total === 1 )
             {
@@ -179,13 +178,12 @@ function handlePOST (req, res, esClient)
                                         body:  queryBodyTranObject
                             })
                             .then(function (respInserttran) {
-                              resMsg = 'User Data existed and Transactions record inserted Successfully!' ;
-                              console.log(resMsg);
-                              helper.success(res,resMsg);
+                              console.log('User Data existed and Transactions record inserted Successfully!');
+                              helper.success(res,msgConfig.transactions_record_insert_success);
                               },
-                              function (errorInserttran) {
-                              resMsg = 'Error : New Transactions document insertion ['+tranAliasIndexName_write+'] Failed!' + errorInserttran;
-                              helper.failure(res,resMsg,500);
+                              function (errorInsertTran) {
+                              console.log('Error : New Transactions document insertion ['+tranAliasIndexName_write+'] Failed!' + errorInsertTran);
+                              helper.failure(res,msgConfig.transactions_record_insert_failed,500);
                               });
                       }
                       else if(resptranCheck.hits.total === 1 )
@@ -201,67 +199,54 @@ function handlePOST (req, res, esClient)
                                          }
                             })
                               .then(function (respInserttran) {
-                                resMsg = 'Transaction Data existed and now updated Successfully!' ;
-                                console.log(resMsg);
-                                //esClient.close(); //use in lambda only
-                                helper.success(res,resMsg);
+                                console.log('Transaction Data existed and now updated Successfully!');
+                                helper.success(res,msgConfig.transactions_record_update_success);
                                 },
                                 function (errorInserttran) {
-                                resMsg = 'Error : Transactions document update ['+tranAliasIndexName+'] Failed! But old record exists.' + errorInserttran;
-                                console.log(resMsg);
-                                helper.success(res,resMsg);
+                                console.log('Error : Transactions document update ['+tranAliasIndexName+'] Failed! But old record exists.' + errorInserttran);
+                                helper.success(res,msgConfig.transactions_record_update_failed);
                                 //TODO update this response to failure with correct error code
                                 });
                       }
                       else {
                         //user has multiple records. Delete rest!
-                        console.log('Error :: Too many copies of the coa record present!');
-                        console.log('*****');
                         console.log(JSON.stringify(resptranCheck));
-                        console.log('*****');
-                        resMsg = 'Error : New Transactions document creation ['+tranAliasIndexName+'] Failed! Duplicate Transactions records for the user exists. Contact System Adminstrator.' + error;
-                        helper.failure(res,resMsg,500);
+                        console.log('Error : New Transactions document creation ['+tranAliasIndexName+'] Failed! Duplicate Transactions records for the user exists. Contact System Adminstrator.' + error);
+                        helper.failure(res,msgConfig.transactions_duplicate_records + msgConfig.support_contact,500);
                       }
                     }, function (error) {
-                            resMsg = 'Error : Transactions record not found in coa Index. Inserting new. Error = ' + error;
-                            console.log(resMsg);
+                            console.log('Error : Transactions record not found in coa Index. Inserting new. Error = ' + error);
                             esClient.index({
                                               index: tranAliasIndexName_write,
                                               type:  config.index_base_type,
                                               body:  queryBodyTranObject
                                   })
-                                  .then(function (respInserttran) {
-                                    resMsg = 'User Data existed and New Rule record inserted Successfully!' ;
-                                    console.log(resMsg);
-                                    helper.success(res,resMsg);
+                                  .then(function (respInsertTran) {
+                                    console.log('User Data existed and New Rule record inserted Successfully!');
+                                    helper.success(res,msgConfig.transactions_record_insert_success);
                                     },
-                                    function (errorInserttran) {
-                                    resMsg = 'Error : New Transactions document insertion ['+ tranAliasIndexName_write +'] Failed!' + errorInserttran;
-                                    helper.failure(res,resMsg,500);
+                                    function (errorInsertTran) {
+                                    console.log('Error : New Transactions document insertion ['+ tranAliasIndexName_write +'] Failed!' + errorInsertTran);
+                                    helper.failure(res,msgConfig.transactions_record_insert_failed,500);
                                     });
                 });//End: check user exists
             }//end user If === 1
             else
             {
                 //user has multiple records. Delete rest!
-                console.log('Too many user copies of the user present! Contact System Adminstrator!');
-                console.log('*****');
                 console.log(JSON.stringify(respUserCheck));
-                console.log('*****');
-                resMsg = 'Error : Transactions document creation/updation ['+tranAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error;
-                helper.failure(res,resMsg,500);
+                console.log('Error : Transactions document creation/updation ['+tranAliasIndexName_write+'] Failed! Duplicate user records of the user exists. Contact System Adminstrator.' + error);
+                helper.failure(res,msgConfig.transactions_duplicate_records + msgConfig.support_contact,500);
             }
           }, function (error) {
-                  resMsg = 'Error : User not found in user Index. Error = ' + error;
-                  console.log(resMsg);
-                  helper.failure(res,resMsg,404);
+                  console.log('Error : User not found in user Index. Error = ' + error);
+                  helper.failure(res,msgConfig.transactions_user_not_found + msgConfig.support_contact,404);
               });//End: check user exists
        }//end if user index exists
        else{
          //index dosen't exist. Create one.
-    			resMsg = 'User Index does not Exists!. Can not insert user to the index. Error Value = '+ error;
-          console.log(resMsg);
-          helper.failure(res,resMsg,500);
+    			console.log('User Index does not Exists!. Can not insert user to the index. Error Value = '+ error);
+          helper.failure(res,msgConfig.transactions_user_index_not_exists + msgConfig.support_contact,500);
        }
      });//end then - indices.exists()
 

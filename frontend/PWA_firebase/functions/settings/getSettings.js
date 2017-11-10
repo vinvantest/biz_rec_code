@@ -3,6 +3,7 @@
 var config  = require('../config.js');
 var configUser  = require('../config/specific/user_template_columns.js');
 var helper = require('../config/helpers/helper.js');
+var msgConfig = require('../config/global/messages.js');
 
 function handlePOST (req, res) {
   // Do something with the PUT request
@@ -24,7 +25,6 @@ function handleDELETE (req, res) {
 function handleGET (req, res, esClient)
 {
   // Do something with the GET request
-   var resMsg = '';
    console.log('Inside serer.post(getSettings())');
    console.log('req.query.uid = ' + req.query.uid);
    console.log('req.query.page = ' + req.query.page);
@@ -35,8 +35,8 @@ function handleGET (req, res, esClient)
    var fromVal = 0;
 
    if(routingUid === null || routingUid === undefined) {
-    resMsg = "Error: req.query.routingUid required to create Index in ES ->" + routingUid;
-    helper.failure(res,resMsg,401);
+    console.log("Error: req.query.routingUid required to create Index in ES ->" + routingUid);
+    helper.failure(res,msgConfig.settings_invalid_uid + msgConfig.support_contact,401);
    }
    if(sizeVal == null || sizeVal === undefined)
       sizeVal = 10;
@@ -51,7 +51,7 @@ function handleGET (req, res, esClient)
 		{
 			if (error) {
 				console.trace('Error: elasticsearch cluster is down!', error);
-				helper.failure(res, 'Error: elasticsearch cluster is down! -> ' + error, 500);
+				helper.failure(res, msgConfig.elastic_cluster_down, 500);
 			} else {
 				console.log('Elasticsearch Instance on ObjectRocket Connected!');
 			}
@@ -71,9 +71,6 @@ function handleGET (req, res, esClient)
       if(error)
       {
        console.log('Index ['+config.user_index_name+'] already exists in ElasticSearch. Response is ->'+error);
-       resMsg = 'Index ['+config.user_index_name+'] already exists in ElasticSearch. Checking if user record exists -'+JSON.stringify(resp);
-
-       //check if uid exists
        //check if UID exists in users index using global_alisas_for_search_users_index
        var queryBodyCheckUserExists = {
             index : config.user_index_search_alias_name,
@@ -94,8 +91,8 @@ function handleGET (req, res, esClient)
            if(respUserCheck.hits.total === 0){
              //user doesn't exists
              console.log('User does not exists in user index. - '+ JSON.stringify(respUserCheck));
-             resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-             helper.failure(res,resMsg,500);
+             console.log('Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error);
+             helper.failure(res,msgConfig.settings_user_not_found + msgConfig.support_contact,500);
              }
              else if(respUserCheck.hits.total === 1 ){
                //only one record for the user. Update the user record for the user.uid
@@ -119,34 +116,29 @@ function handleGET (req, res, esClient)
                console.log('getSettings search DSL -> ' + JSON.stringify(queryBody));
                esClient.search(queryBody)
                .then(function (resp) {
-                   resMsg = 'settings Data Retrieved Successfully!' ;
-                   console.log(resMsg);
+                   console.log('Settings Data Retrieved Successfully!');
                    helper.success(res,resp.hits);
                    },
                      function (error) {
-                       resMsg = 'Error : settings document read ['+indexAliasName+'] Failed!' + JSON.stringify(error);
-                         helper.failure(res,resMsg,500);
+                       console.log('Error : settings document read ['+indexAliasName+'] Failed!' + JSON.stringify(error));
+                       helper.failure(res,msgConfig.settings_record_retrieve_failed,500);
                    });
                }
              else{
                //user has multiple records. Delete rest!
-               console.log('Too many copies of the user present! Contact System Adminstrator!');
-               console.log('*****');
                console.log(JSON.stringify(respUserCheck));
-               console.log('*****');
-               resMsg = 'Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error;
-               helper.failure(res,resMsg,500);
+               console.log('Error : Too many user records found ['+config.user_index_write_alias_name+']! Duplicate records of the user exists. Conctact System Adminstrator.' + error);
+               helper.failure(res,msgConfig.settings_duplicate_user_found + msgConfig.support_contact,500);
              }
          }, function (error) {
-                 resMsg = 'Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error;
-                 helper.failure(res,resMsg,500);
+                 console.log('Error : User does not exists in database ['+config.user_index_write_alias_name+']. Contact System Adminstrator.' + error);
+                 helper.failure(res,msgConfig.settings_user_not_exists + msgConfig.support_contact,500);
              });//End: check user exists
       }//end if
       else {
         //index dosen't exist. Create one.
-         resMsg = 'coa Index does not Exists!. Error Value = '+JSON.stringify(err);
-         console.log(resMsg);
-         helper.failure(res,resMsg,404);
+         console.log('Settings Index does not Exists!. Error Value = '+JSON.stringify(err));
+         helper.failure(res,msgConfig.settings_user_index_not_exists + msgConfig.support_contact,404);
       } // end else - index doesn't exist
    });//end then - indices.exists()
 
