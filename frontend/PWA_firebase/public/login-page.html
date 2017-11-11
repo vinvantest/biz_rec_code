@@ -129,6 +129,33 @@
         background-color: #000000;
       }
 
+      paper-spinner.multi1 {
+      --paper-spinner-layer-1-color: var(--paper-purple-500);
+      --paper-spinner-layer-2-color: var(--paper-green-500);
+      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+      --paper-spinner-layer-4-color: var(--paper-red-500);
+      --paper-spinner-stroke-width: 6px;
+    }
+
+    paper-spinner.multi2 {
+      --paper-spinner-layer-4-color: var(--paper-red-500);
+      --paper-spinner-layer-2-color: var(--paper-green-500);
+      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+      --paper-spinner-layer-1-color: var(--paper-purple-500);
+      --paper-spinner-stroke-width: 6px;
+    }
+
+    paper-spinner.multi3 {
+      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+      --paper-spinner-layer-1-color: var(--paper-purple-500);
+      --paper-spinner-layer-4-color: var(--paper-red-500);
+      --paper-spinner-layer-2-color: var(--paper-green-500);
+      --paper-spinner-stroke-width: 6px;
+  }
+    paper-spinner.thick {
+    --paper-spinner-stroke-width: 6px;
+    }
+
     </style>
 
     <firebase-auth
@@ -153,10 +180,10 @@
     <template is="dom-if" if="[[!user]]">
       <div>
         <paper-avatar mini on-tap="hire"></paper-avatar>
-
       </div>
-      </template>
-      <template is="dom-if" if="[[user]]">
+    </template>
+
+    <template is="dom-if" if="[[user]]">
             <div>
             <paper-avatar mini on-tap="_logout"
                     image-src="[[user.photoURL]]"
@@ -164,6 +191,17 @@
             </paper-avatar>
             </div>
       </template>
+
+      <paper-dialog id="loginBusyDialog" style="width: 60%;">
+        <div>
+            <h5 style="color: black;">Siging in...</h5>
+        </div>
+        <div>
+            <paper-spinner active class="multi1"></paper-spinner>
+            <paper-spinner active class="multi2"></paper-spinner>
+            <paper-spinner active class="multi3"></paper-spinner>
+        </div>
+      </paper-dialog>
 
       <paper-dialog id="dialog" backdrop transition="core-transition-bottom" class="paper-dialog-login">
         <div id="signindiv">
@@ -229,43 +267,20 @@
     class LoginPage extends Polymer.Element {
       static get is() { return 'login-page'; }
 
+      ready() {
+             super.ready();
+             //
+           }
+
       static get properties() {
         return {
-          user: {
-            type: Object,
-            notify: true,
-            readOnly: false,
-            observer: '_userChanged',
-          },
-          signedin: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_signedinChanged',
-          },
-          statusKnown: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_statusChanged',
-          },
-          storedUser: {
-            type: Object,
-            value: {
-              name: ""
-            }
-          },
-          errorlogin: {
-            type: String,
-          },
-          isGoogleSignedIn : {
-            type: Boolean,
-            value: false
-          },
-          isFacebookSignedIn : {
-            type: Boolean,
-            value: false
-          }
+          user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+          signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+          statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' },
+          storedUser: { type: Object, value: { name: ""} },
+          errorlogin: { type: String },
+          isGoogleSignedIn : { type: Boolean, value: false },
+          isFacebookSignedIn : { type: Boolean, value: false}
         };
       }
 
@@ -273,6 +288,18 @@
         //console.log('inside _userChanged() - user object -->'+ JSON.stringify(user));
         this.user = user;
         //console.log('exiting _userChanged() - this.$.user object -->'+ JSON.stringify(this.user));
+        this.$.loginBusyDialog.toggle();
+        firebase.auth().getRedirectResult().then(result => {
+              // If user just signed in or already signed in, hide spinner.
+              if (result.user || firebase.auth().currentUser) {
+                //hideSpinner();
+                this.$.loginBusyDialog.toggle();
+                this.signinFlag = false;
+              } else {
+                //hideSpinner();
+                this.$.loginBusyDialog.toggle();
+              }
+          });
       }
 
       _signedinChanged(signedin){
@@ -327,9 +354,11 @@
          provider.addScope('https://www.googleapis.com/auth/plus.login');
          provider.addScope('profile');
          provider.addScope('email');
+         console.log('calling googleSignInWithRedirect()');
          return this.$.auth.signInWithRedirect(provider).then(function (result){
          //return this.$.auth.signInWithPopup(provider).then(function (result){
             //do something on success
+            console.log('inside function redirect success!');
             document.getElementById('toast').show(result.user.displayName +' signed in using Google!');
             this.storedUser = result.user;
             this.isGoogleSignedIn = true;
@@ -391,6 +420,7 @@
                console.log('app domain is not authorized for OAuth operations for your Firebase project. Edit the list of authorized domains from the Firebase console');
              }
         });
+
      }
 
      _logout(){

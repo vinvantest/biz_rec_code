@@ -295,6 +295,42 @@
       </div>
    </paper-dialog>
 
+   <paper-dialog id="detailBankRecord" backdrop transition="core-transition-bottom">
+     <template is="dom-if" if="[[detailBankRecord]]">
+         <div><h4 style="color: grey;">Bank Record</h4></div>
+         <div style="float: left">
+           <div>
+             <h7><b>Provider Name:</b></h7> [[detailBankRecord_bank_providerName]]
+          </div>
+          <div>
+           <h7><b>Account Name:</b></h7> [[detailBankRecord_bank_bankAccountName]]
+          </div>
+          <div>
+            <h7><b>Account Number:</b></h7> [[detailBankRecord_bank_bankAccountNumber]]
+           </div>
+           <div>
+             <h7><b>BSB:</b></h7> [[detailBankRecord_bank_BSB]]
+          </div>
+          <div>
+              <h7><b>Branch Name:</b></h7> [[detailBankRecord_bank_Branch]]
+          </div>
+          <div>
+             <h7><b>Branch Number:</b></h7> [[detailBankRecord_bank_BranchNumber]]
+          </div>
+          <div>
+            <h7><b>Amount:</b></h7> [[detailBankRecord_bank_amountDue]]
+          </div>
+          <div>
+            <h7><b>Available Balance:</b></h7> [[detailBankRecord_bank_availableBalance]]
+          </div>
+        </div>
+        <div>
+          <paper-button id="detailBankRecordDialogButton" on-tap="dissmisDetailBankDialog" class="green" raised>Ok</paper-button>
+          <p>....</p>
+        </div>
+  </template>
+   </paper-dialog>
+
    <template is="dom-if" if="[[!signedin]]">
     <div class="card">
       <div class="circle">
@@ -375,8 +411,8 @@
                                                                   on-tap="_updateDate" mini></paper-icon-button>
                                       <div style="text-align: right">
                                           <h9 style="color: grey">More...</h9>
-                                          <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBanks" bank="[[bank]]"
-                                                                      on-tap="_showMoreBanks"></paper-icon-button>
+                                          <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBankRecord" bank="[[bank]]"
+                                                                      on-tap="_showMoreBankRecord"></paper-icon-button>
                                       </div>
                                   </div>
                                </div>
@@ -458,71 +494,30 @@
 
       static get properties() {
         return {
-          user: {
-            type: Object,
-            notify: true,
-            readOnly: false,
-            observer: '_userChanged',
-          },
-          signedin: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_signedinChanged',
-          },
-          statusKnown: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_statusChanged',
-          },
-          banksData: {
-            type: Object,
-            notify: true
-          },
-          ajaxError: {
-            type: Boolean,
-            value: false,
-            notify: true
-          },
-          ajaxErrorMsg: {
-            type: String,
-          },
-          busyDialogLoadMsg: {
-            type: String,
-            value: 'Loading Information From Server',
-            notify: true
-          },
-          firstTimeLoad: {
-            type: Boolean,
-            notify: true,
-            value: true
-          },
-          active: {
-            type: Boolean,
-            value: false,
-          },
-          currentPage: {
-            type: Number,
-            notify: true,
-            value: -1
-          },
-          currentPageIcon: {
-            type: String,
-            notify: true,
-            value : 'image:filter-1'
-          },
-          counterCardColor: {
-            type: Number,
-            notify: true,
-            value: 0
-          },
-          recordsRetrieved: {
-            type: Number,
-            notify: true,
-            value: 0
-          }
+          user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+          signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+          statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' },
+          banksData: { type: Object, notify: true },
+          ajaxError: { type: Boolean, value: false, notify: true },
+          ajaxErrorMsg: { type: String },
+          busyDialogLoadMsg: { type: String, value: 'Loading Information From Server', notify: true },
+          firstTimeLoad: { type: Boolean, notify: true, value: true },
+          active: { type: Boolean, value: false },
+          currentPage: { type: Number, notify: true, value: -1 },
+          currentPageIcon: { type: String, notify: true, value : 'image:filter-1' },
+          counterCardColor: { type: Number, notify: true, value: 0 },
+          recordsRetrieved: { type: Number, notify: true, value: 0 },
+          detailBankRecord_id : { type: Object },
+          detailBankRecord_bank_providerName : { type: Object },
+          detailBankRecord_bank_bankAccountName : { type: Object },
+          detailBankRecord_bank_bankAccountNumber : { type: Object },
+          detailBankRecord_bank_BSB : { type: Object },
+          detailBankRecord_bank_Branch : { type: Object },
+          detailBankRecord_bank_BranchNumber : { type: Object },
+          detailBankRecord_bank_amountDue : { type: Object },
+          detailBankRecord_bank_availableBalance : { type: Object }
 
+          }
         };
       }
 
@@ -701,14 +696,6 @@
         }
         console.log('pageIcon ='+ pageIcon);
         return pageIcon;
-      }
-
-      expandCollapseBankCard(event, detail, sender) {
-            var id = event.model.bank._id;
-            var selector = '#collapse' + id;
-            console.log('selector is ->'+selector);
-            console.log(event.currentTarget.parentElement.parentElement.parentElement);
-            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
       }
 
       _getBanksParams(uid)
@@ -949,6 +936,25 @@
 
       dissmisErrorDialog(){
         this.ajaxError = false;
+      }
+
+      dissmisDetailBankDialog(){
+        this.$.detailBankRecord.toggle();
+      }
+
+      _showMoreBankRecord(event, detail, sender){
+        var key = event.model.bank._id;
+        console.log('bank id: '+key);
+        detailBankRecord_id = event.model.bank._id;
+        detailBankRecord_bank_providerName = event.model.bank._source.bank_providerName;
+        detailBankRecord_bank_bankAccountName = event.model.bank._source.bank_bankAccountName;
+        detailBankRecord_bank_bankAccountNumber = event.model.bank._source.bank_bankAccountNumber;
+        detailBankRecord_bank_BSB = event.model.bank._source.bank_BSB;
+        detailBankRecord_bank_Branch = event.model.bank._source.bank_Branch;
+        detailBankRecord_bank_BranchNumber = event.model.bank._source.bank_BranchNumber;
+        detailBankRecord_bank_amountDue = event.model.bank._source.bank_amountDue;
+        detailBankRecord_bank_availableBalance = event.model.bank._source.bank_availableBalance;
+        this.$.detailBankRecord.toggle();
       }
 
     }
