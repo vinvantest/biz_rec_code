@@ -129,15 +129,7 @@
         background-color: #000000;
       }
 
-      paper-spinner.multi1 {
-      --paper-spinner-layer-1-color: var(--paper-purple-500);
-      --paper-spinner-layer-2-color: var(--paper-green-500);
-      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
-      --paper-spinner-layer-4-color: var(--paper-red-500);
-      --paper-spinner-stroke-width: 6px;
-    }
-
-    paper-spinner.multi2 {
+    paper-spinner.multi {
       --paper-spinner-layer-4-color: var(--paper-red-500);
       --paper-spinner-layer-2-color: var(--paper-green-500);
       --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
@@ -145,13 +137,6 @@
       --paper-spinner-stroke-width: 6px;
     }
 
-    paper-spinner.multi3 {
-      --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
-      --paper-spinner-layer-1-color: var(--paper-purple-500);
-      --paper-spinner-layer-4-color: var(--paper-red-500);
-      --paper-spinner-layer-2-color: var(--paper-green-500);
-      --paper-spinner-stroke-width: 6px;
-  }
     paper-spinner.thick {
     --paper-spinner-stroke-width: 6px;
     }
@@ -197,9 +182,9 @@
             <h5 style="color: black;">Siging in...</h5>
         </div>
         <div>
-            <paper-spinner active class="multi1"></paper-spinner>
-            <paper-spinner active class="multi2"></paper-spinner>
-            <paper-spinner active class="multi3"></paper-spinner>
+          <paper-pulsating-progress active></paper-pulsating-progress>
+          <paper-spinner active class="multi"></paper-spinner>
+          <paper-pulsating-progress active></paper-pulsating-progress>
         </div>
       </paper-dialog>
 

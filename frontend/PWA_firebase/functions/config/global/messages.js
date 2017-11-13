@@ -9,7 +9,7 @@ var msgConfig = {
 	//BANKS
 	banks_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	banks_invalid_bank_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	banks_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	banks_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	banks_record_insert_success : 'Banking record inserted Successfully!',
 	banks_record_insert_failed : 'Banking record inserted Failed!',
 	banks_record_update_success : 'Banking record update Successfully!',
@@ -24,7 +24,7 @@ var msgConfig = {
 	//COAS
 	coas_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	coas_invalid_coa_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	coas_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	coas_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	coas_record_insert_success : 'Chart of Accounts record inserted Successfully!',
 	coas_record_insert_failed : 'Chart of Accounts record inserted Failed!',
 	coas_record_update_success : 'Chart of Accounts record update Successfully!',
@@ -40,7 +40,7 @@ var msgConfig = {
 	//CUSTOMER
 	customers_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	customers_invalid_customer_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	customers_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	customers_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	customers_record_insert_success : 'Customers record inserted Successfully!',
 	customers_record_insert_failed : 'Customers record inserted Failed!',
 	customers_record_update_success : 'Customers record update Successfully!',
@@ -55,7 +55,7 @@ var msgConfig = {
 	//INVOICES
 	invoices_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	invoices_invalid_invoice_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	invoices_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	invoices_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	invoices_record_insert_success : 'Invoices record inserted Successfully!',
 	invoices_record_insert_failed : 'Invoices record inserted Failed!',
 	invoices_record_update_success : 'Invoices record update Successfully!',
@@ -70,7 +70,7 @@ var msgConfig = {
 	//PAYMENTS
 	payments_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	payments_invalid_payment_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	payments_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	payments_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	payments_record_insert_success : 'Payments record inserted Successfully!',
 	payments_record_insert_failed : 'Payments record inserted Failed!',
 	payments_record_update_success : 'Payments record update Successfully!',
@@ -85,7 +85,7 @@ var msgConfig = {
 	//RULES
 	rules_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	rules_invalid_rule_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	rules_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	rules_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	rules_record_insert_success : 'Rules record inserted Successfully!',
 	rules_record_insert_failed : 'Rules record inserted Failed!',
 	rules_record_update_success : 'Rules record update Successfully!',
@@ -100,7 +100,7 @@ var msgConfig = {
 	//SETTINGS
 	settings_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	settings_invalid_setting_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	settings_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	settings_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	settings_record_insert_success : 'Settings record inserted Successfully!',
 	settings_record_insert_failed : 'Settings record inserted Failed!',
 	settings_record_update_success : 'Settings record update Successfully!',
@@ -115,7 +115,7 @@ var msgConfig = {
 	//SUPPLIERS
 	suppliers_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	suppliers_invalid_supplier_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	suppliers_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	suppliers_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	suppliers_record_insert_success : 'Suppliers record inserted Successfully!',
 	suppliers_record_insert_failed : 'Suppliers record inserted Failed!',
 	suppliers_record_update_success : 'Suppliers record update Successfully!',
@@ -130,7 +130,7 @@ var msgConfig = {
 	//TRANSACTIONS
   transactions_invalid_uid : 'System error: User login required. If logged in succesful and still get the errors then contact System Adminstrator: ',
 	transactions_invalid_transaction_body : 'System error: Invalid input data. Check your input fields and resubmit. If problem persists then contact system Adminstrator: ',
-	transactions_user_not_exists : 'User does not exists in user index! Contact System Adminstrator: ',
+	transactions_user_not_exists : 'User does not exists! Contact System Adminstrator: ',
 	transactions_record_insert_success : 'Transactions record inserted Successfully!',
 	transactions_record_insert_failed : 'Transactions record inserted Failed!',
 	transactions_record_update_success : 'Transactions record update Successfully!',

@@ -51,198 +51,11 @@
       color: white;
     }
 
-    /*
-        *{
-          margin: 0;
-          padding: 0;
-          -webkit-box-sizing: border-box;
-                  box-sizing: border-box;
-        }
-    */
-
-    h1{
-      font-size: 1.5rem;
-      font-family: 'sans-serif';
-      font-weight: normal;
-      color: #444;
-      text-align: center;
-      margin: 2rem 0;
-    }
-
-    .wrapper{
-      width: 90%;
-      margin: 0 auto;
-      max-width: 80rem;
-    }
-
-    .cols{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-      -webkit-box-pack: center;
-          -ms-flex-pack: center;
-              justify-content: center;
-    }
-
-    .col{
-      width: calc(25% - 2rem);
-      margin: 1rem;
-      cursor: pointer;
-    }
-
-    .container{
-      -webkit-transform-style: preserve-3d;
-              transform-style: preserve-3d;
-        -webkit-perspective: 1000px;
-                perspective: 1000px;
-    }
-
-    .front,
-    .back{
-      background-size: cover;
-        background-position: center;
-        -webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        -o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-        text-align: center;
-        min-height: 280px;
-        height: auto;
-        border-radius: 10px;
-        color: #fff;
-        font-size: 1rem;
-    }
-
-    .back{
-      background: #cedce7;
-      background: -webkit-linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
-      background: -o-linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
-      background: linear-gradient(45deg,  #cedce7 0%,#8e9091 100%);
-    }
-
-    .front:after{
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        content: '';
-        display: block;
-        opacity: .6;
-        background-color: #000;
-        -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-        border-radius: 10px;
-    }
-    .container:hover .front,
-    .container:hover .back{
-        -webkit-transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        -o-transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-        transition: transform .7s cubic-bezier(0.4, 0.2, 0.2, 1), -webkit-transform .7s cubic-bezier(0.4, 0.2, 0.2, 1);
-    }
-
-    .back{
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-    }
-
-    .inner{
-        -webkit-transform: translateY(-50%) translateZ(60px) scale(0.94);
-                transform: translateY(-50%) translateZ(60px) scale(0.94);
-        top: 50%;
-        position: absolute;
-        left: 0;
-        width: 100%;
-        padding: 2rem;
-        -webkit-box-sizing: border-box;
-                box-sizing: border-box;
-        outline: 1px solid transparent;
-        -webkit-perspective: inherit;
-                perspective: inherit;
-        z-index: 2;
-    }
-
-    .container .back{
-        -webkit-transform: rotateY(180deg);
-                transform: rotateY(180deg);
-        -webkit-transform-style: preserve-3d;
-                transform-style: preserve-3d;
-    }
-
-    .container .front{
-        -webkit-transform: rotateY(0deg);
-                transform: rotateY(0deg);
-        -webkit-transform-style: preserve-3d;
-                transform-style: preserve-3d;
-    }
-
-    .container:hover .back{
-      -webkit-transform: rotateY(0deg);
-              transform: rotateY(0deg);
-      -webkit-transform-style: preserve-3d;
-              transform-style: preserve-3d;
-    }
-
-    .container:hover .front{
-      -webkit-transform: rotateY(-180deg);
-              transform: rotateY(-180deg);
-      -webkit-transform-style: preserve-3d;
-              transform-style: preserve-3d;
-    }
-
-    .front .inner p{
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      position: relative;
-    }
-
-    .front .inner p:after{
-      content: '';
-      width: 4rem;
-      height: 2px;
-      position: absolute;
-      background: #8e9091;
+    h8.subtitle {
       display: block;
-      left: 0;
-      right: 0;
-      margin: 0 auto;
-      bottom: -.75rem;
-    }
-
-    .front .inner span{
-      color: rgba(255,255,255,0.7);
-      font-size: 1rem;
-      font-family: 'sans-serif';
-      font-weight: 300;
-    }
-
-    @media screen and (max-width: 64rem){
-      .col{
-        width: calc(33.333333% - 2rem);
-      }
-    }
-
-    @media screen and (max-width: 48rem){
-      .col{
-        width: calc(50% - 2rem);
-      }
-    }
-
-    @media screen and (max-width: 32rem){
-      .col{
-        width: 100%;
-        margin: 0 0 2rem 0;
-      }
+      font-size: 0.8em;
+      margin-top: 2px;
+      max-width: 150px;
     }
 
   </style>
@@ -280,9 +93,8 @@
     <template is="dom-if" if="[[firstTimeLoad]]">
           <paper-icon-button icon=""></paper-icon-button>
           <paper-icon-button icon=""></paper-icon-button>
-          <paper-icon-button icon=""></paper-icon-button>
           <iron-image style="width:200px; height:200px;"
-  sizing="cover" preload fade src="../images/landing/LogoTransperentLoadData.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
+  sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
     </template>
   </template>
 
@@ -296,7 +108,6 @@
    </paper-dialog>
 
    <paper-dialog id="detailBankRecord" backdrop transition="core-transition-bottom">
-     <template is="dom-if" if="[[detailBankRecord]]">
          <div><h4 style="color: grey;">Bank Record</h4></div>
          <div style="float: left">
            <div>
@@ -328,7 +139,6 @@
           <paper-button id="detailBankRecordDialogButton" on-tap="dissmisDetailBankDialog" class="green" raised>Ok</paper-button>
           <p>....</p>
         </div>
-  </template>
    </paper-dialog>
 
    <template is="dom-if" if="[[!signedin]]">
@@ -343,92 +153,43 @@
   </template>
 
 <!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
-<!-- "image:filter-9-plus"   "image:filter-9" "image:filter" "av:skip-next" "av:play-arrow" "av:skip-previous" "av:fast-forward" "av:fast-rewind"-->
-<template is="dom-if" if="[[signedin]]">
-  <template is="dom-if" if="[[banksData.successFlag]]">
-
-    <div style="float:left; width:90%">
-      <div id="leftThing2" style="float:left; width:25%;">
-        <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: black;"></paper-icon-button>
-        <h7>Pages</h7>
+  <template is="dom-if" if="[[signedin]]">
+    <template is="dom-if" if="[[banksData.successFlag]]">
+      <div style="float:left; width:90%">
+        <div id="leftThing2" style="float:left; width:25%;">
+          <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: black;"></paper-icon-button>
+          <h8 class="subtitle">Pages</h8>
+        </div>
+          <div id="leftThing1" style="float:left; width:10%;">
+            <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
+          </div>
+          <div id="leftThing0" style="float:left; width:30%;" >
+              <paper-icon-button id="PageTitle-icon-button0" icon="[[currentPageIcon]]" style="color: green;"></paper-icon-button>
+              <h8 class="subtitle">Current</h8>
+          </div>
+          <template is="dom-if" if="{{_enableNextPage(banksData.data.total)}}">
+              <div id="leftThing3" style="float:right; width:35%;">
+                <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-previous" on-tap="sendPrevGetBanks" style="color: black;"></paper-icon-button>
+                <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-next" on-tap="sendNextGetBanks" style="color: black;"></paper-icon-button>
+              </div>
+          </template>
       </div>
-        <div id="leftThing1" style="float:left; width:15%;">
-          <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
-        </div>
-        <div id="leftThing0" style="float:left; width:35%;" >
-            <paper-icon-button id="PageTitle-icon-button0" icon="[[currentPageIcon]]" style="color: green;"></paper-icon-button>
-            <h7>&nbsp;</h7>
-        </div>
-        <template is="dom-if" if="{{_enableNextPage(banksData.data.total)}}">
-            <div id="leftThing3" style="float:right; width:25%;">
-              <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-previous" on-tap="sendPrevGetBanks" style="color: black;"></paper-icon-button>
-              <paper-icon-button id="PageTitle-icon-button3" icon="av:skip-next" on-tap="sendNextGetBanks" style="color: black;"></paper-icon-button>
-            </div>
-        </template>
-    </div>
-    <template is="dom-if" if="[[_checkZeroRecords(banksData.data.total)]]">
-        <div>
-          <paper-card style="float:center; width: 70%" class="black">
-               <h4 style="color: white;">No Records Found</h4>
-          </paper-card>
-        </div>
-    </template>
-    <div class="wrapper">
-        <div class="cols">
-            <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
-                   <div class="col" ontouchstart="this.classList.toggle('hover');">
-                       <div class="container">
-                           <div class="front" style="{{_computeCardColor()}}">
-                               <div class="inner">
-                                 <div>
-                                       <paper-icon-button icon="my-icons:blur-on" style="color: white;"></paper-icon-button>
-                                       <p>[[bank._source.bank_providerName]]</p>
-                                 </div>
-                               </div>
-                           </div>
-                           <div class="back">
-                               <div class="inner">
-                                 <div class="circle">
-                                   <paper-icon-button icon="places:ac-unit" style="color: #e02871;"></paper-icon-button>
-                                 </div>
-                                 <div>
-                                    <paper-icon-button icon=""></paper-icon-button>
-                                 </div>
-                                 <div>
-                                    <div class="horizontal justified" style="float:left;">
-                                      <iron-icon icon="av:stop"></iron-icon>
-                                           <b>BSB: </b> [[bank._source.bank_BSB]]
-                                    </div>
-                                    <div class="horizontal justified" style="float:left;">
-                                      <iron-icon icon="av:stop"></iron-icon>
-                                          <b>Number: </b> [[bank._source.bank_bankAccountNumber]]
-                                    </div>
-                                  </div>
-                                   <div class="horizontal justified" style="float: left;">
-                                     <iron-icon icon="av:stop"></iron-icon>
-                                     <H7>Record Date:</h7> bank._source.bank_record_updated
-                                      <paper-icon-button icon="my-icons:highlight-off" style="color: black;" id="deleteDate" bank="[[bank]]"
-                                                                  on-tap="_updateDate" mini></paper-icon-button>
-                                      <div style="text-align: right">
-                                          <h9 style="color: grey">More...</h9>
-                                          <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBankRecord" bank="[[bank]]"
-                                                                      on-tap="_showMoreBankRecord"></paper-icon-button>
-                                      </div>
-                                  </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-
-        <!--
+      <template is="dom-if" if="[[_checkZeroRecords(banksData.data.total)]]">
+          <div>
+            <paper-card style="float:center; width: 70%" class="black">
+                 <h4 style="color: white;">No Records Found</h4>
+            </paper-card>
+          </div>
+      </template>
+      <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
        <paper-card style="float:center; width: 90%">
          <div>
            <div>
                  <div style="float:center" flex>
                        <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
-                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; [[bank._source.bank_providerName]]
+                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; <h9>[[bank._source.bank_providerName]]</h9>
                        <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
-                                               id$="bt_readmore" note="[[bank]]"
+                                               id$="bt_readmore" bank="[[bank]]"
                                                on-tap="expandCollapseBankCard"></paper-icon-button>
                  </div>
              </div>
@@ -470,19 +231,17 @@
                                  <div style="text-align: right">
                                      <h7 style="color: grey">More...</h7>
                                      <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBanks" bank="[[bank]]"
-                                                        on-tap="_showMoreBanks"></paper-icon-button>
+                                                        on-tap="_showMoreBankRecord"></paper-icon-button>
                                  </div>
                        </div>
                   </iron-collapse>
                </div>
            </div>
          </paper-card>
-
-       -->
           </template>
         </div>
      </div>
-     </template>
+    </template>
   </template>
 
 
@@ -519,7 +278,6 @@
 
           }
         };
-      }
 
       _userChanged(user){
         this.user = user;
@@ -546,10 +304,11 @@
         return tempDate.toString('YYYY-MM-DD');
       }
 
+      //jsbin - not working
       _computeShowBanks(signedin, successFlag){
-        //console.log('signedin ='+signedin+' , successFlag='+successFlag);
+        console.log('signedin ='+signedin+' , successFlag='+successFlag);
         var temp = !signedin || !successFlag;
-        //console.log('value returned ='+temp);
+        console.log('value returned ='+temp);
         //retrun true only when both are True
         return (!signedin || !successFlag);
       }
@@ -696,11 +455,6 @@
         }
         console.log('pageIcon ='+ pageIcon);
         return pageIcon;
-      }
-
-      _getBanksParams(uid)
-      {
-        return { "uid" : uid };
       }
 
       sendPrevGetBanks(){
@@ -945,17 +699,23 @@
       _showMoreBankRecord(event, detail, sender){
         var key = event.model.bank._id;
         console.log('bank id: '+key);
-        detailBankRecord_id = event.model.bank._id;
-        detailBankRecord_bank_providerName = event.model.bank._source.bank_providerName;
-        detailBankRecord_bank_bankAccountName = event.model.bank._source.bank_bankAccountName;
-        detailBankRecord_bank_bankAccountNumber = event.model.bank._source.bank_bankAccountNumber;
-        detailBankRecord_bank_BSB = event.model.bank._source.bank_BSB;
-        detailBankRecord_bank_Branch = event.model.bank._source.bank_Branch;
-        detailBankRecord_bank_BranchNumber = event.model.bank._source.bank_BranchNumber;
-        detailBankRecord_bank_amountDue = event.model.bank._source.bank_amountDue;
-        detailBankRecord_bank_availableBalance = event.model.bank._source.bank_availableBalance;
+        this.detailBankRecord_id = event.model.bank._id;
+        this.detailBankRecord_bank_providerName = event.model.bank._source.bank_providerName;
+        this.detailBankRecord_bank_bankAccountName = event.model.bank._source.bank_bankAccountName;
+        this.detailBankRecord_bank_bankAccountNumber = event.model.bank._source.bank_bankAccountNumber;
+        this.detailBankRecord_bank_BSB = event.model.bank._source.bank_BSB;
+        this.detailBankRecord_bank_Branch = event.model.bank._source.bank_Branch;
+        this.detailBankRecord_bank_BranchNumber = event.model.bank._source.bank_BranchNumber;
+        this.detailBankRecord_bank_amountDue = event.model.bank._source.bank_amountDue;
+        this.detailBankRecord_bank_availableBalance = event.model.bank._source.bank_availableBalance;
         this.$.detailBankRecord.toggle();
       }
+
+      expandCollapseBankCard(event, detail, sender) {
+            var id = event.model.bank._id;
+            var selector = '#collapse' + id;
+            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+        }
 
     }
 

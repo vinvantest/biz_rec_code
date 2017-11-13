@@ -107,15 +107,14 @@
     <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
           <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
           <div>
+            <!--
             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
             <paper-spinner active class="multi"></paper-spinner>
             <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-            <!--
-            <paper-spinner-lite active class="green"></paper-spinner-lite>
-            <paper-spinner-lite active class="orange"></paper-spinner-lite>
-            <paper-spinner-lite active class="yellow"></paper-spinner-lite>
-            <paper-spinner-lite active class="blue"></paper-spinner-lite>
           -->
+          <paper-pulsating-progress active></paper-pulsating-progress>
+          <paper-spinner active class="multi"></paper-spinner>
+          <paper-pulsating-progress active></paper-pulsating-progress>
           </div>
     </paper-dialog>
 
@@ -288,43 +287,16 @@
         static get is() { return 'notes-page'; }
         static get properties() {
               return {
-                notes: {
-                  type: Object,
-                  observer: 'dataChanged',
-                  notify: true,
-                },
-                user: {
-                  type: Object,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_userChanged',
-                },
-                signedin: {
-                  type: Boolean,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_signedinChanged',
-                },
-                statusKnown: {
-                  type: Boolean,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_statusChanged',
-                },
-                myDate: {
-                    type: String,
-                    value: '',
-                    observer: '_myDateChanged'
-                },
-                active: {
-                  type: Boolean,
-                  value: false,
-                }
+                notes: { type: Object, observer: 'dataChanged', notify: true },
+                user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+                signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+                statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' },
+                myDate: { type: String, value: '', observer: '_myDateChanged' },
+                active: { type: Boolean, value: false }
             };
         }
         _myDateChanged() {
           // if date is changed
-
         }
 
         _userChanged(user){
@@ -362,20 +334,15 @@
 
       dataChanged(newData, oldData) {
         //commenting it as it is progress bar is being computed in computeSpanHidden()
-
         if(this.signedin)
         {
-          //console.log('inside dataChanged');
-          this.active = true;
+          //this.active = true;
           this.$.dialogBusy.toggle();
         }
         else {
-          this.active = true;
+          //this.active = true;
           this.$.dialogBusy.toggle();
         }
-        // do something when the query returns values
-        //console.log('new data: '+JSON.stringify(newData));
-        //console.log('old data: '+JSON.stringify(newData));
       }
 
       _removeNote(e){
@@ -408,14 +375,14 @@
           console.log(index);
           if(this.notes.length - 1 === index)
             {
-              this.active = false;
+              //this.active = false;
               this.$.dialogBusy.toggle();
               return true;
             }
           else
             {
               //keep showing the spinner
-              this.active = true;
+              //this.active = true;
               //this.$.dialogBusy.toggle();
               return false;
             }
