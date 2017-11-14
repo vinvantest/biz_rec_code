@@ -22,7 +22,6 @@
 <link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
 <link rel="import" href="bower_components/d3-progress-meter/d3-progress-meter.html">
 
-
 <dom-module id="dashboard-page">
   <template is="dom-bind">
     <style include="shared-styles">
@@ -55,6 +54,77 @@
         box-sizing: border-box;
         margin:  10px 10px 10px 10px;
       }
+      paper-card.redPurple{
+        font-family: 'Roboto', sans-serif;
+        background: #f91818; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #f91818 0%, #e81098 45%, #e81098 45%, #e81098 54%, #8c0eb2 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.blueGreen{
+        background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+        background: linear-gradient(to right, #25c481, #25b7c4);
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.greenBlue{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#abd815+0,e81098+0,5ce00f+0,1167e0+100 */
+        background: #abd815; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #abd815 0%, #e81098 0%, #5ce00f 0%, #1167e0 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #abd815 0%,#e81098 0%,#5ce00f 0%,#1167e0 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #abd815 0%,#e81098 0%,#5ce00f 0%,#1167e0 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abd815', endColorstr='#1167e0',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.orangeYellow{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#abd815+0,e81098+0,e57a10+54,ede512+100 */
+        background: #abd815; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #abd815 0%, #e81098 0%, #e57a10 54%, #ede512 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #abd815 0%,#e81098 0%,#e57a10 54%,#ede512 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #abd815 0%,#e81098 0%,#e57a10 54%,#ede512 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abd815', endColorstr='#ede512',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.tealGreen{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#abd815+0,e81098+0,055147+0,10c9c9+100 */
+        background: #abd815; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #abd815 0%, #e81098 0%, #055147 0%, #10c9c9 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #abd815 0%,#e81098 0%,#055147 0%,#10c9c9 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #abd815 0%,#e81098 0%,#055147 0%,#10c9c9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abd815', endColorstr='#10c9c9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.greenBlueShine{
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#12ba9b+0,abd815+44,3312ed+100 */
+        background: #12ba9b; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #12ba9b 0%, #abd815 44%, #3312ed 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #12ba9b 0%,#abd815 44%,#3312ed 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #12ba9b 0%,#abd815 44%,#3312ed 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#12ba9b', endColorstr='#3312ed',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
+      paper-card.notLoggedIn{
+        background: #93cede; /* Old browsers */
+        background: -moz-linear-gradient(-45deg, #93cede 0%, #75bdd1 41%, #49a5bf 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(-45deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(135deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin:  10px 10px 10px 10px;
+      }
 
     </style>
 
@@ -63,64 +133,92 @@
     </paper-card>
 
     <template is="dom-if" if="[[!signedin]]">
-      <div class="card">
+      <paper-card class="notLoggedIn">
         <div class="circle">
             <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
         </div>
         <h1>You have not loged in!</h1>
         <p>Login to the app to get the latest data and full features of the app.</p>
         <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
-      </div>
+      </paper-card>
     </template>
 
     <template is="dom-if" if="[[signedin]]">
-    <paper-card>
-
-      <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
-
+    <paper-card style="float:center; width: 90%" class="redPurple">
       <div>
-      <d3-progress-meter
-          radius="50" percentage="0.1" current-text="70"
-          goal-text="Goal: 200" type-text="transactions">
-      </d3-progress-meter>
-      <d3-progress-meter
-          radius="50" percentage="0.65" current-text="6.5m"
-          goal-text="Goal: $10m" type-text="revenue">
-      </d3-progress-meter>
-      <d3-progress-meter
-        radius="50" percentage="0.9" current-text="225"
-        goal-text="Goal: 250" type-text="points">
-      </d3-progress-meter>
-      <style is="custom-style">
-          .custom {
-              --progress-meter-background-color: #00FFFF;
-              --progress-meter-color-low: #009999;
-              --progress-meter-color-medium: #009999;
-              --progress-meter-color-high: #009999;
-          }
-      </style>
-      <iron-icon></iron-icon>
+        <h4 style="color: white;">Profit Quater 1</h4>
+      </div>
       <div>
-        <d3-progress-meter
-            class="custom" radius="50" percentage="0.5"
-            current-text="10" goal-text="Goal: 20"
-            type-text="Visits" caption="New visits per day">
-        </d3-progress-meter>
-    </div>
-    </div>
+          <d3-progress-meter
+              radius="50" percentage="0.1" current-text="70"
+              goal-text="Goal: 200" type-text="transactions">
+          </d3-progress-meter>
+      </div>
     </paper-card>
-
-    <div class="card">
-      <div class="circle">2</div>
-      <h1>Dashboard Page</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate da mel ea.
-      paper-pulsating-progress : bower install --save Collaborne/paper-pulsating-progress
-      paper-stepper</p>
-      <p> User id: [[user.uid]]</p>
-      <p> User Name: [[user.displayName]]</p>
-      <p> Signed in: [[signedin]]</p>
-    </div>
+    <paper-card style="float:center; width: 90%" class="orangeYellow">
+      <div>
+        <h4 style="color: white;">Profit to Date</h4>
+      </div>
+      <div>
+          <d3-progress-meter
+              radius="50" percentage="0.65" current-text="6.5m"
+              goal-text="Goal: $10m" type-text="revenue">
+          </d3-progress-meter>
+      </div>
+    </paper-card>
+    <paper-card style="float:center; width: 90%" class="greenBlueShine">
+      <div>
+        <h4 style="color: white;">Expense Quater 1</h4>
+      </div>
+      <div>
+          <d3-progress-meter
+            radius="50" percentage="0.9" current-text="225"
+            goal-text="Goal: 250" type-text="points">
+          </d3-progress-meter>
+     </div>
+    </paper-card>
+    <paper-card style="float:center; width: 90%" class="greenBlueShine">
+      <div>
+        <h4 style="color: white;">Expense to Date</h4>
+      </div>
+      <div>
+          <d3-progress-meter
+            radius="50" percentage="0.9" current-text="225"
+            goal-text="Goal: 250" type-text="points">
+          </d3-progress-meter>
+     </div>
+    </paper-card>
+    <paper-card style="float:center; width: 90%" class="greenBlueShine">
+      <div>
+        <h4 style="color: white;">Invoices Paid</h4>
+      </div>
+      <div>
+          <d3-progress-meter
+            radius="50" percentage="0.9" current-text="225"
+            goal-text="Goal: 250" type-text="points">
+          </d3-progress-meter>
+     </div>
+    </paper-card>
+    <paper-card style="float:center; width: 90%" class="tealGreen">
+      <div>
+        <h4 style="color: white;">Cashflow Quater 1</h4>
+      </div>
+          <style is="custom-style">
+              .custom {
+                  --progress-meter-background-color: #00FFFF;
+                  --progress-meter-color-low: #009999;
+                  --progress-meter-color-medium: #009999;
+                  --progress-meter-color-high: #009999;
+              }
+          </style>
+          <div>
+                <d3-progress-meter
+                    class="custom" radius="50" percentage="0.5"
+                    current-text="10" goal-text="Goal: 20"
+                    type-text="Visits">
+                </d3-progress-meter>
+          </div>
+    </paper-card>
   </template>
 
   </template>

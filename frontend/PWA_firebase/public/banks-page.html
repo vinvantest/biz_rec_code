@@ -23,7 +23,6 @@
 
 <link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
 
-
 <dom-module id="banks-page">
   <template is="dom-bind">
   <style include="shared-styles">
@@ -70,6 +69,32 @@
       background-color: var(--paper-green-500);
       color: white;
     }
+    paper-button.white {
+      background-color: white;
+      color: black;
+    }
+
+    paper-button.custom {
+        --paper-button-ink-color: var(--paper-pink-a200);
+        /* These could also be individually defined for each of the
+          specific css classes, but we'll just do it once as an example */
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--paper-pink-a200);
+          color: white !important;
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
+
+    paper-button.custom:hover {
+        background-color: var(--paper-indigo-100);
+      }
+
+    paper-button.pink {
+        color: var(--paper-pink-a200);
+      }
 
     h8.subtitle {
       display: block;
@@ -77,6 +102,94 @@
       margin-top: 2px;
       max-width: 150px;
     }
+
+
+    table{
+      width:100%;
+      table-layout: fixed;
+    }
+    .tbl-header{
+      background-color: rgba(255,255,255,0.3);
+     }
+    .tbl-content{
+      height:300px;
+      overflow-x:auto;
+      margin-top: 0px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    th{
+      padding: 20px 15px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    td{
+      padding: 15px;
+      text-align: left;
+      vertical-align:middle;
+      font-weight: 300;
+      font-size: 11px;
+      color: #fff;
+      border-bottom: solid 1px rgba(255,255,255,0.1);
+    }
+
+    /*@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);*/
+    paper-dialog.body{
+      background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+      background: linear-gradient(to right, #25c481, #25b7c4);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    paper-dialog.inputGradient{
+      font-family: 'Roboto', sans-serif;
+      background: #f91818; /* Old browsers */
+      background: -moz-linear-gradient(45deg, #f91818 0%, #e81098 45%, #e81098 45%, #e81098 54%, #8c0eb2 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    }
+
+    paper-card.gradient{
+      background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+      background: linear-gradient(to right, #25c481, #25b7c4);
+      font-family: 'Roboto', sans-serif;
+    }
+    paper-card.notLoggedIn{
+      background: #93cede; /* Old browsers */
+      background: -moz-linear-gradient(-45deg, #93cede 0%, #75bdd1 41%, #49a5bf 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(-45deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(135deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
+
+    paper-input {
+        --paper-input-container-color: white;
+        --paper-input-container-focus-color: white;
+        --paper-input-container-invalid-color: black;
+        --paper-input-container-input-color: white;
+        --paper-input-container-label: {
+                font-size: 14px;
+              };
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-size: 12px;
+    }
+
+    /* for custom scrollbar for webkit browser*/
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+    ::-webkit-scrollbar-thumb {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+
 
   </style>
 
@@ -104,7 +217,7 @@
                 <div>
                   <p>[[ajaxErrorMsg]]</p>
                 </div>
-                <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="green" raised>Dismiss</paper-button>
+                <paper-button id="errorDialogButton" on-tap="dissmisErrorDialog" class="custom green" raised>Dismiss</paper-button>
                 <p>....</p>
             </paper-card>
   </template>
@@ -118,7 +231,7 @@
     </template>
   </template>
 
-   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
+   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom" >
      <div><h4 style="color: grey;">[[busyDialogLoadMsg]]</h4></div>
        <div>
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
@@ -127,50 +240,150 @@
       </div>
    </paper-dialog>
 
-   <paper-dialog id="detailBankRecord" backdrop transition="core-transition-bottom">
-         <div><h4 style="color: grey;">Bank Record</h4></div>
-         <div style="float: left">
-           <div>
-             <h7><b>Provider Name:</b></h7> [[detailBankRecord_bank_providerName]]
-          </div>
-          <div>
-           <h7><b>Account Name:</b></h7> [[detailBankRecord_bank_bankAccountName]]
-          </div>
-          <div>
-            <h7><b>Account Number:</b></h7> [[detailBankRecord_bank_bankAccountNumber]]
-           </div>
-           <div>
-             <h7><b>BSB:</b></h7> [[detailBankRecord_bank_BSB]]
-          </div>
-          <div>
-              <h7><b>Branch Name:</b></h7> [[detailBankRecord_bank_Branch]]
-          </div>
-          <div>
-             <h7><b>Branch Number:</b></h7> [[detailBankRecord_bank_BranchNumber]]
-          </div>
-          <div>
-            <h7><b>Amount:</b></h7> [[detailBankRecord_bank_amountDue]]
-          </div>
-          <div>
-            <h7><b>Available Balance:</b></h7> [[detailBankRecord_bank_availableBalance]]
-          </div>
+   <paper-dialog id="detailBankRecords" backdrop transition="core-transition-bottom" class="body">
+     <h5>Fixed Table header</h5>
+        <div class="tbl-header">
+          <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Company</th>
+                <th>Price</th>
+                <th>Change</th>
+                <th>Change %</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0">
+            <tbody>
+              <tr>
+                <td>AAC</td>
+                <td>AUSTRALIAN COMPANY </td>
+                <td>$1.38</td>
+                <td>+2.01</td>
+                <td>-0.36%</td>
+              </tr>
+              <tr>
+                <td>AAD</td>
+                <td>AUSENCO</td>
+                <td>$2.38</td>
+                <td>-0.01</td>
+                <td>-1.36%</td>
+              </tr>
+              <tr>
+                <td>AAX</td>
+                <td>ADELAIDE</td>
+                <td>$3.22</td>
+                <td>+0.01</td>
+                <td>+1.36%</td>
+              </tr>
+              <tr>
+                <td>XXD</td>
+                <td>ADITYA BIRLA</td>
+                <td>$1.02</td>
+                <td>-1.01</td>
+                <td>+2.36%</td>
+              </tr>
+              <tr>
+                <td>AAC</td>
+                <td>AUSTRALIAN COMPANY </td>
+                <td>$1.38</td>
+                <td>+2.01</td>
+                <td>-0.36%</td>
+              </tr>
+              <tr>
+                <td>AAD</td>
+                <td>AUSENCO</td>
+                <td>$2.38</td>
+                <td>-0.01</td>
+                <td>-1.36%</td>
+              </tr>
+              <tr>
+                <td>AAX</td>
+                <td>ADELAIDE</td>
+                <td>$3.22</td>
+                <td>+0.01</td>
+                <td>+1.36%</td>
+              </tr>
+              <tr>
+                <td>XXD</td>
+                <td>ADITYA BIRLA</td>
+                <td>$1.02</td>
+                <td>-1.01</td>
+                <td>+2.36%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+   </paper-dialog>
+
+   <paper-dialog id="detailBankRecord" backdrop transition="core-transition-bottom" class="inputGradient">
+     <h5 style="color: white;">Bank Details</h5>
+        <div class="tbl-header">
+          <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="tbl-content">
+          <table cellpadding="0" cellspacing="0" border="0">
+            <tbody>
+              <tr>
+                <td>Provider Name:</td>
+                <td>[[detailBankRecord_bank_providerName]]</td>
+              </tr>
+              <tr>
+                <td>Account Name:</td>
+                <td>[[detailBankRecord_bank_bankAccountName]]</td>
+              </tr>
+              <tr>
+                <td>Account Number:</td>
+                <td>[[detailBankRecord_bank_bankAccountNumber]]</td>
+                </tr>
+              <tr>
+                <td>BSB:</td>
+                <td>[[detailBankRecord_bank_BSB]]</td>
+              </tr>
+              <tr>
+                <td>Branch Name:</td>
+                <td>[[detailBankRecord_bank_Branch]] </td>
+              </tr>
+              <tr>
+                <td>Branch Number:</td>
+                <td>[[detailBankRecord_bank_BranchNumber]]</td>
+              </tr>
+              <tr>
+                <td>Amount:</td>
+                <td>$[[detailBankRecord_bank_amountDue]]</td>
+              </tr>
+              <tr>
+                <td>Available Balance:</td>
+                <td>$[[detailBankRecord_bank_availableBalance]]</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div>
-          <paper-button id="detailBankRecordDialogButton" on-tap="dissmisDetailBankDialog" class="green" raised>Ok</paper-button>
-          <p>....</p>
+          <paper-button id="detailBankRecordDialogButton" on-tap="dissmisDetailBankDialog" class="custom white" raised>Ok</paper-button>
         </div>
    </paper-dialog>
 
    <template is="dom-if" if="[[!signedin]]">
-    <div class="card">
-      <div class="circle">
-          <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
-      </div>
-      <h1>You have not loged in!</h1>
-      <p>Login to the app to get the latest data and full features of the app.</p>
-      <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
-    </div>
-  </template>
+     <paper-card class="notLoggedIn">
+       <div class="circle">
+           <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+       </div>
+       <h1>You have not loged in!</h1>
+       <p>Login to the app to get the latest data and full features of the app.</p>
+       <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
+     </paper-card>
+   </template>
 
 <!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
   <template is="dom-if" if="[[signedin]]">
@@ -196,67 +409,88 @@
       </div>
       <template is="dom-if" if="[[_checkZeroRecords(banksData.data.total)]]">
           <div>
-            <paper-card style="float:center; width: 70%" class="black">
+            <paper-card style="float:center; width: 70%" class="black" class="gradient">
                  <h4 style="color: white;">No Records Found</h4>
             </paper-card>
           </div>
       </template>
       <template is="dom-repeat" items="{{banksData.data.hits}}" as="bank">
-       <paper-card style="float:center; width: 90%">
+       <paper-card style="float:center; width: 90%" class="gradient">
          <div>
            <div>
                  <div style="float:center" flex>
-                       <paper-icon-button icon="icons:select-all" style="color: #e02871;"></paper-icon-button>
-                       <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; <h9>[[bank._source.bank_providerName]]</h9>
-                       <paper-icon-button  icon="icons:arrow-drop-down" style="color: #e02871;"
+                       <paper-icon-button icon="icons:select-all" style="color: white;"></paper-icon-button>
+                       <b><h7 style="color: white;">Bank:</h7></b>&nbsp; &nbsp; <h7 style="color: white;">[[bank._source.bank_providerName]]</h7>
+                       <paper-icon-button  icon="icons:arrow-drop-down" style="color: white;"
                                                id$="bt_readmore" bank="[[bank]]"
                                                on-tap="expandCollapseBankCard"></paper-icon-button>
                  </div>
              </div>
              <div style="float:left; width:100%">
                <div id="leftThing" style="float:left; width:25%;">
-                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
+                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: white;"></paper-icon-button>
                  </div>
                  <div id="leftThing" style="float:left; width:25%;">
-                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
+                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: white;"></paper-icon-button>
                  </div>
                <div id="leftThing" style="float:left; width:25%;">
-                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
+                   <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: white;"></paper-icon-button>
                </div>
                <div id="leftThing" style="float:right; width:25%;">
-                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: grey;"></paper-icon-button>
+                     <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: white;"></paper-icon-button>
                </div>
            </div>
            <div>
                <iron-collapse id$="collapse{{bank._id}}">
-                   <div>
-                      <div class="horizontal justified">
-                            <iron-icon icon="av:stop"></iron-icon>
-                            <b>Account Name: </b> [[bank._source.bank_bankAccountName]]
-                      </div>
-                      <div class="horizontal justified" style="float:left;">
-                        <iron-icon icon="av:stop"></iron-icon>
-                             <b>Account BSB: </b> [[bank._source.bank_BSB]]
-                      </div>
-                      <div class="horizontal justified" style="float:left;">
-                        <iron-icon icon="av:stop"></iron-icon>
-                            <b>Account Number: </b> [[bank._source.bank_bankAccountNumber]]
-                      </div>
-                    </div>
-                     <div class="horizontal justified">
-                                 <H7>Record Date:</h7>
-                                 <paper-input  id="inputTitleTxt"
-                                               value="{{_computeDate(bank._source.bank_record_updated)}}"
-                                               disabled
-                                               style="color: black;"></paper-input>
-                                 <paper-icon-button icon="icons:highlight-off" style="color: #afb5bf;" id="deleteDate" bank="[[bank]]"
-                                                    on-tap="_updateDate" mini></paper-icon-button>
-                                 <div style="text-align: right">
-                                     <h7 style="color: grey">More...</h7>
-                                     <paper-icon-button icon="icons:label-outline" style="color: #e02871;" id="getMoreBanks" bank="[[bank]]"
-                                                        on-tap="_showMoreBankRecord"></paper-icon-button>
-                                 </div>
-                       </div>
+                     <h5 style="color: white;">Summary</h5>
+                          <div class="tbl-header">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                              <thead>
+                                <tr>
+                                  <th>Field</th>
+                                  <th>Value</th>
+                                </tr>
+                              </thead>
+                            </table>
+                          </div>
+                          <div class="tbl-content">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                              <tbody>
+                                <tr>
+                                  <td>Account Name:</td>
+                                  <td> [[bank._source.bank_bankAccountName]] </td>
+                                </tr>
+                                <tr>
+                                  <td> Account BSB: </td>
+                                  <td>[[bank._source.bank_BSB]]</td>
+                                </tr>
+                                <tr>
+                                  <td>Account Number:</td>
+                                  <td>[[bank._source.bank_bankAccountNumber]]</td>
+                                </tr>
+                                <tr>
+                                  <td>Bank Balance:</td>
+                                  <td>$[[bank._source.bank_availableBalance]]</td>
+                                </tr>
+                                <tr>
+                                  <td>Amount Due:</td>
+                                  <td>[[bank._source.bank_amountDue]]</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="horizontal justified">
+                                      <h7 style="color: white;">Record Date:</h7>
+                                      <paper-input  id="inputTitleTxt"
+                                                    value="{{_computeDate(bank._source.bank_record_updated)}}"
+                                                    style="color: white;"></paper-input>
+                                      <paper-icon-button icon="icons:arrow-drop-up" style="color: white;" bank="[[bank]]" on-tap="expandCollapseBankCard" mini></paper-icon-button>
+                                      <div style="text-align: right">
+                                          <h7 style="color: white">More...</h7>
+                                          <paper-icon-button icon="icons:label-outline" style="color: white;" id="getMoreBanks" bank="[[bank]]"
+                                                             on-tap="_showMoreBankRecord"></paper-icon-button>
+                                      </div>
+                            </div>
                   </iron-collapse>
                </div>
            </div>
@@ -761,4 +995,5 @@
 
     window.customElements.define(BanksPage.is, BanksPage);
   </script>
+
 </dom-module>

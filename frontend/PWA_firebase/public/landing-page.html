@@ -103,7 +103,16 @@
       box-sizing: border-box;
       margin:  2px 2px 2px 2px;
     }
-
+    paper-card.notLoggedIn{
+      background: #93cede; /* Old browsers */
+      background: -moz-linear-gradient(-45deg, #93cede 0%, #75bdd1 41%, #49a5bf 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(-45deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(135deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+      font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+      margin:  10px 10px 10px 10px;
+    }
     paper-button.green {
       background-color: var(--paper-green-500);
       color: white;
@@ -111,6 +120,28 @@
     paper-button.green[active] {
       background-color: var(--paper-red-500);
     }
+
+    paper-button.custom {
+        --paper-button-ink-color: var(--paper-pink-a200);
+        /* These could also be individually defined for each of the
+          specific css classes, but we'll just do it once as an example */
+        --paper-button-flat-keyboard-focus: {
+          background-color: var(--paper-pink-a200);
+          color: white !important;
+        };
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
+
+    paper-button.custom:hover {
+        background-color: var(--paper-indigo-100);
+      }
+
+    paper-button.pink {
+        color: var(--paper-pink-a200);
+      }
 
     paper-checkbox {
     font-family: 'Roboto', sans-serif;
@@ -341,14 +372,14 @@
   </paper-card>
 
   <template is="dom-if" if="[[!signedin]]">
-    <div class="card">
+    <paper-card class="notLoggedIn">
       <div class="circle">
           <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
       </div>
       <h1>You have not loged in!</h1>
       <p>Login to the app to get the latest data and full features of the app.</p>
       <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
-    </div>
+    </paper-card>
   </template>
 
 <template is="dom-if" if="[[signedin]]">

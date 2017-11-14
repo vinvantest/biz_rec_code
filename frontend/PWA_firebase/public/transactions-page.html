@@ -152,7 +152,16 @@
     margin-top: 2px;
     max-width: 150px;
   }
-
+  paper-card.notLoggedIn{
+    background: #93cede; /* Old browsers */
+    background: -moz-linear-gradient(-45deg, #93cede 0%, #75bdd1 41%, #49a5bf 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #93cede 0%,#75bdd1 41%,#49a5bf 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+    margin:  10px 10px 10px 10px;
+  }
   </style>
 
   <iron-ajax
@@ -173,15 +182,15 @@
     </paper-card>
 
     <template is="dom-if" if="[[!signedin]]">
-    <div class="card">
-      <div class="circle">
-          <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
-      </div>
-      <h1>You have not loged in!</h1>
-      <p>Login to the app to get the latest data and full features of the app.</p>
-      <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
-    </div>
-  </template>
+      <paper-card class="notLoggedIn">
+        <div class="circle">
+            <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+        </div>
+        <h1>You have not loged in!</h1>
+        <p>Login to the app to get the latest data and full features of the app.</p>
+        <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
+      </paper-card>
+    </template>
 
   <paper-dialog id="dialogBusy" backdrop transition="core-transition-bottom">
     <div><h4 style="color: grey;">Retrieving Information from Server</h4></div>
