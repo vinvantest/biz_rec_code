@@ -21,15 +21,15 @@
 let version = '0.57';
 let cacheName = 'bizrec-v-1';
 var filesToCache = [
-                    '.',
+                    //'.',
                     'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
                     'https://fonts.gstatic.com/s/roboto/v18/I3S1wsgSg9YCurV6PUkTOYX0hVgzZQUfRDuZrPvH3D8.woff2',
                     'https://fonts.googleapis.com/css?family=Oxygen:700|Open+Sans',
                     'bower_components/webcomponentsjs/webcomponents-loader.js',
-                    `/`,
+                    //`/`,
                     `/index.html`,
-                    `/ice.html`,
-                    `/images/*`,
+                    //`/ice.html`,
+                    //`/images/*`,
                     'manifest.json'
                   ];
 

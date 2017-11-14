@@ -6,6 +6,7 @@
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
 
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="bower_components/iron-icon/iron-icon.html">
@@ -20,7 +21,6 @@
 <link rel="import" href="bower_components/iron-icons/places-icons.html">
 <link rel="import" href="bower_components/iron-image/iron-image.html">
 
-<link rel="import" href="bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
 
 
@@ -180,10 +180,10 @@
           <paper-icon-button id="PageTitle-icon-button2" icon="{{_computePages(banksData.data.total)}}" style="color: black;"></paper-icon-button>
           <h8 class="subtitle">Pages</h8>
         </div>
-          <div id="leftThing1" style="float:left; width:10%;">
+          <div id="leftThing1" style="float:left; width:15%;">
             <paper-icon-button id="PageTitle-icon-button1" icon="" style="color: white;"></paper-icon-button>
           </div>
-          <div id="leftThing0" style="float:left; width:30%;" >
+          <div id="leftThing0" style="float:left; width:25%;" >
               <paper-icon-button id="PageTitle-icon-button0" icon="[[currentPageIcon]]" style="color: green;"></paper-icon-button>
               <h8 class="subtitle">Current</h8>
           </div>
@@ -244,8 +244,11 @@
                       </div>
                     </div>
                      <div class="horizontal justified">
-                                   <H7>Record Date:</h7>
-                                 <vaadin-date-picker id="vaadinDate" readonly value={{_computeDate(bank._source.bank_record_updated)}}></vaadin-date-picker>
+                                 <H7>Record Date:</h7>
+                                 <paper-input  id="inputTitleTxt"
+                                               value="{{_computeDate(bank._source.bank_record_updated)}}"
+                                               disabled
+                                               style="color: black;"></paper-input>
                                  <paper-icon-button icon="icons:highlight-off" style="color: #afb5bf;" id="deleteDate" bank="[[bank]]"
                                                     on-tap="_updateDate" mini></paper-icon-button>
                                  <div style="text-align: right">
@@ -318,10 +321,13 @@
       }
 
       _computeDate(date){
-        //console.log('inside _computeDate ->'+date);
         var tempDate = new Date(date);
-        //return tempDate;
-        return tempDate.toString('YYYY-MM-DD');
+        var yyyy = tempDate.getFullYear().toString();
+        var mm = (tempDate.getMonth()+1).toString();
+        var dd  = tempDate.getDate().toString();
+        var mmChars = mm.split('');
+        var ddChars = dd.split('');
+        return yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
       }
 
       //jsbin - not working
@@ -481,36 +487,49 @@
         console.log('###### inside sendPrevGetBanks() ######');
         if(this.user!=null || this.user!=undefined)
         {
-          this.$.dialogBusy.toggle();
-          this.active = true;
-          this.currentPage = this.currentPage - 1;
-          if(this.currentPage === -1) this.currentPage = 0;
-          var ajaxObject = this.$.getBanks;
-          //console.log('user ->'+JSON.stringify(this.user));
-          ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
-          ajaxObject.params = {
-                    uid: this.user.uid ,
-                    page: this.currentPage,
-                    size: 10
-                  };
-          console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
-          console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
-          let request = ajaxObject.generateRequest();
-          request.completes.then( function(req) {
-              // succesful request, argument is iron-request element
-              console.log('iron request element is->'+req);
+          console.log('this.recordsRetrieved ='+this.recordsRetrieved);
+          console.log('this.currentPage ='+ this.currentPage);
+          var tempVar = this.currentPage - 1;
+          console.log('tempVar = '+ tempVar);
+          if(tempVar > -1 )
+          {
+              this.$.dialogBusy.toggle();
+              this.active = true;
+              this.currentPage = this.currentPage - 1;
+              if(this.currentPage === -1) this.currentPage = 0;
+              var ajaxObject = this.$.getBanks;
+              ajaxObject.url = "https://us-central1-bizrec-dev.cloudfunctions.net/getBanksFunction";
+              ajaxObject.params = {
+                        uid: this.user.uid ,
+                        page: this.currentPage,
+                        size: 10
+                      };
+              console.log('ajaxObject.body as user is not null! ->'+ JSON.stringify(ajaxObject.body));
+              console.log('ajaxObject.params as user is not null! ->'+ JSON.stringify(ajaxObject.params));
+              let request = ajaxObject.generateRequest();
+              request.completes.then( function(req) {
+                  // succesful request, argument is iron-request element
+                  console.log('iron request element is->'+req);
+                  return;
+                }, function(rejected) {
+                  // failed request, argument is an object
+                  console.log('API Call - User Insertion - rejected');
+                  console.log('req=', rejected.request, '    error=', rejected.error);
+                  return;
+                });
+            }
+            else{
+              console.log('Already at the start of the page ='+ this.currentPage);
+              document.getElementById('toast').show(this.user.displayName + ', you are on Page 1');
               return;
-            }, function(rejected) {
-              // failed request, argument is an object
-              console.log('API Call - User Insertion - rejected');
-              console.log('req=', rejected.request, '    error=', rejected.error);
+            }
+          }
+          else {
+              console.log('user is null or undefined -'+ this.user);
+              document.getElementById('toast').show('Login to the app to complete Sync!');
               return;
-            });
-        }
-        else {
-            console.log('user is null or undefined -'+ this.user);
-            document.getElementById('toast').show('Login to the app to complete Sync!');
-        }
+          }
+
       }
 
       sendNextGetBanks(){
@@ -556,6 +575,7 @@
         else {
             console.log('user is null or undefined -'+ this.user);
             document.getElementById('toast').show('Login to the app to complete Sync!');
+            return;
           }
 
       }
