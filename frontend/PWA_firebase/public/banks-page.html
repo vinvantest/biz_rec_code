@@ -1,8 +1,39 @@
 <!DOCTYPE html>
-<!-- declare file type -->
+<!-- declare file type - OLD
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
+-->
+
+<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/places-icons.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
+
 
 <dom-module id="banks-page">
   <template is="dom-bind">
@@ -186,9 +217,9 @@
          <div>
            <div>
                  <div style="float:center" flex>
-                       <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                       <paper-icon-button icon="icons:select-all" style="color: #e02871;"></paper-icon-button>
                        <u><b><h7>Bank:</h7></b></u> &nbsp; &nbsp; <h9>[[bank._source.bank_providerName]]</h9>
-                       <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
+                       <paper-icon-button  icon="icons:arrow-drop-down" style="color: #e02871;"
                                                id$="bt_readmore" bank="[[bank]]"
                                                on-tap="expandCollapseBankCard"></paper-icon-button>
                  </div>
@@ -226,7 +257,7 @@
                      <div class="horizontal justified">
                                    <H7>Record Date:</h7>
                                  <vaadin-date-picker id="vaadinDate" readonly value={{_computeDate(bank._source.bank_record_updated)}}></vaadin-date-picker>
-                                 <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" bank="[[bank]]"
+                                 <paper-icon-button icon="icons:highlight-off" style="color: #afb5bf;" id="deleteDate" bank="[[bank]]"
                                                     on-tap="_updateDate" mini></paper-icon-button>
                                  <div style="text-align: right">
                                      <h7 style="color: grey">More...</h7>

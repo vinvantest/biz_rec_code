@@ -1,7 +1,40 @@
 <!DOCTYPE html>
+<!-- OLD
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
+-->
+
+<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/polymerfire/firebase-messaging.html">
+
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/places-icons.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
 
 <dom-module id="dialog-html">
   <template is="dom-bind">
@@ -79,7 +112,7 @@
     <firebase-document path="/users/[[user.uid]]/token" data="[[token]]">
     </firebase-document>
 
-        <paper-icon-button icon="my-icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
+        <paper-icon-button icon="icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
 
         <paper-dialog id="dialog" backdrop transition="core-transition-bottom">
 
@@ -88,7 +121,7 @@
             <paper-card class="magenta">
               <div style="float:left; width:100%" class"box">
                 <div id="leftThing" style="float:left; width:25%;">
-                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="my-icons:grain" style="color: white;"></paper-icon-button>
+                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="icons:grain" style="color: white;"></paper-icon-button>
                 </div>
                   <div id="leftThing" slot="top" style="float:left; width:50%;" style="text-align: center">
                     <template is="dom-if" if="[[signedin]]">
@@ -99,7 +132,7 @@
                     </template>
                   </div>
                 <div id="rightThing" style="float:right; width:25%;">
-                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="my-icons:grain" style="color: white;"></paper-icon-button>
+                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="icons:grain" style="color: white;"></paper-icon-button>
               </div>
             </div>
             </paper-card>
@@ -130,7 +163,7 @@
                               <div style="text-align: center">
                                 <a href="/settings-page">
                                     <paper-button dialog-confirm autofocus >
-                                        <iron-icon icon="my-icons:blur-on"></iron-icon><h4>Settings</h4>
+                                        <iron-icon icon="icons:select-all"></iron-icon><h4>Settings</h4>
                                     </paper-button>
                                   </a>
                                 </div>
@@ -157,7 +190,7 @@
                       <div style="text-align: center">
                         <a href="/settings-page">
                             <paper-button dialog-confirm autofocus >
-                                <iron-icon icon="my-icons:blur-on"></iron-icon><h4>Settings</h4>
+                                <iron-icon icon="icons:select-all"></iron-icon><h4>Settings</h4>
                             </paper-button>
                           </a>
                         </div>
@@ -168,16 +201,16 @@
             <paper-card class="magenta">
               <div style="float:left; width:100%">
                 <div id="leftThing0" style="float:left; width:25%;" >
-                      <paper-icon-button id="dashboard-icon-button0" dialog-dismiss slot="top" icon="my-icons:dashboard" style="color: white;"></paper-icon-button>
+                      <paper-icon-button id="dashboard-icon-button0" dialog-dismiss slot="top" icon="icons:dashboard" style="color: white;"></paper-icon-button>
                   </div>
                   <div id="leftThing1" style="float:left; width:25%;">
-                    <paper-icon-button id="transactions-icon-button1" dialog-dismiss slot="top" icon="my-icons:gavel" style="color: white;"></paper-icon-button>
+                    <paper-icon-button id="transactions-icon-button1" dialog-dismiss slot="top" icon="icons:gavel" style="color: white;"></paper-icon-button>
                   </div>
                 <div id="leftThing2" style="float:left; width:25%;">
-                    <paper-icon-button id="payments-icon-button2" dialog-dismiss slot="top" icon="my-icons:select-all" style="color: white;"></paper-icon-button>
+                    <paper-icon-button id="payments-icon-button2" dialog-dismiss slot="top" icon="icons:select-all" style="color: white;"></paper-icon-button>
                 </div>
                 <div id="leftThing3" style="float:right; width:25%;">
-                      <paper-icon-button id="reports-icon-button3" on-tap="hire" slot="top" icon="my-icons:line-style" style="color: white;"></paper-icon-button>
+                      <paper-icon-button id="reports-icon-button3" on-tap="hire" slot="top" icon="icons:line-style" style="color: white;"></paper-icon-button>
                 </div>
               </div>
             </paper-card>
@@ -192,24 +225,9 @@
 
             static get properties() {
               return {
-                user: {
-                  type: Object,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_userChanged',
-                },
-                signedin: {
-                  type: Boolean,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_signedinChanged',
-                },
-                statusKnown: {
-                  type: Boolean,
-                  notify: true,
-                  readOnly: false,
-                  observer: '_statusChanged',
-                }
+                user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+                signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+                statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' }
               };
             }
 

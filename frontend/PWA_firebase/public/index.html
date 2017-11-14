@@ -16,9 +16,6 @@
     <!-- See https://goo.gl/OOhYW5 -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- See https://goo.gl/qRE0vM
-    <meta name="theme-color" content="#3f51b5"> -->
-
     <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="BizRec">
@@ -30,7 +27,7 @@
 
     <!-- Homescreen icons -->
     <link rel='icon' sizes='192x192' href='/images/new_images/logo_192x192.png'>
-    
+
     <link rel="apple-touch-icon" href="/images/new_images/logo_1240x600.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/new_images/logo_72x72.png">
     <link rel="apple-touch-icon" sizes="96x96" href="/images/new_images/logo_96x96.png">
@@ -45,18 +42,6 @@
     <meta name="msapplication-square152x152logo" content="/images/new_images/logo_152x152.png">
 
     <script>
-      /**
-      * [polymer-root-path]
-      *
-      * By default, we set `Polymer.rootPath` to the server root path (`/`).
-      * Leave this line unchanged if you intend to serve your app from the root
-      * path (e.g., with URLs like `my.domain/` and `my.domain/view1`).
-      *
-      * If you intend to serve your app from a non-root path (e.g., with URLs
-      * like `my.domain/my-app/` and `my.domain/my-app/view1`), edit this line
-      * to indicate the path from which you'll be serving, including leading
-      * and trailing slashes (e.g., `/my-app/`).
-      */
       window.Polymer = {rootPath: '/'};
       // Load and register pre-caching Service Worker
       if('serviceWorker' in navigator) {
@@ -69,12 +54,13 @@
        });
      }
     </script>
+    <!--
     <script>
         if (!window.HTMLImports) {
             HTMLImports={};
         }
     </script>
-
+    -->
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="bower_components/polymer/polymer-element.html">
     <link rel="import" href="bower_components/paper-toast/paper-toast.html">
@@ -82,9 +68,6 @@
 
     <!-- Load your application shell -->
     <link rel="import" href="my-app.html">
-    <!--
-    <link rel="manifest" href="../manifest.json">
-  -->
 
     <!-- Add any global styles for body, document, etc. -->
     <style>
@@ -103,6 +86,5 @@
     <noscript>
       Please enable JavaScript to view this website.
     </noscript>
-
   </body>
 </html>

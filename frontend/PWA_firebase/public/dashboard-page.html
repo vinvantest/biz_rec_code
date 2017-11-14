@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 
-!!d3-progress-meter!!
-
-This software is licensed under the Apache 2 license, quoted below.
-
-Copyright 2011-2015 Collaborne B.V. <http://github.com/Collaborne/>
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License. You may obtain a copy of
-the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-License for the specific language governing permissions and limitations under
-the License.
-
--->
-
+<!-- OLD
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
+-->
+
+<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/places-icons.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
+<link rel="import" href="bower_components/d3-progress-meter/d3-progress-meter.html">
+
 
 <dom-module id="dashboard-page">
   <template is="dom-bind">
@@ -140,28 +143,10 @@ the License.
 
       static get properties() {
         return {
-          user: {
-            type: Object,
-            notify: true,
-            readOnly: false,
-            observer: '_userChanged',
-          },
-          signedin: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_signedinChanged',
-          },
-          statusKnown: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_statusChanged',
-          },
-          active: {
-            type: Boolean,
-            value: true,
-          }
+          user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+          signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+          statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' },
+          active: { type: Boolean, value: true }
         };
       }
 

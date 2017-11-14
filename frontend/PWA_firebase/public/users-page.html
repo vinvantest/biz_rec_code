@@ -1,17 +1,40 @@
 <!DOCTYPE html>
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
+<!-- OLD
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="lazy-import.html">
+-->
+
+<!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/places-icons.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/paper-pulsating-progress/paper-pulsating-progress.html">
 
 <dom-module id="users-page">
   <template is="dom-bind">
@@ -230,9 +253,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-card style="float:center; width: 90%">
           <div>
                 <div style="float:center" flex>
-                      <paper-icon-button icon="my-icons:blur-on" style="color: #e02871;"></paper-icon-button>
+                      <paper-icon-button icon="icons:blur-on" style="color: #e02871;"></paper-icon-button>
                       <u><b><h7>User:</h7></b></u> &nbsp; &nbsp; [[note._source.usr_displayName]] &nbsp; &nbsp; | &nbsp; &nbsp;[[note._source.usr_firstName]] &nbsp; [[note._source.usr_familyName]]
-                      <paper-icon-button  icon="my-icons:arrow-drop-down" style="color: #e02871;"
+                      <paper-icon-button  icon="icons:arrow-drop-down" style="color: #e02871;"
                                               id$="bt_readmore" note="[[note]]"
                                               on-tap="toggleX"></paper-icon-button>
                 </div>
@@ -273,11 +296,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <!-- <paper-icon-button icon="icons:event"></paper-icon-button>  -->
                                 <H7>Set Date:</h7>
                                 <vaadin-date-picker id="vaadinDate" value={{note.date}}></vaadin-date-picker>
-                                <paper-icon-button icon="my-icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[note]]"
+                                <paper-icon-button icon="icons:highlight-off" style="color: #afb5bf;" id="deleteDate" note="[[note]]"
                                                    on-tap="_updateDate" mini></paper-icon-button>
                                 <div style="text-align: right">
                                     <h7 style="color: grey">Delete Note</h7>
-                                    <paper-icon-button icon="my-icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[note]]"
+                                    <paper-icon-button icon="icons:delete-forever" style="color: #e02871;" id="deleteNote" note="[[note]]"
                                                        on-tap="_removeNote"></paper-icon-button>
                                 </div>
                           </div>
@@ -319,49 +342,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          user: {
-            type: Object,
-            notify: true,
-            readOnly: false,
-            observer: '_userChanged',
-          },
-          signedin: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_signedinChanged',
-          },
-          statusKnown: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_statusChanged',
-          },
-          active: {
-            type: Boolean,
-            value: false,
-          },
-          ajaxError: {
-            type: Boolean,
-            value: false,
-          },
-          ajaxErrorMsg: {
-            type: String,
-          },
-          lastError: {
-            type: Object,
-          },
-          responseData: {
-            type: Object,
-          },
-          isBox: {
-            type: Boolean,
-            value: true,
-          },
-          isGoogle: {
-            type: Boolean,
-            value: false,
-          }
+          user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+          signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+          statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' },
+          active: { type: Boolean, value: false },
+          ajaxError: { type: Boolean, value: false },
+          ajaxErrorMsg: { type: String },
+          lastError: { type: Object },
+          responseData: { type: Object },
+          isBox: { type: Boolean, value: true },
+          isGoogle: { type: Boolean, value: false }
         };
       }
 

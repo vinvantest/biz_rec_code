@@ -1,13 +1,4 @@
 <!DOCTYPE html>
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 
 <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
 <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
@@ -20,8 +11,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script src="bower_components/firebase/firebase-messaging.js"></script>
 <script src="bower_components/firebase/firebase-storage.js"></script>
 
-<link rel="import" href="lazy-import.html">
+<!-- New Imports -->
+<link rel="import" href="bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="bower_components/app-route/app-location.html">
+<link rel="import" href="bower_components/app-route/app-route.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="bower_components/iron-collapse/iron-collapse.html">
 
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html">
+<link rel="import" href="bower_components/iron-icons/av-icons.html">
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="bower_components/iron-icons/image-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="bower_components/iron-icons/social-icons.html">
+<link rel="import" href="bower_components/iron-icons/places-icons.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/paper-avatar/paper-avatar.html">
+<link rel="import" href="bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
+<link rel="import" href="bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="ice.html">
+
+<!-- CUSTOM POLYMER ELEMENTS -->
+<link rel="import" href="dialog-html.html">
+<link rel="import" href="login-page.html">
+
+<!-- new imports end -->
+
+<!-- Lazy Loads -->
 <link rel="lazy-import" href="landing-page.html">
 <link rel="lazy-import" href="dashboard-page.html">
 <link rel="lazy-import" href="transactions-page.html">
@@ -33,9 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="rules-page.html">
 <link rel="lazy-import" href="settings-page.html">
 <link rel="lazy-import" href="banks-page.html">
-<link rel="lazy-import" href="login-page.html">
 <link rel="lazy-import" href="not-found-404.html">
-<link rel="lazy-import" href="dialog-html.html">
 
 <dom-module id="my-app">
   <template is="dom-bind">
@@ -172,44 +205,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <div style="height: 100%; overflow: auto;">
             <a name="dashboard" href="[[rootPath]]dashboard-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Dashboard</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Dashboard</h5></paper-button>
             </a>
             <a name="transactions" href="[[rootPath]]transactions-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Transasctions</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Transasctions</h5></paper-button>
             </a>
             <a name="invoices" href="[[rootPath]]invoices-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Invoices</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Invoices</h5></paper-button>
             </a>
             <a name="payments" href="[[rootPath]]payments-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Payments</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Payments</h5></paper-button>
             </a>
             <a name="reports" href="[[rootPath]]reports-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Reports</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Reports</h5></paper-button>
             </a>
             <a name="reports" href="[[rootPath]]banks-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Banks</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Banks</h5></paper-button>
             </a>
             <a name="chartofaccounts" href="[[rootPath]]chartofaccounts-page">
-              <paper-button> <iron-icon icon="my-icons:blur-on"></iron-icon><h5>Chart of Accounts</h5></paper-button>
+              <paper-button> <iron-icon icon="icons:select-all"></iron-icon><h5>Chart of Accounts</h5></paper-button>
             </a>
             <a name="customers" href="[[rootPath]]customers-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Customers</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Customers</h5></paper-button>
             </a>
             <a name="notes" href="[[rootPath]]notes-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Notes</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Notes</h5></paper-button>
             </a>
             <a name="rules" href="[[rootPath]]rules-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Rules</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Rules</h5></paper-button>
             </a>
             <a name="users" href="[[rootPath]]users-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Users</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Users</h5></paper-button>
             </a>
             <!-- Not sure why but last a tag required to be duplicate -->
             <a name="settings" href="[[rootPath]]settings-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Settings</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Settings</h5></paper-button>
             </a>
             <a name="settings" href="[[rootPath]]settings-page">
-              <paper-button><iron-icon icon="my-icons:blur-on"></iron-icon><h5>Settings</h5></paper-button>
+              <paper-button><iron-icon icon="icons:select-all"></iron-icon><h5>Settings</h5></paper-button>
             </a>
         </div>
 
@@ -221,7 +254,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- HEADER TOOL BAR -->
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
-                <paper-icon-button icon="my-icons:menu" drawer-toggle halign="left"></paper-icon-button>
+                <paper-icon-button icon="icons:menu" drawer-toggle halign="left"></paper-icon-button>
               <div main-title></div>
                 <login-page user="{{user}}" signedin="{{signedIn}}"></login-page>
                 <dialog-html user="{{user}}" signedin="{{signedIn}}"></dialog-html>
@@ -272,7 +305,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <a href="[[rootPath]]settings-page">
                     <paper-fab-speed-dial-action icon="social:group-add">Settings</paper-fab-speed-dial-action></a>
                   <a href="[[rootPath]]notes-page">
-                    <paper-fab-speed-dial-action icon="my-icons:note-add">Notes</paper-fab-speed-dial-action></a>
+                    <paper-fab-speed-dial-action icon="icons:note-add">Notes</paper-fab-speed-dial-action></a>
                 </paper-fab-speed-dial>
               </custom-style>
           </custom-style>
@@ -280,13 +313,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div id="leftThing1" style="float:left; width:25%;">
               <div>
                 <a href="[[rootPath]]dashboard-page" style="color: black;">
-                  <paper-icon-button id="dashboard-icon-button" slot="top" icon="my-icons:dashboard" style="color: black;"></paper-icon-button>
+                  <paper-icon-button id="dashboard-icon-button" slot="top" icon="icons:dashboard" style="color: black;"></paper-icon-button>
                 </a>
               </div>
             </div>
             <div id="leftThing2" style="float:left; width:25%;">
               <a href="[[rootPath]]transactions-page" style="color: black;">
-                <paper-icon-button id="transactions-icon-button" slot="top" icon="my-icons:gavel" style="color: black;"></paper-icon-button>
+                <paper-icon-button id="transactions-icon-button" slot="top" icon="icons:gavel" style="color: black;"></paper-icon-button>
               </a>
             </div>
             <div id="leftThing3" style="float:left; width:25%;">
@@ -327,14 +360,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties() {
         return {
-          page: {
-            type: String,
-            reflectToAttribute: true,
-            observer: '_pageChanged',
-          },
-          configFirebase: {
-            type: Object,
-            readOnly: true,
+          page: { type: String, reflectToAttribute: true, observer: '_pageChanged' },
+          configFirebase: { type: Object, readOnly: true,
             value: function(){
               return configFirebase;
             }
@@ -344,24 +371,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // This shouldn't be neccessary, but the Analyzer isn't picking up
           // Polymer.Element#rootPath
           rootPath: String,
-          user: {
-            type: Object,
-            notify: true,
-            readOnly: false,
-            observer: '_userChanged',
-          },
-          signedin: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_signedinChanged',
-          },
-          statusKnown: {
-            type: Boolean,
-            notify: true,
-            readOnly: false,
-            observer: '_statusChanged',
-          }
+          user: { type: Object, notify: true, readOnly: false, observer: '_userChanged' },
+          signedin: { type: Boolean, notify: true, readOnly: false, observer: '_signedinChanged' },
+          statusKnown: { type: Boolean, notify: true, readOnly: false, observer: '_statusChanged' }
         };
       }
 
@@ -460,32 +472,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     window.customElements.define(MyApp.is, MyApp);
-
-/*
-    <iron-ajax
-        id="ajax"
-        url="https://www.googleapis.com/youtube/v3/search"
-        params='{"part":"snippet", "q":"polymer", "key": "AIzaSyAuecFZ9xJXbGDkQYWBmYrtzOGJD-iDIgI", "type": "video"}'
-        handle-as="json"
-        last-response="{{ajaxResponse}}"
-        on-request="handleRequest"
-        on-response="handleResponse"
-        on-error="handleError">
-    </iron-ajax>
-    <iron-ajax
-        verbose
-        url="https://signasafeapi.azurewebsites.net/api/Companies/{{company.Id}}"
-        method='PUT'
-        body="{{company}}"
-        handle-as="json"
-        headers='{"Authorization": "Bearer {{sessionObject.access_token}}"}'
-        content-type="application/x-www-form-urlencoded"
-        on-response="handleSubmitCompany"
-        debounce-duration="300"
-        on-error = 'handleSubmitCompanyError'
-        id='daoSubmitCompany'>
-    </iron-ajax>
-*/
-
   </script>
 </dom-module>
