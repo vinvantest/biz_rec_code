@@ -60,11 +60,12 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
+    /*
     paper-card {
       --paper-card-background-color: #ffffff;
       box-sizing: border-box;
       margin: 5px 5px 5px 5px;
-    }
+    }*/
     paper-button.green {
       background-color: var(--paper-green-500);
       color: white;
@@ -149,19 +150,24 @@
       background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
       background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
       filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+      box-sizing: border-box;
+      margin: 5px 5px 5px 5px;
     }
 
     paper-card.gradient{
       background: -webkit-linear-gradient(left, #25c481, #25b7c4);
       background: linear-gradient(to right, #25c481, #25b7c4);
       font-family: 'Roboto', sans-serif;
+      box-sizing: border-box;
+      margin: 5px 5px 5px 5px;
     }
     paper-card.notLoggedIn{
-      background: -moz-linear-gradient(-45deg, rgba(255,0,132,0.51) 0%, rgba(255,0,132,1) 36%, rgba(255,0,132,1) 100%); /* FF3.6-15 */
-      background: -webkit-linear-gradient(-45deg, rgba(255,0,132,0.51) 0%,rgba(255,0,132,1) 36%,rgba(255,0,132,1) 100%); /* Chrome10-25,Safari5.1-6 */
-      background: linear-gradient(135deg, rgba(255,0,132,0.51) 0%,rgba(255,0,132,1) 36%,rgba(255,0,132,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#82ff0084', endColorstr='#ff0084',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
       font-family: 'Roboto', sans-serif;
+      background: #f91818; /* Old browsers */
+      background: -moz-linear-gradient(45deg, #f91818 0%, #e81098 45%, #e81098 45%, #e81098 54%, #8c0eb2 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
@@ -189,6 +195,56 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     }
 
+/**/
+
+paper-card.body {
+	width: 90%;
+	height: 90%;
+	color: #fff;
+	background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+	background-size: 400% 400%;
+	-webkit-animation: Gradient 15s ease infinite;
+	-moz-animation: Gradient 15s ease infinite;
+	animation: Gradient 15s ease infinite;
+}
+
+@-webkit-keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+@-moz-keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+@keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+/**/
 
   </style>
 
@@ -210,6 +266,19 @@
        <h4 style="color: white;">Banks</h4>
   </paper-card>
 
+  <template is="dom-if" if="[[!signedin]]">
+    <paper-card class="body">
+      <div><h5></h5>
+      </div>
+      <div class="circle">
+          <iron-icon icon="icons:warning" style="color: #e02871;"></iron-icon>
+      </div>
+      <h1 style="color: white">You have not loged in!</h1>
+      <p style="color: white">Login to the app to get the latest data and full features of the app.</p>
+      <p style="color: white">Tap or Click the avatar <iron-icon icon="social:person-outline" style="color: white"></iron-icon> button on the top menu bar to enter your credentials.</p>
+    </paper-card>
+  </template>
+
   <template is="dom-if" if="[[ajaxError]]">
             <paper-card style="float:center; width: 90%">
                 <div class="alert-error"><strong><h4 style="color: red;">Error:</h4></strong></div>
@@ -223,10 +292,15 @@
 
   <template is="dom-if" if="[[signedin]]">
     <template is="dom-if" if="[[firstTimeLoad]]">
-          <paper-icon-button icon=""></paper-icon-button>
-          <paper-icon-button icon=""></paper-icon-button>
-          <iron-image style="width:200px; height:200px;"
-  sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" class="firstLoad" on-tap="sendGetBanks"></iron-image>
+      <paper-card class="body">
+        <div style="float:top; width:15%;">
+        </div>
+        <div style="float:top; width:75%;">
+          <iron-image style="width:200px; height:200px;" sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" on-tap="sendGetBanks"></iron-image>
+        </div>
+        <div style="float:bottom; width:15%;">
+        </div>
+      </paper-card>
     </template>
   </template>
 
@@ -372,17 +446,6 @@
           <paper-button id="detailBankRecordDialogButton" on-tap="dissmisDetailBankDialog" class="custom white" raised>Ok</paper-button>
         </div>
    </paper-dialog>
-
-   <template is="dom-if" if="[[!signedin]]">
-     <paper-card class="notLoggedIn">
-       <div class="circle">
-           <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
-       </div>
-       <h1>You have not loged in!</h1>
-       <p>Login to the app to get the latest data and full features of the app.</p>
-       <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
-     </paper-card>
-   </template>
 
 <!-- <template is="dom-if" if="{{_computeShowBanks(signedin, banksData.successFlag)}}"> -->
   <template is="dom-if" if="[[signedin]]">

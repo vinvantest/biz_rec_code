@@ -116,15 +116,65 @@
         margin:  10px 10px 10px 10px;
       }
       paper-card.notLoggedIn{
-        background: -moz-linear-gradient(-45deg, rgba(255,0,132,0.51) 0%, rgba(255,0,132,1) 36%, rgba(255,0,132,1) 100%); /* FF3.6-15 */
-        background: -webkit-linear-gradient(-45deg, rgba(255,0,132,0.51) 0%,rgba(255,0,132,1) 36%,rgba(255,0,132,1) 100%); /* Chrome10-25,Safari5.1-6 */
-        background: linear-gradient(135deg, rgba(255,0,132,0.51) 0%,rgba(255,0,132,1) 36%,rgba(255,0,132,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#82ff0084', endColorstr='#ff0084',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
         font-family: 'Roboto', sans-serif;
+        background: #f91818; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #f91818 0%, #e81098 45%, #e81098 45%, #e81098 54%, #8c0eb2 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
         box-sizing: border-box;
         margin:  10px 10px 10px 10px;
       }
+      /**/
 
+      paper-card.body {
+      	width: 100wh;
+      	height: 90vh;
+      	color: #fff;
+      	background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+      	background-size: 400% 400%;
+      	-webkit-animation: Gradient 15s ease infinite;
+      	-moz-animation: Gradient 15s ease infinite;
+      	animation: Gradient 15s ease infinite;
+      }
+
+      @-webkit-keyframes Gradient {
+      	0% {
+      		background-position: 0% 50%
+      	}
+      	50% {
+      		background-position: 100% 50%
+      	}
+      	100% {
+      		background-position: 0% 50%
+      	}
+      }
+
+      @-moz-keyframes Gradient {
+      	0% {
+      		background-position: 0% 50%
+      	}
+      	50% {
+      		background-position: 100% 50%
+      	}
+      	100% {
+      		background-position: 0% 50%
+      	}
+      }
+
+      @keyframes Gradient {
+      	0% {
+      		background-position: 0% 50%
+      	}
+      	50% {
+      		background-position: 100% 50%
+      	}
+      	100% {
+      		background-position: 0% 50%
+      	}
+      }
+
+      /**/
     </style>
 
     <paper-card style="float:center; width: 70%" class="black">
@@ -132,18 +182,20 @@
     </paper-card>
 
     <template is="dom-if" if="[[!signedin]]">
-      <paper-card class="notLoggedIn">
-        <div class="circle">
-            <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+      <paper-card class="body">
+        <div><h5></h5>
         </div>
-        <h1>You have not loged in!</h1>
-        <p>Login to the app to get the latest data and full features of the app.</p>
-        <p>Tap or Click the avatar <iron-icon icon="social:person-outline"></iron-icon> button on the top menu bar to enter your credentials.</p>
+        <div class="circle">
+            <iron-icon icon="icons:warning" style="color: #e02871;"></iron-icon>
+        </div>
+        <h1 style="color: white">You have not loged in!</h1>
+        <p style="color: white">Login to the app to get the latest data and full features of the app.</p>
+        <p style="color: white">Tap or Click the avatar <iron-icon icon="social:person-outline" style="color: white"></iron-icon> button on the top menu bar to enter your credentials.</p>
       </paper-card>
     </template>
 
     <template is="dom-if" if="[[signedin]]">
-    <paper-card style="float:center; width: 90%" class="redPurple">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="redPurple"> -->
       <div>
         <h4 style="color: white;">Profit Quater 1</h4>
       </div>
@@ -154,7 +206,7 @@
           </d3-progress-meter>
       </div>
     </paper-card>
-    <paper-card style="float:center; width: 90%" class="orangeYellow">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="orangeYellow"> -->
       <div>
         <h4 style="color: white;">Profit to Date</h4>
       </div>
@@ -165,7 +217,7 @@
           </d3-progress-meter>
       </div>
     </paper-card>
-    <paper-card style="float:center; width: 90%" class="greenBlueShine">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="greenBlueShine"> -->
       <div>
         <h4 style="color: white;">Expense Quater 1</h4>
       </div>
@@ -176,7 +228,7 @@
           </d3-progress-meter>
      </div>
     </paper-card>
-    <paper-card style="float:center; width: 90%" class="blueGreen">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="blueGreen"> -->
       <div>
         <h4 style="color: white;">Expense to Date</h4>
       </div>
@@ -187,7 +239,7 @@
           </d3-progress-meter>
      </div>
     </paper-card>
-    <paper-card style="float:center; width: 90%" class="greenBlue">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="greenBlue"> -->
       <div>
         <h4 style="color: white;">Invoices Paid</h4>
       </div>
@@ -198,7 +250,7 @@
           </d3-progress-meter>
      </div>
     </paper-card>
-    <paper-card style="float:center; width: 90%" class="tealGreen">
+    <paper-card style="float:center; width: 90%" class="body"> <!-- class="tealGreen"> -->
       <div>
         <h4 style="color: white;">Cashflow Quater 1</h4>
       </div>
