@@ -117,6 +117,12 @@ var createSettingIndexAliasForUserFunction = require('./auth_triggers/createSett
 var createSupplierIndexAliasForUserFunction = require('./auth_triggers/createSupplierIndexAliasForUser');
 var createTransactionIndexAliasForUserFunction = require('./auth_triggers/createTransactionIndexAliasForUser');
 
+/***********   SCHEDULED TRIGGERS FUNCTIONS     *********************/
+var hourlyScheduledFunction = require('./scheduled/hourlyScheduled');
+var dailyScheduledFunction = require('./scheduled/dailyScheduled');
+var weeklyScheduledFunction = require('./scheduled/weeklyScheduled');
+
+
 /***********   EMAILS FUNCTIONS     *********************/
 var sendWelcomeEmailFunction = require('./emails/sendWelcomeEmail');
 var sendByeEmailFunction = require('./emails/sendByeEmail');
@@ -380,6 +386,7 @@ exports.testAliasCreationFunction = functions.https.onRequest((req, res) => {
 exports.testCronJobFunction = functions.pubsub.topic('hourly-tick').onPublish((event) => {
     testCronJobFunction.handler(event, database, esClient);
   });
+
 /************ SEND EMAILS ON AUTHENTICATION - SENDGRID BACKEND FUNCTION *******/
 
 exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
@@ -435,3 +442,17 @@ exports.createTransactionIndexAliasForUserFunction = functions.auth.user().onCre
 exports.createUserOnAuthFunction = functions.auth.user().onCreate(event => {
     createUserOnAuthFunction.handler(event, database, esClient);
 });
+
+/************ CRON JOB SCHEDULED - BACKEND FUNCTION *******/
+
+exports.hourlyScheduledFunction = functions.pubsub.topic('hourly-tick').onPublish((event) => {
+    hourlyScheduledFunction.handler(event, database, esClient);
+  });
+
+exports.dailyScheduledFunction = functions.pubsub.topic('daily-tick').onPublish((event) => {
+    dailyScheduledFunction.handler(event, database, esClient);
+  });
+
+exports.weeklyScheduledFunction = functions.pubsub.topic('weekly-tick').onPublish((event) => {
+    weeklyScheduledFunction.handler(event, database, esClient);
+  });
