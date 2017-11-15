@@ -60,12 +60,6 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
-    /*
-    paper-card {
-      --paper-card-background-color: #ffffff;
-      box-sizing: border-box;
-      margin: 5px 5px 5px 5px;
-    }*/
     paper-button.green {
       background-color: var(--paper-green-500);
       color: white;
@@ -74,7 +68,6 @@
       background-color: white;
       color: black;
     }
-
     paper-button.custom {
         --paper-button-ink-color: var(--paper-pink-a200);
         /* These could also be individually defined for each of the
@@ -88,22 +81,23 @@
           color: white !important;
         };
       }
-
     paper-button.custom:hover {
         background-color: var(--paper-indigo-100);
       }
-
     paper-button.pink {
         color: var(--paper-pink-a200);
       }
-
     h8.subtitle {
       display: block;
       font-size: 0.8em;
       margin-top: 2px;
       max-width: 150px;
     }
-
+    h7.banksTitle {
+      display: block;
+      font-size: 1.0em;
+      margin-top: 15px;
+    }
 
     table{
       width:100%;
@@ -136,13 +130,11 @@
       border-bottom: solid 1px rgba(255,255,255,0.1);
     }
 
-    /*@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);*/
     paper-dialog.body{
       background: -webkit-linear-gradient(left, #25c481, #25b7c4);
       background: linear-gradient(to right, #25c481, #25b7c4);
       font-family: 'Roboto', sans-serif;
     }
-
     paper-dialog.inputGradient{
       font-family: 'Roboto', sans-serif;
       background: #f91818; /* Old browsers */
@@ -153,7 +145,6 @@
       box-sizing: border-box;
       margin: 5px 5px 5px 5px;
     }
-
     paper-card.gradient{
       background: -webkit-linear-gradient(left, #25c481, #25b7c4);
       background: linear-gradient(to right, #25c481, #25b7c4);
@@ -171,7 +162,6 @@
       box-sizing: border-box;
       margin:  10px 10px 10px 10px;
     }
-
     paper-input {
         --paper-input-container-color: white;
         --paper-input-container-focus-color: white;
@@ -197,15 +187,26 @@
 
 /**/
 
-paper-card.body {
+paper-card.bodyCard {
 	width: 90%;
-	height: 90%;
+	height: 70%;
 	color: #fff;
 	background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
 	background-size: 400% 400%;
 	-webkit-animation: Gradient 15s ease infinite;
 	-moz-animation: Gradient 15s ease infinite;
 	animation: Gradient 15s ease infinite;
+  position: absolute;
+}
+paper-card.body {
+  width: 100wh;
+  height: 90vh;
+  color: #fff;
+  background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+  background-size: 400% 400%;
+  -webkit-animation: Gradient 15s ease infinite;
+  -moz-animation: Gradient 15s ease infinite;
+  animation: Gradient 15s ease infinite;
 }
 
 @-webkit-keyframes Gradient {
@@ -292,14 +293,29 @@ paper-card.body {
 
   <template is="dom-if" if="[[signedin]]">
     <template is="dom-if" if="[[firstTimeLoad]]">
-      <paper-card class="body">
-        <div style="float:top; width:15%;">
-        </div>
-        <div style="float:top; width:75%;">
-          <iron-image style="width:200px; height:200px;" sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" on-tap="sendGetBanks"></iron-image>
-        </div>
-        <div style="float:bottom; width:15%;">
-        </div>
+      <paper-card class="bodyCard">
+        <div style="float:left; width:100%">
+          <div style="float:top; width:20%;">
+              <paper-icon-button icon=""></paper-icon-button>
+          </div>
+          <div style="float:top; width:40%;">
+                <div style="float:left; width:100%">
+                  <div style="float:left; width:25%;">
+                      <paper-icon-button icon=""></paper-icon-button>
+                  </div>
+                  <div style="float:left; width:50%;">
+                    <iron-image style="width:200px; height:200px;" sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" on-tap="sendGetBanks"></iron-image>
+                  </div>
+                  <div style="float:right; width:25%;">
+                      <paper-icon-button icon=""></paper-icon-button>
+                  </div>
+                </div>
+          </div>
+          <div style="float:bottom; width:20%;">
+              <paper-icon-button icon=""></paper-icon-button>
+          </div>
+      </div>
+
       </paper-card>
     </template>
   </template>
@@ -481,11 +497,19 @@ paper-card.body {
          <div>
            <div>
                  <div style="float:center" flex>
-                       <paper-icon-button icon="icons:select-all" style="color: white;"></paper-icon-button>
-                       <b><h7 style="color: white;">Bank:</h7></b>&nbsp; &nbsp; <h7 style="color: white;">[[bank._source.bank_providerName]]</h7>
-                       <paper-icon-button  icon="icons:arrow-drop-down" style="color: white;"
-                                               id$="bt_readmore" bank="[[bank]]"
-                                               on-tap="expandCollapseBankCard"></paper-icon-button>
+                    <div style="float:left; width:100%">
+                      <div style="float:left; width:15%;">
+                        <paper-icon-button icon="icons:select-all" style="color: white;"></paper-icon-button>
+                      </div>
+                      <div style="float:left; width:70%;">
+                        <h7 class="banksTitle" style="color: white;"><b>Bank:</b>&nbsp; &nbsp; [[bank._source.bank_providerName]]</h7>
+                      </div>
+                      <div style="float:left; width:15%;">
+                        <paper-icon-button  icon="icons:arrow-drop-down" style="color: white;"
+                                                id$="bt_readmore" bank="[[bank]]"
+                                                on-tap="expandCollapseBankCard"></paper-icon-button>
+                      </div>
+                    </div>
                  </div>
              </div>
              <div style="float:left; width:100%">
@@ -520,7 +544,7 @@ paper-card.body {
                               <tbody>
                                 <tr>
                                   <td>Account Name:</td>
-                                  <td> [[bank._source.bank_bankAccountName]] </td>
+                                  <td>[[bank._source.bank_bankAccountName]] </td>
                                 </tr>
                                 <tr>
                                   <td> Account BSB: </td>
@@ -536,7 +560,7 @@ paper-card.body {
                                 </tr>
                                 <tr>
                                   <td>Amount Due:</td>
-                                  <td>[[bank._source.bank_amountDue]]</td>
+                                  <td>$[[bank._source.bank_amountDue]]</td>
                                 </tr>
                               </tbody>
                             </table>
@@ -1050,7 +1074,9 @@ paper-card.body {
       expandCollapseBankCard(event, detail, sender) {
             var id = event.model.bank._id;
             var selector = '#collapse' + id;
-            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+            //event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle(); //old code with out div
+            //console.log(event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement);
+            event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector(selector).toggle();
         }
 
     }

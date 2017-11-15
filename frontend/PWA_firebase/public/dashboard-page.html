@@ -195,82 +195,54 @@
     </template>
 
     <template is="dom-if" if="[[signedin]]">
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="redPurple"> -->
-      <div>
-        <h4 style="color: white;">Profit Quater 1</h4>
-      </div>
-      <div>
-          <d3-progress-meter
-              radius="50" percentage="0.1" current-text="70"
-              goal-text="Goal: 200" type-text="transactions">
-          </d3-progress-meter>
-      </div>
-    </paper-card>
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="orangeYellow"> -->
-      <div>
-        <h4 style="color: white;">Profit to Date</h4>
-      </div>
-      <div>
-          <d3-progress-meter
-              radius="50" percentage="0.65" current-text="6.5m"
-              goal-text="Goal: $10m" type-text="revenue">
-          </d3-progress-meter>
-      </div>
-    </paper-card>
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="greenBlueShine"> -->
-      <div>
-        <h4 style="color: white;">Expense Quater 1</h4>
-      </div>
-      <div>
-          <d3-progress-meter
-            radius="50" percentage="0.9" current-text="225"
-            goal-text="Goal: 250" type-text="points">
-          </d3-progress-meter>
-     </div>
-    </paper-card>
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="blueGreen"> -->
-      <div>
-        <h4 style="color: white;">Expense to Date</h4>
-      </div>
-      <div>
-          <d3-progress-meter
-            radius="50" percentage="0.9" current-text="225"
-            goal-text="Goal: 250" type-text="points">
-          </d3-progress-meter>
-     </div>
-    </paper-card>
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="greenBlue"> -->
-      <div>
-        <h4 style="color: white;">Invoices Paid</h4>
-      </div>
-      <div>
-          <d3-progress-meter
-            radius="50" percentage="0.9" current-text="225"
-            goal-text="Goal: 250" type-text="points">
-          </d3-progress-meter>
-     </div>
-    </paper-card>
-    <paper-card style="float:center; width: 90%" class="body"> <!-- class="tealGreen"> -->
-      <div>
-        <h4 style="color: white;">Cashflow Quater 1</h4>
-      </div>
-          <style is="custom-style">
-              .custom {
-                  --progress-meter-background-color: #00FFFF;
-                  --progress-meter-color-low: #009999;
-                  --progress-meter-color-medium: #009999;
-                  --progress-meter-color-high: #009999;
-              }
-          </style>
+        <paper-card style="float:center; width: 95%" class="body">
           <div>
-                <d3-progress-meter
-                    class="custom" radius="50" percentage="0.5"
-                    current-text="10" goal-text="Goal: 20"
-                    type-text="Visits">
-                </d3-progress-meter>
+            <h4 style="color: white;">Profit to Date</h4>
           </div>
-    </paper-card>
-  </template>
+          <div>
+              <d3-progress-meter
+                  radius="50" percentage="0.1" current-text="70"
+                  goal-text="Goal: 200" type-text="transactions">
+              </d3-progress-meter>
+          </div>
+          <div>
+            <h4 style="color: white;">Expense Quater 1</h4>
+          </div>
+          <div>
+              <d3-progress-meter
+                radius="50" percentage="0.9" current-text="225"
+                goal-text="Goal: 250" type-text="points">
+              </d3-progress-meter>
+         </div>
+          <div>
+            <h4 style="color: white;">Invoices Paid</h4>
+          </div>
+          <div>
+              <d3-progress-meter
+                radius="50" percentage="0.9" current-text="225"
+                goal-text="Goal: 250" type-text="points">
+              </d3-progress-meter>
+         </div>
+          <div>
+            <h4 style="color: white;">Cashflow Quater 1</h4>
+          </div>
+              <style is="custom-style">
+                  .custom {
+                      --progress-meter-background-color: #00FFFF;
+                      --progress-meter-color-low: #009999;
+                      --progress-meter-color-medium: #009999;
+                      --progress-meter-color-high: #009999;
+                  }
+              </style>
+              <div>
+                    <d3-progress-meter
+                        class="custom" radius="50" percentage="0.5"
+                        current-text="10" goal-text="Goal: 20"
+                        type-text="Visits">
+                    </d3-progress-meter>
+              </div>
+        </paper-card>
+    </template>
 
   </template>
 

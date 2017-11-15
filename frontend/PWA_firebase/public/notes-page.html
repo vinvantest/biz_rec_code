@@ -48,7 +48,11 @@
         @apply(--layout-around-justified);
         max-width: inherit;
     }
-
+    h7.notesTitle {
+      display: block;
+      font-size: 1.0em;
+      margin-top: 15px;
+    }
     paper-card {
       --paper-card-background-color: #ffffff;
       box-sizing: border-box;
@@ -215,14 +219,22 @@
           <paper-card style="float:center; width: 90%" class="gradient">
               <div>
                     <div style="float:center" flex>
+                      <div style="float:left; width:100%">
+                        <div style="float:left; width:15%;">
                           <paper-icon-button icon="icons:select-all" style="color: white;"></paper-icon-button>
-                          <b><h7 style="color: white;">Note:</h7></b> &nbsp; &nbsp; <h7 style="color: white;">[[note.title]]</h7>
+                        </div>
+                        <div style="float:left; width:70%;">
+                          <h7 class="notesTitle" style="color: white;"><b>Note:</b> &nbsp; &nbsp; [[note.title]]</h7>
+                        </div>
+                        <div style="float:left; width:15%;">
                           <paper-icon-button  icon="icons:arrow-drop-down" style="color: white;"
                                                   id$="bt_readmore" note="[[note]]"
                                                   on-tap="expandNoteDetails"></paper-icon-button>
+                        </div>
+                      </div>
                     </div>
-                </div>
-                <div style="float:left; width:100%">
+              </div>
+              <div style="float:left; width:100%">
                   <div id="leftThing" style="float:left; width:25%;">
                         <paper-icon-button disabled slot="top" icon="icons:more-horiz" style="color: white;"></paper-icon-button>
                     </div>
@@ -397,7 +409,9 @@
             var selector = '#collapse' + id;
             //console.log('selector is ->'+selector);
             //console.log(event.currentTarget.parentElement.parentElement);
-            event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle();
+            //event.currentTarget.parentElement.parentElement.parentElement.querySelector(selector).toggle(); //old code without div
+            //console.log(event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement);
+            event.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector(selector).toggle();
         }
 
       reloadPage(){
