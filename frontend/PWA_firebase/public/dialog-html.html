@@ -48,35 +48,6 @@
       a:active { text-decoration:none; }
       a:link { text-decoration:none; }
 
-      #notes {
-        @apply --layout-vertical;
-        @apply --layout-wrap;
-      }
-
-      #notes > paper-card {
-        --paper-card-background-color: #f3f3f3;
-        box-sizing: border-box;
-        margin: 1px 1px 1px 1px;
-      }
-
-      #notes > paper-card.magenta {
-        --paper-card-background-color: #e02871;
-        box-sizing: border-box;
-        margin:  1px 1px 1px 1px;
-      }
-
-      #notes > paper-card.darkgrey {
-        --paper-card-background-color: #c3c4cc;
-        box-sizing: border-box;
-        margin:  1px 1px 1px 1px;
-      }
-
-      #notes > paper-card.lightgrey {
-        --paper-card-background-color: #ffffff;
-        box-sizing: border-box;
-        margin:  1px 1px 0px 1px;
-      }
-
       a paper-button,
       a:hover paper-button,
       a:link paper-button,
@@ -91,6 +62,36 @@
       a:active { text-decoration:none; }
       a:link { text-decoration:none; }
 
+      paper-toggle-button.white {
+        --paper-toggle-button-checked-bar-color:  white;
+        --paper-toggle-button-checked-button-color:  white;
+        --paper-toggle-button-checked-ink-color: var(--paper-green-500);
+        --paper-toggle-button-unchecked-bar-color:  var(--paper-teal-500);
+        --paper-toggle-button-unchecked-button-color:  var(--paper-teal-500);
+        --paper-toggle-button-unchecked-ink-color: var(--paper-teal-500);
+  }
+      h4{
+        font-size: 14px;
+        color: #fff;
+      }
+      paper-dialog.inputGradient{
+        font-family: 'Roboto', sans-serif;
+        background: #f91818; /* Old browsers */
+        background: -moz-linear-gradient(45deg, #f91818 0%, #e81098 45%, #e81098 45%, #e81098 54%, #8c0eb2 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(45deg, #f91818 0%,#e81098 45%,#e81098 45%,#e81098 54%,#8c0eb2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f91818', endColorstr='#8c0eb2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        box-sizing: border-box;
+        margin: 5px 5px 5px 5px;
+      }
+      paper-card.gradient{
+        background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+        background: linear-gradient(to right, #25c481, #25b7c4);
+        font-family: 'Roboto', sans-serif;
+        box-sizing: border-box;
+        margin: 5px 5px 5px 5px;
+      }
+
     </style>
 
     <firebase-messaging
@@ -101,113 +102,86 @@
 
     <firebase-document path="/users/[[user.uid]]/token" data="[[token]]">
     </firebase-document>
+    <paper-icon-button icon="icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
 
-        <paper-icon-button icon="icons:more-vert" slot="top" on-tap="hire"></paper-icon-button>
-
-        <paper-dialog id="dialog" backdrop transition="core-transition-bottom">
-
-          <div id="notes">
-
-            <paper-card class="magenta">
-              <div style="float:left; width:100%" class"box">
-                <div id="leftThing" style="float:left; width:25%;">
-                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="icons:grain" style="color: white;"></paper-icon-button>
-                </div>
-                  <div id="leftThing" slot="top" style="float:left; width:50%;" style="text-align: center">
-                    <template is="dom-if" if="[[signedin]]">
-                            <h4 style='color: white;'>[[user.displayName]]</h4>
-                      </template>
-                    <template is="dom-if" if="[[!signedin]]">
-                          <h4 style='color: white;'>--&nbsp;&nbsp;&nbsp;&nbsp;Sign In&nbsp;&nbsp;&nbsp;&nbsp;--</h4>
-                    </template>
+    <paper-dialog id="dialog" backdrop transition="core-transition-bottom" class="inputGradient">
+        <template is="dom-if" if="[[!signedin]]">
+            <div>
+              <div class="circle">
+                  <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+              </div>
+              <div><h4><u>You are not Signed In:</u></h4></div>
+              <div style="text-align: left">
+                <h4>
+                  Sign in to the app using your credentials:
+                  <li>Tap on top right icon to sign in</li>
+                  <li>Go to settings page and sign in</li>
+                </h4>
+              </div>
+              <div style="text-align: center">
+                <div style="float:left; width:90%">
+                  <div style="float:left; width:50%;">
+                    <a href="/settings-page">
+                        <paper-button dialog-confirm autofocus >
+                            <iron-icon icon="icons:select-all" style="color: white;"></iron-icon><h4>Settings</h4>
+                        </paper-button>
+                    </a>
                   </div>
-                <div id="rightThing" style="float:right; width:25%;">
-                  <paper-icon-button id="dashboard-icon-button" mini slot="top" icon="icons:grain" style="color: white;"></paper-icon-button>
+                  <div style="float:right; width:50%;">
+                    <a href="/dashboard-page">
+                        <paper-button dialog-confirm autofocus >
+                            <iron-icon icon="icons:select-all" style="color: white;"></iron-icon><h4>Home</h4>
+                        </paper-button>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            </paper-card>
-
-
-            <paper-card class="lightgrey">
-              <template is="dom-if" if="[[signedin]]">
-                    <div style="float:left; width:100%">
-                        <div><h4><u>Notifications:</u></h4></div>
-                        <div style="float:center;">
-                          <paper-toggle-button on-tap="toggleNotifications" checked="[[token]]">
-                          <!-- instead of token you can use a seperate value isSubscribed of model -->
-                            Receive Notifications</paper-toggle-button>
-                          </div>
-                        <iron-icon></iron-icon>
-                        <div>
-                              <div style="text-align: left">
-                                  If this option is deselected, I understand I won't be notified when:
-                                  <li>Changes occur in backend</li>
-                                  <li>Transactions added to dashboard</li>
-                              </div>
-                              <iron-icon></iron-icon>
-                              <div style="text-align: left">
-                                  <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
-                                  sign in on each device, enable notifications, and make sure you're online.
-                                  <!-- <p>Token is = [[token]]</p> -->
-                              </div>
-                              <div style="text-align: center">
-                                <a href="/settings-page">
-                                    <paper-button dialog-confirm autofocus >
-                                        <iron-icon icon="icons:select-all"></iron-icon><h4>Settings</h4>
-                                    </paper-button>
-                                  </a>
-                                </div>
-                        </div>
-            </template>
-            <template is="dom-if" if="[[!signedin]]">
-                  <div style="float:left; width:100%">
-                    <div class="circle">
-                        <iron-icon icon="icons:remove-circle" style="color: #e02871;"></iron-icon>
+          </template>
+          <template is="dom-if" if="[[signedin]]">
+           <div><h4><u>Notifications:</u></h4></div>
+           <div style="float:center;">
+             <paper-toggle-button class="white" on-tap="toggleNotifications" checked="[[token]]">
+               <h4>Receive Notifications</h4>
+             </paper-toggle-button>
+            </div>
+           <div style="text-align: left">
+             <h4>
+               If this option is deselected, I won't be notified when:
+               <li>Changes occur in backend</li>
+               <li>Transactions added to dashboard</li>
+             </h4>
+           </div>
+           <div style="text-align: left">
+             <h4>
+                <b>Note:</b>
+                 <li>Notifications activiated per device</li>
+                 <li>Sign in to to receive notifications</li>
+                 <li>Sign in on each device and enable notifications
+               </h4>
+           </div>
+           <div style="text-align: center">
+                <div style="float:left; width:90%">
+                    <div style="float:left; width:50%;">
+                       <a href="/settings-page">
+                          <paper-button dialog-confirm autofocus >
+                          <iron-icon icon="icons:select-all" style="color: white;"></iron-icon><h4>Settings</h4>
+                          </paper-button>
+                      </a>
                     </div>
-                      <div><h4><u>You are not Signed In:</u></h4></div>
-                        <div>
-                            <div style="text-align: left">
-                                In order to view your notes, sign in to the app using your credentials:
-                                  <li>Tap on top right icon to sign in</li>
-                                  <li>Go to settings page and sign in</li>
-                            </div>
-                            <iron-icon></iron-icon>
-                            <div style="text-align: left">
-                                <b>Note:</b> Notifications are activated per device. To receive notifications on multiple devices,
-                                sign in on each device, enable notifications, and make sure you're online.
-                            </div>
-                        <div>
-                      <div style="text-align: center">
-                        <a href="/settings-page">
-                            <paper-button dialog-confirm autofocus >
-                                <iron-icon icon="icons:select-all"></iron-icon><h4>Settings</h4>
-                            </paper-button>
-                          </a>
-                        </div>
-                  </div>
-            </template>
-            </paper-card>
-
-            <paper-card class="magenta">
-              <div style="float:left; width:100%">
-                <div id="leftThing0" style="float:left; width:25%;" >
-                      <paper-icon-button id="dashboard-icon-button0" dialog-dismiss slot="top" icon="icons:dashboard" style="color: white;"></paper-icon-button>
-                  </div>
-                  <div id="leftThing1" style="float:left; width:25%;">
-                    <paper-icon-button id="transactions-icon-button1" dialog-dismiss slot="top" icon="icons:gavel" style="color: white;"></paper-icon-button>
-                  </div>
-                <div id="leftThing2" style="float:left; width:25%;">
-                    <paper-icon-button id="payments-icon-button2" dialog-dismiss slot="top" icon="icons:select-all" style="color: white;"></paper-icon-button>
+                    <div style="float:right; width:50%;">
+                      <a href="/dashboard-page">
+                        <paper-button dialog-confirm autofocus >
+                        <iron-icon icon="icons:select-all" style="color: white;"></iron-icon><h4>Home</h4>
+                        </paper-button>
+                      </a>
+                    </div>
                 </div>
-                <div id="leftThing3" style="float:right; width:25%;">
-                      <paper-icon-button id="reports-icon-button3" on-tap="hire" slot="top" icon="icons:line-style" style="color: white;"></paper-icon-button>
-                </div>
-              </div>
-            </paper-card>
-
-          </div>
+            </div>
+          </template>
 
         </paper-dialog>
+
   </template>
   <script>
       class DailogHTML extends Polymer.Element {

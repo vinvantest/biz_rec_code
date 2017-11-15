@@ -181,8 +181,8 @@
         <app-toolbar condenses>
           <template is="dom-if" if="[[!user]]">
                 <div>
-                  <paper-avatar mini on-tap="_login"></paper-avatar> <!--
-                  <paper-toast id="toastSignIn" text="Hi, [[user.displayName]! You are logged in.]"></paper-toast> -->
+                  <!-- <paper-avatar mini on-tap="_login"></paper-avatar>  -->
+                  <paper-avatar mini on-tap=""></paper-avatar>
                 </div>
                 <span id="tabMenu"> <h6>&nbsp;&nbsp;&nbsp;Menu</h6></span>
             </template>
@@ -441,6 +441,7 @@
         this.page = 'not-found-404';
       }
 
+      //do not use this function. It is for reference only. Login-page introduced!
       _login() {
           console.log('inside my-app _login()');
           var provider = new firebase.auth.GoogleAuthProvider();
