@@ -168,10 +168,10 @@
         --paper-input-container-invalid-color: black;
         --paper-input-container-input-color: white;
         --paper-input-container-label: {
-                font-size: 14px;
+                font-size: 10px;
               };
         font-family: 'Roboto', 'Noto', sans-serif;
-        font-size: 12px;
+        font-size: 10px;
     }
 
     /* for custom scrollbar for webkit browser*/
@@ -189,14 +189,17 @@
 
 paper-card.bodyCard {
 	width: 90%;
-	height: 70%;
+	height: 60%;
 	color: #fff;
 	background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
 	background-size: 400% 400%;
 	-webkit-animation: Gradient 15s ease infinite;
 	-moz-animation: Gradient 15s ease infinite;
 	animation: Gradient 15s ease infinite;
-  position: absolute;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 paper-card.body {
   width: 100wh;
@@ -207,6 +210,12 @@ paper-card.body {
   -webkit-animation: Gradient 15s ease infinite;
   -moz-animation: Gradient 15s ease infinite;
   animation: Gradient 15s ease infinite;
+}
+iron-image {
+   position: fixed;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
 }
 
 @-webkit-keyframes Gradient {
@@ -294,28 +303,7 @@ paper-card.body {
   <template is="dom-if" if="[[signedin]]">
     <template is="dom-if" if="[[firstTimeLoad]]">
       <paper-card class="bodyCard">
-        <div style="float:left; width:100%">
-          <div style="float:top; width:20%;">
-              <paper-icon-button icon=""></paper-icon-button>
-          </div>
-          <div style="float:top; width:40%;">
-                <div style="float:left; width:100%">
-                  <div style="float:left; width:25%;">
-                      <paper-icon-button icon=""></paper-icon-button>
-                  </div>
-                  <div style="float:left; width:50%;">
-                    <iron-image style="width:200px; height:200px;" sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" on-tap="sendGetBanks"></iron-image>
-                  </div>
-                  <div style="float:right; width:25%;">
-                      <paper-icon-button icon=""></paper-icon-button>
-                  </div>
-                </div>
-          </div>
-          <div style="float:bottom; width:20%;">
-              <paper-icon-button icon=""></paper-icon-button>
-          </div>
-      </div>
-
+        <iron-image style="width:200px; height:200px" sizing="cover" preload fade src="../images/hand_click/hand_click_png.png" on-tap="sendGetBanks"></iron-image>
       </paper-card>
     </template>
   </template>
@@ -327,85 +315,6 @@ paper-card.body {
              <paper-spinner active class="multi"></paper-spinner>
              <paper-pulsating-progress active="[[active]]"></paper-pulsating-progress>
       </div>
-   </paper-dialog>
-
-   <paper-dialog id="detailBankRecords" backdrop transition="core-transition-bottom" class="body">
-     <h5>Fixed Table header</h5>
-        <div class="tbl-header">
-          <table cellpadding="0" cellspacing="0" border="0">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Company</th>
-                <th>Price</th>
-                <th>Change</th>
-                <th>Change %</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-        <div class="tbl-content">
-          <table cellpadding="0" cellspacing="0" border="0">
-            <tbody>
-              <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-              </tr>
-              <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-              </tr>
-              <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-              </tr>
-              <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-              </tr>
-              <tr>
-                <td>AAC</td>
-                <td>AUSTRALIAN COMPANY </td>
-                <td>$1.38</td>
-                <td>+2.01</td>
-                <td>-0.36%</td>
-              </tr>
-              <tr>
-                <td>AAD</td>
-                <td>AUSENCO</td>
-                <td>$2.38</td>
-                <td>-0.01</td>
-                <td>-1.36%</td>
-              </tr>
-              <tr>
-                <td>AAX</td>
-                <td>ADELAIDE</td>
-                <td>$3.22</td>
-                <td>+0.01</td>
-                <td>+1.36%</td>
-              </tr>
-              <tr>
-                <td>XXD</td>
-                <td>ADITYA BIRLA</td>
-                <td>$1.02</td>
-                <td>-1.01</td>
-                <td>+2.36%</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
    </paper-dialog>
 
    <paper-dialog id="detailBankRecord" backdrop transition="core-transition-bottom" class="inputGradient">

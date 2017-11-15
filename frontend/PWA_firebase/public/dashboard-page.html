@@ -138,6 +138,22 @@
       	animation: Gradient 15s ease infinite;
       }
 
+      paper-card.dashboard {
+        width: 90%;
+      	height: 60%;
+        color: #fff;
+        background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+        background-size: 400% 400%;
+        -webkit-animation: Gradient 15s ease infinite;
+        -moz-animation: Gradient 15s ease infinite;
+        animation: Gradient 15s ease infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 15px 0px 0px 0px;
+      }
+
       @-webkit-keyframes Gradient {
       	0% {
       		background-position: 0% 50%
@@ -197,51 +213,58 @@
     <template is="dom-if" if="[[signedin]]">
         <paper-card style="float:center; width: 95%" class="body">
           <div>
-            <h4 style="color: white;">Profit to Date</h4>
+            <h4 style="color: white;"></h4>
           </div>
           <div>
               <d3-progress-meter
-                  radius="50" percentage="0.1" current-text="70"
-                  goal-text="Goal: 200" type-text="transactions">
+                  radius="70" percentage="0.1" current-text="$9m"
+                  goal-text="Goal: 200" type-text="Profit">
               </d3-progress-meter>
           </div>
           <div>
-            <h4 style="color: white;">Expense Quater 1</h4>
-          </div>
-          <div>
-              <d3-progress-meter
-                radius="50" percentage="0.9" current-text="225"
-                goal-text="Goal: 250" type-text="points">
-              </d3-progress-meter>
-         </div>
-          <div>
-            <h4 style="color: white;">Invoices Paid</h4>
-          </div>
-          <div>
-              <d3-progress-meter
-                radius="50" percentage="0.9" current-text="225"
-                goal-text="Goal: 250" type-text="points">
-              </d3-progress-meter>
-         </div>
-          <div>
-            <h4 style="color: white;">Cashflow Quater 1</h4>
-          </div>
-              <style is="custom-style">
-                  .custom {
-                      --progress-meter-background-color: #00FFFF;
-                      --progress-meter-color-low: #009999;
-                      --progress-meter-color-medium: #009999;
-                      --progress-meter-color-high: #009999;
-                  }
-              </style>
-              <div>
-                    <d3-progress-meter
-                        class="custom" radius="50" percentage="0.5"
-                        current-text="10" goal-text="Goal: 20"
-                        type-text="Visits">
-                    </d3-progress-meter>
+          <div style="float:center" flex>
+            <div style="float:left; width:100%">
+              <div style="float:left; width:33%;">
+                <d3-progress-meter
+                  radius="40" percentage="0.9" current-text="$4m"
+                  goal-text="Goal: 250" type-text="Profit Q1">
+                </d3-progress-meter>
               </div>
-        </paper-card>
+              <div style="float:left; width:33%;">
+                <d3-progress-meter
+                  radius="40" percentage="0.9" current-text="$500k"
+                  goal-text="Goal: 250" type-text="Expense Q1">
+                </d3-progress-meter>
+              </div>
+              <div style="float:left; width:33%;">
+                <d3-progress-meter
+                  radius="40" percentage="0.9" current-text="$4m"
+                  goal-text="Goal: 250" type-text="Invoice Q1">
+                </d3-progress-meter>
+              </div>
+            </div>
+          </div>
+          <div><h4 style="color: white;">&nbsp;</h4><div>
+          <div style="float:center" flex>
+            <div style="float:left; width:100%">
+              <div style="float:left; width:50%;">
+                <d3-progress-meter
+                  radius="50" percentage="0.9" current-text="$500k"
+                  goal-text="Goal: 250" type-text="Expense">
+                </d3-progress-meter>
+              </div>
+              <div style="float:left; width:50%;">
+                <div>
+                      <d3-progress-meter
+                          radius="50" percentage="0.5"
+                          current-text="$34k" goal-text="Goal: 20"
+                          type-text="Payments">
+                      </d3-progress-meter>
+                </div>
+              </div>
+            </div>
+          </div>
+      </paper-card>
     </template>
 
   </template>
