@@ -124,7 +124,7 @@ var sendByeEmailFunction = require('./emails/sendByeEmail');
 /***********   TEST FUNCTIONS     *********************/
 var testSendMailFunction = require('./test_functions/testSendMail');
 var testAliasCreationFunction = require('./test_functions/testAliasCreation');
-
+var testCronJobFunction = require('./test_functions/testCronJob');
 
 
 /*********** Dummy Functions ****************/
@@ -377,6 +377,9 @@ exports.testAliasCreationFunction = functions.https.onRequest((req, res) => {
     });
 });
 
+exports.testCronJobFunction = functions.pubsub.topic('hourly-tick').onPublish((event) => {
+    testCronJobFunction.handler(event, database, esClient);
+  });
 /************ SEND EMAILS ON AUTHENTICATION - SENDGRID BACKEND FUNCTION *******/
 
 exports.sendWelcomeEmailFunction = functions.auth.user().onCreate(event => {
